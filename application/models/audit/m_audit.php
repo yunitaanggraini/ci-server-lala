@@ -35,6 +35,12 @@ class M_Audit extends CI_Model {
         $this->db->update('jadwal_audit', $data);
         return $this->db->affected_rows(); 
     }
+    public function editAuditket($data,$id)
+    {
+        $this->db->where('idjadwal_audit', $id);
+        $this->db->update('jadwal_audit', $data);
+        return $this->db->affected_rows(); 
+    }
     public function delAudit($id)
     {
        $this->db->where('idjadwal_audit', $id);
@@ -70,6 +76,37 @@ class M_Audit extends CI_Model {
             $result = $this->db->get('unit')->result();
             return $result;
         }
+    }
+
+    public function GetauditBefore($id = null)
+    {
+        if ($id === null) {
+            $where = "temp_unit.no_rangka NOT IN (SELECT no_rangka FROM unit)";
+            $this->db->where($where);
+            return $this->db->get('temp_unit')->result();
+        }else {
+            $where = "temp_unit.no_rangka NOT IN (SELECT no_rangka FROM unit) AND (temp_unit.id_unit = '$id' OR temp_unit.no_mesin='$id' OR temp_unit.no_rangka='$id')";
+            $this->db->where($where);
+            return $this->db->get('temp_unit')->result();
+        }
+    }
+    public function AuditEnd()
+    {
+        $query = "
+            INSERT INTO unit (id_unit, no_mesin, no_rangka) 
+            SELECT id_unit, no_mesin, no_rangka 
+            FROM temp_unit 
+            WHERE temp_unit.no_rangka NOT IN (
+                SELECT no_rangka FROM unit)
+        ";
+        $this->db->query($query);
+        $query2 = "
+            UPDATE unit 
+            SET status_unit = 'Tidak ditemukan'
+            WHERE status_unit is null
+        ";
+        $this->db->query($query2);
+        return  $this->db->affected_rows();
     }
 }
 ?>

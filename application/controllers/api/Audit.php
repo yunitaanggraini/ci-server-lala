@@ -11,6 +11,10 @@ function __construct() {
     $this->load->model('audit/m_audit','maudit');
     $this->load->model('audit/m_part','mpart');
     $this->load->model('audit/m_unit','munit');
+    $this->load->model('audit/m_tempunit','mtempunit');
+    $this->load->model('audit/m_temppart','mtemppart');
+    $this->load->model('master/m_cabang','mcabang');
+    $this->load->model('master/m_jenis_audit','mjenisaudit');
     
     }
 
@@ -32,7 +36,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -65,12 +69,13 @@ function __construct() {
     public function Audit_post()
     {
         $data=[
-            'idjadwal_audit' => $this->post('idjadwal_audit',true),
+                'idjadwal_audit' => $this->post('idjadwal_audit',true),
+                'auditor' => $this->post('auditor',true),
                 'tanggal' => $this->post('tanggal', true),
                 'waktu' => $this->post('waktu', true),
                 'idjenis_audit' => $this->post('idjenis_audit', true),
                 'id_cabang' => $this->post('id_cabang', true),
-                'keterangan' => $this->post('keterangan', true),
+                'keterangan' => 'waiting'
         ];
 
         if ($this->maudit->AddAudit($data)) {
@@ -90,12 +95,12 @@ function __construct() {
         $id =$this->put('idjadwal_audit');
 
         $data=[
-            'tanggal' => $this->post('tanggal', true),
-                'waktu' => $this->post('waktu', true),
-                'idjenis_audit' => $this->post('idjenis_audit', true),
-                'id_lokasi' => $this->post('id_lokasi', true),
-                'id_cabang' => $this->post('id_cabang', true),
-                'keterangan' => $this->post('keterangan', true),
+            'tanggal' => $this->put('tanggal', true),
+                'waktu' => $this->put('waktu', true),
+                'idjenis_audit' => $this->put('idjenis_audit', true),
+                'id_lokasi' => $this->put('id_lokasi', true),
+                'id_cabang' => $this->put('id_cabang', true),
+                'keterangan' => 'waiting'
         ];
         if ($id===null) {
             $this->response([
@@ -104,6 +109,32 @@ function __construct() {
             ], REST_Controller::HTTP_BAD_REQUEST);
         }else {
             if ($this->maudit->editAudit($data, $id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Data Audit has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+    public function Auditket_put()
+    {
+        $id =$this->put('idjadwal_audit');
+
+        $data=[
+                'keterangan' => $this->put('keterangan',true)
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->maudit->editAuditket($data, $id)) {
                 $this->response([
                     'status' => true,
                     'data' => "Data Audit has been modified"
@@ -239,6 +270,176 @@ function __construct() {
             
         }
     }
+
+
+    public function TempUnit_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $tempunit= $this->mtempunit->GetTempUnit();
+            
+        }else{
+            $tempunit= $this->mtempunit->GetTempUnit($id);
+        }
+        if ($tempunit) {
+            $this->response([
+                'status' => true,
+                'data' => $tempunit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function TempPart_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $temppart= $this->mtemppart->GetTempPart();
+            
+        }else{
+            $temppart= $this->mtemppart->GetTempPart($id);
+        }
+        if ($temppart) {
+            $this->response([
+                'status' => true,
+                'data' => $temppart
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function auditbefore_get()
+    {
+        $id = $this->get('id');
+        if ($id=== null) {
+            $list= $this->maudit->GetauditBefore();
+            
+        }else{
+            $list= $this->maudit->GetauditBefore($id);
+
+        }
+        
+        if ($list) {
+            $this->response([
+                'status' => true,
+                'data' => $list
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function auditend_get()
+    {
+            $list= $this->maudit->AuditEnd();
+        
+        if ($list) {
+            $this->response([
+                'status' => true,
+                'data' => $list
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+
+    //---------//
+    public function cabang_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $cabang= $this->mcabang->GetCabang();
+            
+        }else{
+            $cabang= $this->mcabang->GetCabang($id);
+
+        }
+        if ($cabang) {
+            $this->response([
+                'status' => true,
+                'data' => $cabang
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function lokasi_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $lokasi= $this->mlokasi->GetLokasi();
+            
+        }else{
+            $lokasi= $this->mlokasi->GetLokasi($id);
+
+        }
+        if ($lokasi) {
+            $this->response([
+                'status' => true,
+                'data' => $lokasi
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Jenisaudit_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $jenisaudit= $this->mjenisaudit->GetJenisaudit();
+            
+        }else{
+            $jenisaudit= $this->mjenisaudit->GetJenisaudit($id);
+
+        }
+        if ($jenisaudit) {
+            $this->response([
+                'status' => true,
+                'data' => $jenisaudit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
 }
 /** End of file Audit.php **/
  ?>

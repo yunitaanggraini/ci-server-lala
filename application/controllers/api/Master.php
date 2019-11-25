@@ -1132,12 +1132,12 @@ function __construct() {
     public function subinv_post()
     {
         $data=[
-            'idsub_inventory' => $this->post('idsub_inventory',true),
-                'sub_inventory' => $this->post('sub_inventory', true),
+                'idsub_inventory'   => $this->post('idsub_inventory',true),
+                'sub_inventory'     => $this->post('sub_inventory', true),
                 'idjenis_inventory' => $this->post('idjenis_inventory', true)
         ];
 
-        if ($this->msubinv->Addsubinv($data)>0) {
+        if ($this->msubinv->AddSubInv($data)) {
             $this->response([
                 'status' => true,
                 'data' => "sub Inventory has been created",
@@ -1155,8 +1155,8 @@ function __construct() {
         $id =$this->put('id');
 
         $data=[
-            'sub_inventory' => $this->post('sub_inventory', true),
-            'idjenis_inventory' => $this->post('idjenis_inventory', true)
+            'sub_inventory' => $this->put('sub_inventory', true),
+            'idjenis_inventory' => $this->put('idjenis_inventory', true)
         ];
         if ($id===null) {
             $this->response([

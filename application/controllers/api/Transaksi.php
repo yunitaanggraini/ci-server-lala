@@ -8,7 +8,7 @@
     
     function __construct() {
         parent::__construct();
-        $this->load->model('m_inventory', 'minv');
+        $this->load->model('transaksi/m_management_inventory', 'minv');
         
         }
     
@@ -29,7 +29,7 @@
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
-                'status' => true,
+                'status' => false,
                 'data' => "data not found"
             ], REST_Controller::HTTP_OK); 
         }

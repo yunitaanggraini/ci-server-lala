@@ -1,21 +1,37 @@
-<?php
+<?php 
+
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Part extends CI_Model {
 
-    public function getPart($id = null)
+    public function getPart($id=null)
     {
         if ($id === null) {
-            $result = $this->db->get('part')->result();
+            $this->db->select('part.*,nama_cabang, nama_lokasi');
+            $this->db->from('part');
+            $this->db->join('cabang', 'part.id_cabang = cabang.id_cabang', 'left');
+            $this->db->join('lokasi', 'part.id_lokasi = lokasi.id_lokasi', 'left');
+             
+            $result = $this->db->get()->result();
 
+            return $result;
         }else {
-            $result = $this->db->get_where('part',['id_part' => $id])->result();
-        }
+            $this->db->select('part.*,nama_cabang, nama_lokasi');
+            $this->db->from('part');
+            $this->db->join('cabang', 'part.id_cabang = cabang.id_cabang', 'left');
+            $this->db->join('lokasi', 'part.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->where('id_part', $id);
+            
+            
+            
+            $result = $this->db->get()->result();
 
-        return $result;
+            return $result;
+        }
+        
     }
 
 }
 
-/* End of file M_Part.php */
+/* End of file M_Unit.php */

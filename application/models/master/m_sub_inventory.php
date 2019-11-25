@@ -26,26 +26,26 @@ class M_Sub_Inventory extends CI_Model {
         }
     }
 
-    public function cariSubinv($typeinv=null, $jenisinv=null)
+    public function cariSubinv($subinv=null, $jenisinv=null)
     {
-        if ($typeinv!=null && $jenisinv !=null) {
+        if ($subinv!=null && $jenisinv !=null) {
             $this->db->select('sub_inventory.*, jenis_inventory');
             $this->db->from('sub_inventory');
             $this->db->join('jenis_inventory', 'sub_inventory.idjenis_inventory = jenis_inventory.idjenis_inventory', 'left');
-            $this->db->like('sub_inventory', $typeinv);
+            $this->db->like('sub_inventory', $subinv);
             $this->db->like('jenis_inventory.idjenis_inventory', $jenisinv);
             $result = $this->db->get()->result();
             return $result;
-        }elseif ($typeinv!=null && $jenisinv==null) {
+        }elseif ($subinv!=null && $jenisinv==null) {
             $this->db->select('sub_inventory.*, jenis_inventory');
             $this->db->from('sub_inventory');
             $this->db->join('jenis_inventory', 'sub_inventory.idjenis_inventory = jenis_inventory.idjenis_inventory', 'left');
-            $this->db->like('sub_inventory', $typeinv);
+            $this->db->like('sub_inventory', $subinv);
             
             $result = $this->db->get()->result();
             return $result;
             
-        }elseif ($typeinv==null && $jenisinv!=null) {
+        }elseif ($subinv==null && $jenisinv!=null) {
             $this->db->select('sub_inventory.*, jenis_inventory');
             $this->db->from('sub_inventory');
             $this->db->join('jenis_inventory', 'sub_inventory.idjenis_inventory = jenis_inventory.idjenis_inventory', 'left');
@@ -61,7 +61,7 @@ class M_Sub_Inventory extends CI_Model {
     {
         $this->db->where('idsub_inventory', $id);
         
-        $result = $this->db->get('Sub_Inventory')->result();
+        $result = $this->db->get('sub_inventory')->result();
         return $result;
     }
 
@@ -73,21 +73,21 @@ class M_Sub_Inventory extends CI_Model {
 
     public function addSubInv($data)
     {
-        $result=$this->db->insert('Sub_Inventory', $data);  
+        $result=$this->db->insert('sub_inventory', $data);  
         return $result;  
     }
 
     public function editSubInv($data,$id)
     {
             $this->db->where('idsub_inventory', $id);
-            $this->db->update('Sub_Inventory', $data);
+            $this->db->update('sub_inventory', $data);
             return $this->db->affected_rows();
     }
 
     public function delSubInv($id)
     {
         $this->db->where('idsub_inventory', $id);
-        $this->db->delete('Sub_Inventory');    
+        $this->db->delete('sub_inventory');    
         return $this->db->affected_rows();
     }
 
