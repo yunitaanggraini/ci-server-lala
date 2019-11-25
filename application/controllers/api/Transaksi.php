@@ -9,6 +9,13 @@
     function __construct() {
         parent::__construct();
         $this->load->model('transaksi/m_management_inventory', 'minv');
+        $this->load->model('master/m_status_inventory','mstatusinv');
+        $this->load->model('master/m_jenis_inventory','mjenisinv');
+        $this->load->model('master/m_sub_inventory','msubinv');
+        $this->load->model('master/m_vendor','mvendor');
+        $this->load->model('master/m_cabang','mcabang');
+        $this->load->model('master/m_lokasi','mlokasi');
+        $this->load->model('master/m_lokasi_cabang','mlokasicabang');
         
         }
     
@@ -35,6 +42,182 @@
         }
 
 
+    }
+
+
+    public function statusinv_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $statusinv= $this->mstatusinv->GetStatusinv();
+            
+        }else{
+            $statusinv= $this->mstatusinv->GetStatusinv($id);
+
+        }
+        if ($statusinv) {
+            $this->response([
+                'status' => true,
+                'data' => $statusinv
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Jenisinv_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $jenisinv= $this->mjenisinv->GetJenisinv();
+            
+        }else{
+            $jenisinv= $this->mjenisinv->GetJenisinv($id);
+
+        }
+        if ($jenisinv) {
+            $this->response([
+                'status' => true,
+                'data' => $jenisinv
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function SubJenisinv_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $subjenisinv= $this->msubinv->GetSubJenisinv();
+            
+        }else{
+            $subjenisinv= $this->msubinv->GetSubJenisinv($id);
+
+        }
+        if ($subjenisinv) {
+            $this->response([
+                'status' => true,
+                'data' => $subjenisinv
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Vendor_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $vendor= $this->mvendor->GetVendor();
+            
+        }else{
+            $vendor= $this->mvendor->GetVendor($id);
+
+        }
+        if ($vendor) {
+            $this->response([
+                'status' => true,
+                'data' => $vendor
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function cabang_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $cabang= $this->mcabang->GetCabang();
+            
+        }else{
+            $cabang= $this->mcabang->GetCabang($id);
+
+        }
+        if ($cabang) {
+            $this->response([
+                'status' => true,
+                'data' => $cabang
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Lokasi_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $lokasi= $this->mlokasi->GetLokasi();
+            
+        }else{
+            $lokasi= $this->mlokasi->GetLokasi($id);
+
+        }
+        if ($lokasi) {
+            $this->response([
+                'status' => true,
+                'data' => $lokasi
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function lokasicabang_get()
+    {
+        $id= $this->get('id_cabang');
+        
+        if ($id===null) {
+            $lokasicabang= $this->mlokasicabang->GetLokasiCabang();
+            
+        }else{
+            $lokasicabang= $this->mlokasicabang->GetLokasiCabang($id);
+
+        }
+        if ($lokasicabang) {
+            $this->response([
+                'status' => true,
+                'data' => $lokasicabang
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
     }
 
 
@@ -102,7 +285,7 @@
                 'ddp' => $this->post('ddp',true),
                 'nilai_total_keseluruhan' => $this->post('nilai_total_keseluruhan',true),
                 'id_vendor' => $this->post('id_vendor',true),
-                'nik' => $this->post('nik',true),
+                'nama_pengguna' => $this->post('nama_pengguna',true),
                 'tanggal_barang_diterima' => $this->post('tanggal_barang_diterima',true),
                 'jenis_pembayaran' => $this->post('jenis_pembayaran',true),
                 'keterangan' => $this->post('keterangan',true),

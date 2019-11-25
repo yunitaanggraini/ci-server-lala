@@ -25,6 +25,16 @@ class M_Sub_Inventory extends CI_Model {
             
         }
     }
+    public function getSubJenisInv($id = null)
+    {
+            $this->db->select('sub_inventory.*, jenis_inventory');
+            $this->db->from('sub_inventory');
+            $this->db->join('jenis_inventory', 'sub_inventory.idjenis_inventory = jenis_inventory.idjenis_inventory', 'left');
+            $this->db->where('sub_inventory.idjenis_inventory', $id);
+            
+            $result = $this->db->get()->result();
+            return $result;
+    }
 
     public function cariSubinv($subinv=null, $jenisinv=null)
     {

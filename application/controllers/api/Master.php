@@ -1078,6 +1078,7 @@ function __construct() {
             
         }
     }
+    
     public function cariSubinv_get(){
         $subinv= $this->get('subinv');
         $jenisinv= $this->get('jenisinv');
