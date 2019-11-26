@@ -5,7 +5,8 @@
         require(APPPATH . 'libraries/REST_Controller.php');
         use Restserver\Libraries\REST_Controller;
         class Transaksi extends REST_Controller {
-    
+
+    private $_tgl;
     function __construct() {
         parent::__construct();
         $this->load->model('transaksi/m_management_inventory', 'minv');
@@ -16,9 +17,9 @@
         $this->load->model('master/m_cabang','mcabang');
         $this->load->model('master/m_lokasi','mlokasi');
         $this->load->model('master/m_lokasi_cabang','mlokasicabang');
-        
+        $this->_tgl = date('Y-m-d');
         }
-    
+
         public function Inv_get()
     {
         $id = $this->get('id');
@@ -283,23 +284,35 @@
                 'idsub_inventory' => $this->post('idsub_inventory',true),
                 'nilai_awal' => $this->post('nilai_awal',true),
                 'ddp' => $this->post('ddp',true),
+                'nilai_asset' => $this->post('nilai_asset',true),
                 'nilai_total_keseluruhan' => $this->post('nilai_total_keseluruhan',true),
-                'id_vendor' => $this->post('id_vendor',true),
-                'nama_pengguna' => $this->post('nama_pengguna',true),
                 'tanggal_barang_diterima' => $this->post('tanggal_barang_diterima',true),
+                'id_vendor' => $this->post('id_vendor',true),
                 'jenis_pembayaran' => $this->post('jenis_pembayaran',true),
+                'id_cabang' => $this->post('id_cabang',true),
+                'id_lokasi' => $this->post('id_lokasi',true),
+                'nama_pengguna' => $this->post('nama_pengguna',true),              
                 'keterangan' => $this->post('keterangan',true),
                 'stok' => $this->post('stok',true),
                 'foto' => $this->post('foto',true),
+                'asal_hadiah' => $this->post('asal_hadiah',true),
                 'ppn' => $this->post('ppn',true),
+                'ket_ppn' => $this->post('ket_ppn',true),
                 'merk' => $this->post('merk',true),
                 'aksesoris_tambahan' => $this->post('aksesoris_tambahan',true),
-                'barcode' => $this->post('barcode',true),
-                'qrcode' => $this->post('qrcode',true),
+                'serial_number' => $this->post('serial_number',true),
+                'uang_muka' => $this->post('uang_muka',true),
+                'cicilan_perbulan' => $this->post('cicilan_perbulan',true),
+                'tenor' => $this->post('tenor',true),
+                'nilai_total' => $this->post('nilai_total',true),
+                // 'barcode' => $this->post('barcode',true),
+                // 'qrcode' => $this->post('qrcode',true),
+                'input_by'=> $this->post('input_by',true),
+                'tanggal_input' =>$this->_tgl
                 
         ];
     
-            if ($this->minv->AddInv($data)>0) {
+            if ($this->minv->AddInv($data)) {
                 $this->response([
                     'status' => true,
                     'data' => "User has been created"
@@ -316,25 +329,38 @@
     public function Inv_put()
     {
         $data=[
-            'idtransaksi_inv' => $this->post('idtransaksi_inv',true),
-            'idstatus_inventory' => $this->post('idstatus_inventory',true),
-            'idjenis_inventory' => $this->post('idjenis_inventory',true),
-            'idsub_inventory' => $this->post('idsub_inventory',true),
-            'nilai_awal' => $this->post('nilai_awal',true),
-            'ddp' => $this->post('ddp',true),
-            'nilai_total_keseluruhan' => $this->post('nilai_total_keseluruhan',true),
-            'id_vendor' => $this->post('id_vendor',true),
-            'nik' => $this->post('nik',true),
-            'tanggal_barang_diterima' => $this->post('tanggal_barang_diterima',true),
-            'jenis_pembayaran' => $this->post('jenis_pembayaran',true),
-            'keterangan' => $this->post('keterangan',true),
-            'stok' => $this->post('stok',true),
-            'foto' => $this->post('foto',true),
-            'ppn' => $this->post('ppn',true),
-            'merk' => $this->post('merk',true),
-            'aksesoris_tambahan' => $this->post('aksesoris_tambahan',true),
-            'barcode' => $this->post('barcode',true),
-            'qrcode' => $this->post('qrcode',true),
+            'idtransaksi_inv' => $this->put('idtransaksi_inv',true),
+                'idstatus_inventory' => $this->put('idstatus_inventory',true),
+                'idjenis_inventory' => $this->put('idjenis_inventory',true),
+                'idsub_inventory' => $this->put('idsub_inventory',true),
+                'nilai_awal' => $this->put('nilai_awal',true),
+                'ddp' => $this->put('ddp',true),
+                'nilai_asset' => $this->put('nilai_asset',true),
+                'nilai_total_keseluruhan' => $this->put('nilai_total_keseluruhan',true),
+                'tanggal_barang_diterima' => $this->put('tanggal_barang_diterima',true),
+                'id_vendor' => $this->put('id_vendor',true),
+                'jenis_pembayaran' => $this->put('jenis_pembayaran',true),
+                'id_cabang' => $this->put('id_cabang',true),
+                'id_lokasi' => $this->put('id_lokasi',true),
+                'nama_pengguna' => $this->put('nama_pengguna',true),              
+                'keterangan' => $this->put('keterangan',true),
+                'stok' => $this->put('stok',true),
+                'foto' => $this->put('foto',true),
+                'asal_hadiah' => $this->put('asal_hadiah',true),
+                'ppn' => $this->put('ppn',true),
+                'ket_ppn' => $this->put('ket_ppn',true),
+                'merk' => $this->put('merk',true),
+                'aksesoris_tambahan' => $this->put('aksesoris_tambahan',true),
+                'serial_number' => $this->put('serial_number',true),
+                'uang_muka' => $this->put('uang_muka',true),
+                'cicilan_perbulan' => $this->put('cicilan_perbulan',true),
+                'tenor' => $this->put('tenor',true),
+                'nilai_total' => $this->put('nilai_total',true),
+                'barcode' => $this->put('barcode',true),
+                'qrcode' => $this->put('qrcode',true),
+                'edit_by'=> $this->put('edit_by',true),
+                'tanggal_edit' => $this->_tgl
+                
             
     ];
         if ($id===null) {

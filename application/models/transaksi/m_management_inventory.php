@@ -34,6 +34,20 @@ class m_management_inventory extends CI_Model {
         return $this->db->affected_rows();
     }
 
+    public function addInv($data)
+    {
+        $this->db->insert('transaksi_inventory', $data);
+        return $this->db->affected_rows();  
+    }
+
+    public function upload_image (Type $var = null)
+    {
+        $config['upload_path']   = './upload/';
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['file_name']     = $this->idtransaksi_inv;
+        $config['overwrite']     = true;
+    }
+
 }
 
 /* End of file m_management_inventory.php */
