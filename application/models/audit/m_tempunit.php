@@ -46,9 +46,7 @@ class M_TempUnit extends CI_Model {
             $this->db->from('temp_unit');
             $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
             $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->where('id_cabang', $cabang);
-            
-            
+            $this->db->where('temp_unit.id_cabang', $cabang);
             
             $result = $this->db->get()->result();
 

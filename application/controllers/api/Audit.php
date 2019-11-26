@@ -297,14 +297,13 @@ function __construct() {
     }
     public function ToUnit_get()
     {
-        $id= $this->get('id');
         $cabang= $this->get('id_cabang');
         
-        if ($id===null) {
+        if ($cabang===null) {
             $tempunit= $this->mtempunit->GetToUnit();
             
         }else{
-            $tempunit= $this->mtempunit->GetToUnit($id,$cabang);
+            $tempunit= $this->mtempunit->GetToUnit($cabang);
         }
         if ($tempunit) {
             $this->response([
