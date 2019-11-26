@@ -30,4 +30,30 @@ class M_TempUnit extends CI_Model {
         }
         
     }
+    public function getToUnit($id=null,$cabang =null)
+    {
+        if ($id === null) {
+            $this->db->select('temp_unit.*, nama_lokasi,nama_cabang');
+            $this->db->from('temp_unit');
+            $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
+             
+            $result = $this->db->get()->result();
+
+            return $result;
+        }else {
+            $this->db->select('temp_unit.*, nama_lokasi,nama_cabang');
+            $this->db->from('temp_unit');
+            $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->where('id_cabang', $cabang);
+            
+            
+            
+            $result = $this->db->get()->result();
+
+            return $result;
+        }
+        
+    }
 }

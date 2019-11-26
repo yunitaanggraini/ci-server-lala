@@ -295,6 +295,30 @@ function __construct() {
             
         }
     }
+    public function ToUnit_get()
+    {
+        $id= $this->get('id');
+        $cabang= $this->get('id_cabang');
+        
+        if ($id===null) {
+            $tempunit= $this->mtempunit->GetToUnit();
+            
+        }else{
+            $tempunit= $this->mtempunit->GetToUnit($id,$cabang);
+        }
+        if ($tempunit) {
+            $this->response([
+                'status' => true,
+                'data' => $tempunit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
 
     public function TempPart_get()
     {
