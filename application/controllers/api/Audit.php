@@ -298,7 +298,6 @@ function __construct() {
     public function ToUnit_get()
     {
         $cabang= $this->get('id_cabang');
-        
         if ($cabang===null) {
             $tempunit= $this->mtempunit->GetToUnit();
             
