@@ -304,7 +304,7 @@ function __construct() {
         }else{
             $tempunit= $this->mtempunit->GetToUnit($cabang);
         }
-        if ($tempunit) {
+        if ($tempunit!=null) {
             $this->response([
                 'status' => true,
                 'data' => $tempunit
