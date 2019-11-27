@@ -200,10 +200,11 @@ function __construct() {
     public function listaud_get()
     {
         $id = $this->get('id');
+        $cabang = $this->get('id_cabang');
         if ($id===null) {
             $aud = $this->maudit->GetList();
         }else{
-            $aud = $this->maudit->GetList($id);
+            $aud = $this->maudit->GetList($id,$cabang);
         }
 
         if ($aud) {
@@ -225,12 +226,16 @@ function __construct() {
             'id_unit' => $this->post('id_unit'),
             'no_mesin' => $this->post('no_mesin'),
             'no_rangka' => $this->post('no_rangka'),
+            'umur_unit' => $this->post('umur_unit'),
+            'id_lokasi' => $this->post('id_lokasi'),
+            'id_cabang' => $this->post('id_cabang'),
             'aki' => $this->post('aki'),
             'spion' => $this->post('spion'),
             'tools' => $this->post('tools'),
             'buku_service' => $this->post('buku_service'),
             'helm' => $this->post('helm'),
-            'status_unit' => $this->post('status')
+            'status_unit' => $this->post('status'),
+            'keterangan' => $this->post('keterangan'),
         ];
         if ($this->maudit->AddList($data)) {
             $this->response([
@@ -345,11 +350,12 @@ function __construct() {
     public function auditbefore_get()
     {
         $id = $this->get('id');
+        $cabang = $this->get('id_cabang');
         if ($id=== null) {
-            $list= $this->maudit->GetauditBefore();
+            $list= $this->maudit->GetauditBefore($id,$cabang);
             
         }else{
-            $list= $this->maudit->GetauditBefore($id);
+            $list= $this->maudit->GetauditBefore($id,$cabang);
 
         }
         
@@ -369,7 +375,8 @@ function __construct() {
 
     public function auditend_get()
     {
-            $list= $this->maudit->AuditEnd();
+        $cabang = $this->get('id_cabang');
+            $list= $this->maudit->AuditEnd($cabang);
         
         if ($list) {
             $this->response([
@@ -452,6 +459,34 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $jenisaudit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    //-----CARI-----///
+    public function cariJadwalAudit_get(){
+        $auditor= $this->get('auditor');
+        $tanggal_audit= $this->get('tanggal_audit');
+        $jenis_audit= $this->get('jenis_audit');
+        if ($auditor!= null && $tanggal_audit!=null && $jenis_audit!=null) {
+            $jadwal_audit = $this->maudit->carijadwalaudit($auditor,$tanggal_audit,$jenis_audit);
+        }elseif($auditor!=null&& $tanggal_audit==null&& $jenis_audit==null){
+            $jadwal_audit = $this->maudit->cariauditor($auditor);
+        }elseif ($auditor==null && $tanggal_audit!=null && $jenis_audit==null) {
+            $jadwal_audit = $this->maudit->caritanggalaudit($tanggal_audit);
+        }elseif ($auditor==null && $tanggal_audit==null && $jenis_audit!=null) {
+            $jadwal_audit = $this->maudit->carijenisaudit($jenis_audit);
+        }
+        if ($jadwal_audit) {
+            $this->response([
+                'status' => true,
+                'data' => $user
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
