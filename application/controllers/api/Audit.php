@@ -299,7 +299,7 @@ function __construct() {
     {
         $cabang= $this->get('id_cabang');
         if ($cabang===null) {
-            $tempunit= $this->mtempunit->GetToUnit();
+            $tempunit= null;
             
         }else{
             $tempunit= $this->mtempunit->GetToUnit($cabang);
