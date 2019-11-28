@@ -270,7 +270,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -288,7 +288,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
