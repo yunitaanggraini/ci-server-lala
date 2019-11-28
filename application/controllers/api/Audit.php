@@ -486,7 +486,7 @@ function __construct() {
         if ($jadwal_audit) {
             $this->response([
                 'status' => true,
-                'data' => $user
+                'data' => $jadwal_audit
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
