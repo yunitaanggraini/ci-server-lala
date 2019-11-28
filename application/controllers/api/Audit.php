@@ -275,6 +275,24 @@ function __construct() {
             
         }
     }
+    public function ListStatus_get()
+    {
+        $status = $this->get('status_unit');
+        $list= $this->maudit->GetListStatus($status);
+        
+        if ($list) {
+            $this->response([
+                'status' => true,
+                'data' => $list
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
 
 
     public function TempUnit_get()

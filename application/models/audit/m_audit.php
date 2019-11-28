@@ -94,6 +94,16 @@ class M_Audit extends CI_Model {
             return $result;
         }
     }
+    public function GetListStatus($status = null)
+    {
+            $this->db->select('unit.*, nama_cabang, nama_lokasi');
+            $this->db->from('unit');
+            $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->where("status_unit",$status);
+            $result = $this->db->get()->result();
+            return $result;
+    }
 
     public function GetauditBefore($id = null, $cabang=null)
     {
