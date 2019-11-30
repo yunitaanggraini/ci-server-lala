@@ -17,6 +17,12 @@ class M_login extends CI_Model {
         
     }
 
+    public function history($data)
+    {
+        $this->db->insert('history_login', $data);
+        return $this->db->affected_rows();
+    }
+
 }
 
 /* End of file M_login.php */

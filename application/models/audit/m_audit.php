@@ -76,6 +76,12 @@ class M_Audit extends CI_Model {
         $this->db->insert('unit', $data);
         return $this->db->affected_rows(); 
     }
+    public function EditList($id,$data)
+    {
+            $this->db->where("id_unit = '$id' OR no_mesin = '$id' OR no_rangka = '$id'" );
+            $this->db->update('unit', $data);
+        return $this->db->affected_rows(); 
+    }
     public function GetAuList($id = null)
     {
         if ($id === null) {

@@ -4,11 +4,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     require(APPPATH . 'libraries/REST_Controller.php');
     use Restserver\Libraries\REST_Controller;
     class Login extends REST_Controller {
-
+private $_tgl;
 function __construct() {
     parent::__construct();
     $this->load->model('master/M_login','mlogin');
-    
+    $timezone = time() + (60 * 60 * 8);
+    $this->_tgl = gmdate('Y-m-d H:i:s',$timezone);
     }
 
     public function index_get(){
@@ -33,8 +34,15 @@ function __construct() {
         if ($login) {
             foreach($login as $l){
                 $pass= $l->password;
+                $username = $l->username;
             }
             if ($pass == $password) {
+                $data=[
+                    'username' => $username,
+                    'tanggal' => $this->_tgl,
+                    'keterangan' => 'Logged In.'
+                ];
+                $history = $this->mlogin->history($data);
                 $this->response([
                     'status' => true,
                     'data' => $login

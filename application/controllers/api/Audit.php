@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     require(APPPATH . 'libraries/REST_Controller.php');
     use Restserver\Libraries\REST_Controller;
     class Audit extends REST_Controller {
-
+private $_tgl;
 function __construct() {
     parent::__construct();
     $this->load->model('audit/m_audit','maudit');
@@ -15,7 +15,7 @@ function __construct() {
     $this->load->model('audit/m_temppart','mtemppart');
     $this->load->model('master/m_cabang','mcabang');
     $this->load->model('master/m_jenis_audit','mjenisaudit');
-    
+    $this->_tgl = date('Y-m-d');
     }
 
     public function Audit_get(){
@@ -75,7 +75,9 @@ function __construct() {
                 'waktu' => $this->post('waktu', true),
                 'idjenis_audit' => $this->post('idjenis_audit', true),
                 'id_cabang' => $this->post('id_cabang', true),
-                'keterangan' => 'waiting'
+                'keterangan' => 'waiting',
+                'input_by' => $this->post('user',true),
+                'tanggal_input' => $this->_tgl
         ];
 
         if ($this->maudit->AddAudit($data)) {
@@ -100,7 +102,8 @@ function __construct() {
                 'idjenis_audit' => $this->put('idjenis_audit', true),
                 'id_lokasi' => $this->put('id_lokasi', true),
                 'id_cabang' => $this->put('id_cabang', true),
-                'keterangan' => 'waiting'
+                'keterangan' => 'waiting',
+                'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -247,6 +250,43 @@ function __construct() {
                 'status' => false,
                 'data' => "failed."
             ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+        
+    }
+    public function listaud_put()
+    {
+        $id= $this->put('id');
+        $data =[
+            'no_mesin' => $this->put('no_mesin'),
+            'no_rangka' => $this->put('no_rangka'),
+            'umur_unit' => $this->put('umur_unit'),
+            'id_lokasi' => $this->put('id_lokasi'),
+            'id_cabang' => $this->put('id_cabang'),
+            'aki' => $this->put('aki'),
+            'spion' => $this->put('spion'),
+            'tools' => $this->put('tools'),
+            'buku_service' => $this->put('buku_service'),
+            'helm' => $this->put('helm'),
+            'status_unit' => $this->put('status'),
+            'keterangan' => $this->put('keterangan'),
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->maudit->EditList($id,$data)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Data Audit has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
         }
         
     }

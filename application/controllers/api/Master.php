@@ -22,6 +22,7 @@ function __construct() {
     $this->load->model('master/m_count','mcount');
     $this->load->model('master/m_menu','mmenu');
     $this->load->model('master/m_sub_menu','msubmenu');
+    $this->_tgl = date('Y-m-d');
     }
 
     public function User_get(){
@@ -119,6 +120,8 @@ function __construct() {
                 'id_lokasi' => $this->post('id_lokasi',true),
                 'id_cabang' => $this->post('id_cabang',true),
                 'status' => 'Aktif',
+                'input_by' => $this->post('user',true),
+                'tanggal_input' => $this->_tgl
         ];
     
             if ($this->muser->AddUser($data)>0) {
@@ -153,7 +156,9 @@ function __construct() {
                 'id_perusahaan' => $this->put('id_perusahaan',true),
                 'id_lokasi' => $this->put('id_lokasi',true),
                 'id_cabang' => $this->put('id_cabang',true),
-                'status' => $this->put('status',true)
+                'status' => $this->put('status',true),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -250,7 +255,9 @@ function __construct() {
     {
         $data=[
             'id_usergroup' => $this->post('id_usergroup',true),
-                'user_group' => $this->post('user_group', true),
+            'user_group' => $this->post('user_group', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
         ];
 
         if ($this->musergroup->AddUsergroup($data)) {
@@ -270,6 +277,8 @@ function __construct() {
         $id =$this->put('id');
         $data=[
                 'user_group' => $this->put('user_group', true),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -361,7 +370,9 @@ function __construct() {
     {
         $data=[
             'id_lokasi' => $this->post('id_lokasi',true),
-                'nama_lokasi' => $this->post('nama_lokasi', true),
+            'nama_lokasi' => $this->post('nama_lokasi', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
         ];
 
         if ($this->mlokasi->AddLokasi($data)) {
@@ -383,6 +394,8 @@ function __construct() {
 
         $data=[
                 'nama_lokasi' => $this->put('nama_lokasi', true),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -504,7 +517,9 @@ function __construct() {
     {
         $data=[
             'idjenis_inventory' => $this->post('idjenis_inventory',true),
-                'jenis_inventory' => $this->post('jenis_inventory', true),
+            'jenis_inventory' => $this->post('jenis_inventory', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
         ];
 
         if ($this->mjenisinv->AddJenisinv($data)) {
@@ -526,6 +541,8 @@ function __construct() {
 
         $data=[
                 'jenis_inventory' => $this->put('jenis_inventory', true),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -623,7 +640,9 @@ function __construct() {
     {
         $data=[
             'idjenis_audit' => $this->post('idjenis_audit',true),
-                'jenis_audit' => $this->post('jenis_audit', true),
+            'jenis_audit' => $this->post('jenis_audit', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
         ];
 
         if ($this->mjenisaudit->AddJenisaudit($data)>0) {
@@ -644,6 +663,8 @@ function __construct() {
 
         $data=[
                 'jenis_audit' => $this->put('jenis_audit', true),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -759,7 +780,9 @@ function __construct() {
     {
         $data=[
             'id_vendor' => $this->post('id_vendor',true),
-                'nama_vendor' => $this->post('nama_vendor', true),
+            'nama_vendor' => $this->post('nama_vendor', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
         ];
 
         if ($this->mvendor->Addvendor($data)) {
@@ -780,6 +803,8 @@ function __construct() {
 
         $data=[
                 'nama_vendor' => $this->put('nama_vendor'),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -895,7 +920,9 @@ function __construct() {
     {
         $data=[
             'id_perusahaan' => $this->post('id_perusahaan',true),
-                'nama_perusahaan' => $this->post('nama_perusahaan', true),
+            'nama_perusahaan' => $this->post('nama_perusahaan', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
         ];
 
         if ($this->mperusahaan->AddPerusahaan($data)) {
@@ -916,6 +943,8 @@ function __construct() {
 
         $data=[
             'nama_perusahaan' => $this->put('nama_perusahaan', true),
+            'edit_by' => $this->post('user',true),
+            'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -1013,7 +1042,9 @@ function __construct() {
     {
         $data=[
             'id_cabang' => $this->post('id_cabang',true),
-                'nama_cabang' => $this->post('nama_cabang', true),
+            'nama_cabang' => $this->post('nama_cabang', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
         ];
 
         if ($this->mcabang->AddCabang($data)) {
@@ -1034,6 +1065,8 @@ function __construct() {
 
         $data=[
             'nama_cabang' => $this->put('nama_cabang', true),
+            'edit_by' => $this->post('user',true),
+            'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -1135,7 +1168,9 @@ function __construct() {
         $data=[
                 'idsub_inventory'   => $this->post('idsub_inventory',true),
                 'sub_inventory'     => $this->post('sub_inventory', true),
-                'idjenis_inventory' => $this->post('idjenis_inventory', true)
+                'idjenis_inventory' => $this->post('idjenis_inventory', true),
+                'input_by' => $this->post('user',true),
+                'tanggal_input' => $this->_tgl
         ];
 
         if ($this->msubinv->AddSubInv($data)) {
@@ -1157,7 +1192,9 @@ function __construct() {
 
         $data=[
             'sub_inventory' => $this->put('sub_inventory', true),
-            'idjenis_inventory' => $this->put('idjenis_inventory', true)
+            'idjenis_inventory' => $this->put('idjenis_inventory', true),
+            'edit_by' => $this->post('user',true),
+            'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -1273,7 +1310,9 @@ function __construct() {
     {
         $data=[
             'idstatus_inventory' => $this->post('idstatus_inventory',true),
-                'status_inventory' => $this->post('status_inventory', true),
+            'status_inventory' => $this->post('status_inventory', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
         ];
 
         if ($this->mstatusinv->AddStatusInv($data)) {
@@ -1294,6 +1333,8 @@ function __construct() {
 
         $data=[
             'status_inventory' => $this->put('status_inventory', true),
+            'edit_by' => $this->post('user',true),
+            'tanggal_edit' => $this->_tgl
         ];
         // var_dump($this->post());die;
         if ($id===null) {
