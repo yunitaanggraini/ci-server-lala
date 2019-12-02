@@ -381,6 +381,28 @@ function __construct() {
             
         }
     }
+    public function CariUnit_get()
+    {
+        $id= $this->get('id');
+        if ($id===null) {
+            $tempunit= null;
+            
+        }else{
+            $tempunit= $this->mtempunit->GetCariUnit($id);
+        }
+        if ($tempunit!=null) {
+            $this->response([
+                'status' => true,
+                'data' => $tempunit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
 
     public function TempPart_get()
     {
