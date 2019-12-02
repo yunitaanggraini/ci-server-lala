@@ -59,4 +59,15 @@ class M_Count extends CI_Model {
         }
     }
 
+    public function CountJadwalAudit()
+    {
+        $count =$this->db->get('jadwal_audit');
+
+        if ($count->num_rows()>0) {
+            return $count->num_rows();
+        } else {
+            return 0;
+        }
+    }
+
 }

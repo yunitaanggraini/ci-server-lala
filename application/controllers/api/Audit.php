@@ -15,6 +15,7 @@ function __construct() {
     $this->load->model('audit/m_temppart','mtemppart');
     $this->load->model('master/m_cabang','mcabang');
     $this->load->model('master/m_jenis_audit','mjenisaudit');
+    $this->load->model('master/m_count','mcount');
     $this->_tgl = date('Y-m-d');
     }
 
@@ -48,19 +49,19 @@ function __construct() {
         if ($id===null) {
             $this->response([
                 'status' => false,
-                'message' => 'need id'
+                'data' => 'need id'
             ], REST_Controller::HTTP_BAD_REQUEST);
         }else{
             if ($this->maudit->delAudit($id)) {
                 $this->response([
                     'status' => true,
                     'id' => $id,
-                    'message'=> 'deleted.'
+                    'data'=> 'deleted.'
                 ], REST_Controller::HTTP_NO_CONTENT);
             }else{
                 $this->response([
                     'status' => false,
-                    'message' => 'ID not found.'
+                    'data' => 'ID not found.'
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
         }
@@ -170,7 +171,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -195,7 +196,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -353,7 +354,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -375,7 +376,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -399,7 +400,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -471,7 +472,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -496,7 +497,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -521,7 +522,7 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
@@ -549,7 +550,25 @@ function __construct() {
         }else{
             $this->response([
                 'status' => false,
-                'message' => 'Data not found.'
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Jadwalauditcount_get()
+    {
+        $jadwalaudit= $this->mcount->Countjadwalaudit();
+
+        if ($jadwalaudit) {
+            $this->response([
+                'status' => true,
+                'data' => $jadwalaudit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
         }
