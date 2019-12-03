@@ -11,6 +11,8 @@ class M_Audit extends CI_Model {
             $this->db->from('jadwal_audit');
             $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
             $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->order_by('keterangan', 'asc');
+            
             
             $result = $this->db->get()->result();
             return $result;              
@@ -19,6 +21,9 @@ class M_Audit extends CI_Model {
             $this->db->from('jadwal_audit');
             $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
             $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->order_by('keterangan', 'asc');
+            $this->db->where('idjadwal_audit', $id);
+            
             
             $result = $this->db->get()->result();
             return $result;

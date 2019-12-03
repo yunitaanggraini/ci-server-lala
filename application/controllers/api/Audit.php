@@ -384,11 +384,12 @@ function __construct() {
     public function CariUnit_get()
     {
         $id= $this->get('id');
+        $cabang= $this->get('id_cabang');
         if ($id===null) {
             $tempunit= null;
             
         }else{
-            $tempunit= $this->mtempunit->GetCariUnit($id);
+            $tempunit= $this->mtempunit->GetCariUnit($id,$cabang);
         }
         if ($tempunit!=null) {
             $this->response([

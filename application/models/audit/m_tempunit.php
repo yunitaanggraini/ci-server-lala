@@ -53,7 +53,7 @@ class M_TempUnit extends CI_Model {
             return $result;
         }
     }
-    public function getCariUnit($id =null)
+    public function getCariUnit($id =null, $cabang = null)
     {
         if ($id === null) {
             $this->db->select('temp_unit.*, nama_lokasi,nama_cabang');
@@ -69,7 +69,7 @@ class M_TempUnit extends CI_Model {
             $this->db->from('temp_unit');
             $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
             $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->like("nama_lokasi = '$id' OR nama_cabang= '$id' OR no_mesin='$id' OR no_rangka='$id");
+            $this->db->where("nama_lokasi LIKE '%$id%' OR nama_cabang LIKE '%$id%' OR no_mesin LIKE '%$id%' OR no_rangka LIKE '%$id%' AND temp_unit.id_cabang='$cabang'");
             
             $result = $this->db->get()->result();
 

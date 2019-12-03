@@ -48,6 +48,68 @@ function __construct() {
             
         }
     }
+    public function Userpass_get(){
+        $id= $this->get('id');
+        $pass =$this->get('password',true);
+        $iv_key = 'honda12345';
+        $encrypt_method = "AES-256-CBC";
+        $key = hash('sha256',$pass);
+        $iv = substr(hash('sha256', $iv_key), 0, 16);
+        $output = openssl_encrypt($pass, $encrypt_method, $key, 0, $iv);
+        $password = base64_encode($output);
+        
+        if ($id===null) {
+            $user= null;
+            
+        }else{
+            $user= $this->muser->GetUserPass($id,$password);
+
+        }
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function Userpass_put(){
+        $id= $this->put('id');
+        $pass =$this->put('password',true);
+        $iv_key = 'honda12345';
+        $encrypt_method = "AES-256-CBC";
+        $key = hash('sha256',$pass);
+        $iv = substr(hash('sha256', $iv_key), 0, 16);
+        $output = openssl_encrypt($pass, $encrypt_method, $key, 0, $iv);
+        $password = base64_encode($output);
+        $data =[
+            'password' => $password
+        ];
+        if ($id===null) {
+            $user= null;
+            
+        }else{
+            $user= $this->muser->editUserPass($id,$data);
+
+        }
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
     public function cariUser_get(){
         $username= $this->get('username');
         $nama= $this->get('nama');
