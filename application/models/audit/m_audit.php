@@ -34,6 +34,7 @@ class M_Audit extends CI_Model {
         $this->db->insert('jadwal_audit', $data);
         return $this->db->affected_rows();  
     }
+    
     public function editAudit($data,$id)
     {
         $this->db->where('idjadwal_audit', $id);

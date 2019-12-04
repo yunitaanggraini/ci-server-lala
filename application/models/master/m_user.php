@@ -107,7 +107,7 @@ class M_user extends CI_Model {
         $this->db->update('user', $data);  
         return $this->db->affected_rows();
     }
-    public function editUserPass($data,$nik)
+    public function editUserPass($nik,$data)
     {
         $this->db->where('nik', $nik);
         $this->db->update('user', $data);  

@@ -32,6 +32,12 @@ class M_Unit extends CI_Model {
         
     }
 
+    public function addUnitReady($data)
+    {
+        $this->db->insert('unit_ready', $data);
+        return $this->db->affected_rows();  
+    }
+
 }
 
 /* End of file M_Unit.php */

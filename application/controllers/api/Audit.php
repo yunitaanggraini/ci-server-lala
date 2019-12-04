@@ -597,6 +597,36 @@ function __construct() {
         }
     }
 
+    public function unitready_post()
+    {
+        $id = $this->post('part_number');
+        $data=[
+            'part_number' => $this->post('part_number'),
+            'no_mesin' => $this->post('no_mesin'),
+            'no_rangka' => $this->post('no_rangka'),
+            'keterangan' => $this->post('keterangan'),
+            'kondisi' => $this->post('kondisi'),
+            'penanggung_jawab' => $this->post('penanggung_jawab'),
+        ];
+        if ($id===null) {
+            $postunit = null;
+        }else{
+            $postunit = $this->munit->addUnitReady($data);
+        }
+
+        if ($postunit) {
+            $this->response([
+                'status' => true,
+                'data' => $postunit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "Failed to post"
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
 }
 /** End of file Audit.php **/
  ?>
