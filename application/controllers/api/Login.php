@@ -48,15 +48,21 @@ function __construct() {
                     'data' => $login
                 ], REST_Controller::HTTP_OK);
             }else{
+                $data=[
+                    'username' => $username,
+                    'tanggal' => $this->_tgl,
+                    'keterangan' => 'Failed Login.'
+                ];
+                $history = $this->mlogin->history($data);
                 $this->response([
                     'status' => false,
-                    'data' => 'Wrong Password. ',
+                    'data' => 'Username Or Password Invalid. ',
                 ], REST_Controller::HTTP_OK);
             }
         }else {
             $this->response([
                 'status' => false,
-                'data' => 'Username not found.'
+                'data' => 'Username Or Password Invalid.'
             ], REST_Controller::HTTP_OK);
         }
     }

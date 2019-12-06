@@ -106,13 +106,14 @@ class M_Audit extends CI_Model {
             return $result;
         }
     }
-    public function GetListStatus($status = null)
+    public function GetListStatus($status = null,$cabang = null)
     {
             $this->db->select('unit.*, nama_cabang, nama_lokasi');
             $this->db->from('unit');
             $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
             $this->db->like("status_unit",$status);
+            $this->db->like("id_cabang",$cabang);
             $result = $this->db->get()->result();
             return $result;
     }
@@ -142,7 +143,7 @@ class M_Audit extends CI_Model {
         $this->db->query($query);
         $query2 = "
             UPDATE unit 
-            SET status_unit = 'Tidak ditemukan'
+            SET status_unit = 'Belum ditemukan'
             WHERE status_unit is null AND unit.id_cabang = '$cabang'
         ";
         $this->db->query($query2);

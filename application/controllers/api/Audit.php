@@ -240,6 +240,9 @@ function __construct() {
             'helm' => $this->post('helm'),
             'status_unit' => $this->post('status'),
             'keterangan' => $this->post('keterangan'),
+            'is_ready' => $this->post('is_ready'),
+            'audit_by' => $this->post('user',true),
+            'tanggal_audit' => $this->_tgl
         ];
         if ($this->maudit->AddList($data)) {
             $this->response([
@@ -270,6 +273,9 @@ function __construct() {
             'helm' => $this->put('helm'),
             'status_unit' => $this->put('status'),
             'keterangan' => $this->put('keterangan'),
+            'is_ready' => $this->put('is_ready'),
+            'edit_by' => $this->post('user',true),
+            'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -319,7 +325,8 @@ function __construct() {
     public function ListStatus_get()
     {
         $status = $this->get('status_unit');
-        $list= $this->maudit->GetListStatus($status);
+        $cabang = $this->get('id_cabang');
+        $list= $this->maudit->GetListStatus($status,$cabang);
         
         if ($list) {
             $this->response([
