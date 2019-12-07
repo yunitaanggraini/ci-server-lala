@@ -94,3 +94,28 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+$db['master'] = array(
+	'dsn'	=> '',
+	'hostname' => '168.168.0.113',
+	'port' => '1433',
+	'username' => 'sa',
+	'password' => 'Jogja123',
+	'database' => 'SIMANDE',
+	'dbdriver' => 'sqlsrv',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'autoinit' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+

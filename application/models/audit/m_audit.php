@@ -88,13 +88,15 @@ class M_Audit extends CI_Model {
             $this->db->update('unit', $data);
         return $this->db->affected_rows(); 
     }
-    public function GetAuList($id = null)
+    public function GetAuList($id = null,$cabang= null)
     {
         if ($id === null) {
             $this->db->select('unit.*, nama_cabang, nama_lokasi');
             $this->db->from('unit');
             $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->where('unit.id_cabang', $cabang);
+            
             return $this->db->get()->result();
         }else{
             $this->db->select('unit.*, nama_cabang, nama_lokasi');
@@ -102,6 +104,8 @@ class M_Audit extends CI_Model {
             $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
             $this->db->where("id_unit = '$id' OR no_mesin = '$id' OR no_rangka = '$id'" );
+            $this->db->where('unit.id_cabang', $cabang);
+
             $result = $this->db->get()->result();
             return $result;
         }
@@ -112,8 +116,8 @@ class M_Audit extends CI_Model {
             $this->db->from('unit');
             $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->like("status_unit",$status);
-            $this->db->like("id_cabang",$cabang);
+            $this->db->where("status_unit",$status);
+            $this->db->like("unit.id_cabang",$cabang);
             $result = $this->db->get()->result();
             return $result;
     }

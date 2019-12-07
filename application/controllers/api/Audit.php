@@ -301,12 +301,12 @@ function __construct() {
     public function List_get()
     {
         $id = $this->get('id');
+        $cabang = $this->get('id_cabang');
         if ($id=== null) {
-            $list= $this->maudit->GetAuList();
+            $list= $this->maudit->GetAuList(null,$cabang);
             
         }else{
-            $list= $this->maudit->GetAuList($id);
-
+            $list= $this->maudit->GetAuList($id,$cabang);
         }
         
         if ($list) {
@@ -632,6 +632,45 @@ function __construct() {
                 'data' => "Failed to post"
             ], REST_Controller::HTTP_OK);
         }
+    }
+    public function dataunit_get()
+    {
+        $list =$this->mtempunit->getTempUnit();
+       if ($list!=false) {
+        $this->response([
+            'status' => false,
+            'data' => "Already Donwloaded"
+        ], REST_Controller::HTTP_OK);
+       }else{
+           $postunit = $this->mtempunit->getDataUnit();
+           $i=0;
+           foreach ($postunit as $res) {
+                //    var_dump($post['no_rangka']);
+               $i++;
+               $data =[
+                   'id_unit' => $i,
+                   'no_mesin' => $res['no_mesin'],
+                   'no_rangka' => $res['no_rangka'],
+                   'id_cabang' => $res['kd_dealer'],
+                   'id_lokasi' => $res['kd_gudang'],
+                   'kode_item' => $res['kd_item'],
+                   'type' => $res['sub_kategori'],
+                   'tahun' => $res['THN_PERAKITAN']
+               ];
+               $download = $this->mtempunit->addTempUnit($data);
+           }
+           if ($download) {
+               $this->response([
+                   'status' => true,
+                   'data' => "Data Downloaded"
+               ], REST_Controller::HTTP_OK);
+           }else{
+               $this->response([
+                   'status' => false,
+                   'data' => "Failed to post"
+               ], REST_Controller::HTTP_OK);
+           }
+       }
     }
 
 }
