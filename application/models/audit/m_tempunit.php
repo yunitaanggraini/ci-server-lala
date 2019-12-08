@@ -10,9 +10,9 @@ class M_TempUnit extends CI_Model {
         parent::__construct();
         $this->db2 = $this->load->database('master',TRUE);
     }
-    public function getDataUnit()
+    public function getDataUnit($cabang)
     {
-        $kd_dealer = 'T13';
+        $kd_dealer = $cabang;
         // $query = "
                     // SELECT a.no_mesin, a.no_rangka, a.kd_item, a.sub_kategori, a.kd_dealer, a.kd_gudang, b.THN_PERAKITAN, c.NAMA_GUDANG , C.ALAMAT as ALAMAT_GUDANG, d.ksu
                     // FROM TRANS_STOCKMOTOR a
