@@ -97,11 +97,11 @@ $db['default'] = array(
 
 $db['master'] = array(
 	'dsn'	=> '',
-	'hostname' => '168.168.0.113',
+	'hostname' => '54.254.137.45',
 	'port' => '1433',
-	'username' => 'sa',
-	'password' => 'Jogja123',
-	'database' => 'SIMANDE',
+	'username' => 'it_prog',
+	'password' => 'jogja123',
+	'database' => 'SIMANDE_LIVE',
 	'dbdriver' => 'sqlsrv',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

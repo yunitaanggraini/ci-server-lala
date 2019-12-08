@@ -26,14 +26,15 @@ class M_TempUnit extends CI_Model {
                 FROM TRANS_STOCKMOTOR a
                 LEFT JOIN TRANS_SJMASUK b ON b.NO_MESIN = a.NO_MESIN
                 LEFT JOIN (SELECT KD_DEALER, KD_GUDANG, NAMA_GUDANG, ALAMAT FROM MASTER_GUDANG WHERE JENIS_GUDANG LIKE '%Unit%' 
-                AND ROW_STATUS >=0 AND KD_DEALER='$kd_dealer') c ON c.KD_GUDANG= a.KD_GUDANG
+                AND ROW_STATUS >=0 AND KD_DEALER='$kd_dealer' AND defaults=1) c ON c.KD_GUDANG= a.KD_GUDANG
                 LEFT JOIN trans_terimasjmotor d on d.no_mesin = a.no_mesin and d.ROW_STATUS >=0 
                 WHERE a.STOCK_AKHIR >=1 and a.KD_DEALER = '$kd_dealer' and a.ROW_STATUS >=0 
-                ORDER BY THN_PERAKITAN, kd_item
+                ORDER BY a.no_mesin
 
         ";
         // $this->db2->limit(1);
         $result = $this->db2->query($query)->result_array();
+        var_dump($result);
         return $result;
     }
     public function addTempUnit($data)
