@@ -674,6 +674,28 @@ function __construct() {
        }
     }
 
+    public function CountDataUnit_get()
+    {
+        $status = $this->get('status');
+        if ($status===null) {
+            $statusUnit = $this->mcount->countDataUnit();
+        }else{
+            $statusUnit = $this->mcount->countDataUnit($status);
+        }
+
+        if ($statusUnit) {
+            $this->response([
+                'status' => true,
+                'data' => $statusUnit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "Failed to post"
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
 }
 /** End of file Audit.php **/
  ?>
