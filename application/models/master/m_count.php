@@ -70,7 +70,7 @@ class M_Count extends CI_Model {
         }
     }
 
-    public function CountDataUnit($status)
+    public function CountDataUnit($status=null)
     {
         if ($status===null) {
             $count =$this->db->get('unit');

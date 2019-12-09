@@ -34,7 +34,6 @@ class M_TempUnit extends CI_Model {
         ";
         // $this->db2->limit(1);
         $result = $this->db2->query($query)->result_array();
-        var_dump($result);
         return $result;
     }
     public function addTempUnit($data)
@@ -73,20 +72,20 @@ class M_TempUnit extends CI_Model {
     public function getToUnit($cabang =null)
     {
         if ($cabang === null) {
-            $this->db->select('temp_unit.*, nama_lokasi,nama_cabang');
-            $this->db->from('temp_unit');
-            $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->select('a.id_unit,a.no_mesin, a.no_rangka, a.tahun, a.type, a.kode_item, a.id_cabang, a.id_lokasi , b.nama_lokasi, c.nama_cabang');
+            $this->db->from('temp_unit a');
+            $this->db->join('lokasi b', 'a.id_lokasi = b.id_lokasi', 'left');
+            $this->db->join('cabang c', 'a.id_cabang = c.id_cabang', 'left');
              
             $result = $this->db->get()->result();
 
             return $result;
         }else {
-            $this->db->select('temp_unit.*, nama_lokasi,nama_cabang');
-            $this->db->from('temp_unit');
-            $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->where('temp_unit.id_cabang', $cabang);
+            $this->db->select('a.id_unit,a.no_mesin, a.no_rangka, a.tahun, a.type, a.kode_item, a.id_cabang, a.id_lokasi , b.nama_lokasi, c.nama_cabang');
+            $this->db->from('temp_unit a');
+            $this->db->join('lokasi b', 'a.id_lokasi = b.id_lokasi', 'left');
+            $this->db->join('cabang c', 'a.id_cabang = c.id_cabang', 'left');
+            $this->db->where('a.id_cabang', $cabang);
             
             $result = $this->db->get()->result();
 
@@ -96,20 +95,20 @@ class M_TempUnit extends CI_Model {
     public function getCariUnit($id =null, $cabang = null)
     {
         if ($id === null) {
-            $this->db->select('temp_unit.*, nama_lokasi,nama_cabang');
-            $this->db->from('temp_unit');
-            $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->select('a.id_unit,a.no_mesin, a.no_rangka, a.tahun, a.type, a.kode_item, a.id_cabang, a.id_lokasi , b.nama_lokasi, c.nama_cabang');
+            $this->db->from('temp_unit a');
+            $this->db->join('lokasi b', 'a.id_lokasi = b.id_lokasi', 'left');
+            $this->db->join('cabang c', 'a.id_cabang = c.id_cabang', 'left');
              
             $result = $this->db->get()->result();
 
             return $result;
         }else {
-            $this->db->select('temp_unit.*, nama_lokasi,nama_cabang');
-            $this->db->from('temp_unit');
-            $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->where("nama_lokasi LIKE '%$id%' OR nama_cabang LIKE '%$id%' OR no_mesin LIKE '%$id%' OR no_rangka LIKE '%$id%' AND temp_unit.id_cabang='$cabang'");
+            $this->db->select('a.id_unit,a.no_mesin, a.no_rangka, a.tahun, a.type, a.kode_item, a.id_cabang, a.id_lokasi , b.nama_lokasi, c.nama_cabang');
+            $this->db->from('temp_unit a');
+            $this->db->join('lokasi b', 'a.id_lokasi = b.id_lokasi', 'left');
+            $this->db->join('cabang c', 'a.id_cabang = c.id_cabang', 'left');
+            $this->db->where("b.nama_lokasi LIKE '%$id%' OR c.nama_cabang LIKE '%$id%' OR a.no_mesin LIKE '%$id%' OR a.no_rangka LIKE '%$id%' AND a.id_cabang='$cabang'");
             
             $result = $this->db->get()->result();
 
