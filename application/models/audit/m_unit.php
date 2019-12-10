@@ -31,6 +31,24 @@ class M_Unit extends CI_Model {
         }
         
     }
+    public function getUnitReady($id = null, $cabang= null)
+    {
+        if ($id===null) {
+            $this->db->select('a.no_mesin, a.no_rangka, a.part_number, a.kondisi, a.keterangan, a.penanggung_jawab');
+            $this->db->from('unit_ready a');
+            
+            $this->db->where('a.id_cabang', $cabang);
+            $result = $this->db->get()->result();
+            return $result;
+        }else{
+            $this->db->select('a.no_mesin, a.no_rangka, a.part_number, a.kondisi, a.keterangan, a.penanggung_jawab');
+            $this->db->from('unit_ready a');
+            $this->db->where('a.id_cabang', $cabang);
+            $this->db->where("a.no_mesin LIKE '%$id%' OR a.no_rangka LIKE '%$id%' OR a.part_number LIKE '%$id%'");
+            $result = $this->db->get()->result();
+            return $result;
+        }
+    }
 
     public function addUnitReady($data)
     {

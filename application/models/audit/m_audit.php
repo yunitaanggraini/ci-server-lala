@@ -103,7 +103,7 @@ class M_Audit extends CI_Model {
             $this->db->from('unit');
             $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->where("id_unit = '$id' OR no_mesin = '$id' OR no_rangka = '$id'" );
+            $this->db->where(" no_mesin = '$id' OR no_rangka = '$id'" );
             $this->db->where('unit.id_cabang', $cabang);
 
             $result = $this->db->get()->result();
@@ -201,6 +201,9 @@ class M_Audit extends CI_Model {
             return $result;
         
     }
+
     
-}}
+
+}
+}
 ?>

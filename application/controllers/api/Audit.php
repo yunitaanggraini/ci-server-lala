@@ -231,8 +231,11 @@ function __construct() {
             'no_mesin' => $this->post('no_mesin'),
             'no_rangka' => $this->post('no_rangka'),
             'umur_unit' => $this->post('umur_unit'),
+            'tahun' => $this->put('tahun'),
             'id_lokasi' => $this->post('id_lokasi'),
             'id_cabang' => $this->post('id_cabang'),
+            'type' => $this->post('type'),
+            'kode_item' => $this->post('kode_item'),
             'aki' => $this->post('aki'),
             'spion' => $this->post('spion'),
             'tools' => $this->post('tools'),
@@ -242,6 +245,7 @@ function __construct() {
             'keterangan' => $this->post('keterangan'),
             'is_ready' => $this->post('is_ready'),
             'audit_by' => $this->post('user',true),
+            'foto' => $this->post('foto'),
             'tanggal_audit' => $this->_tgl
         ];
         if ($this->maudit->AddList($data)) {
@@ -264,6 +268,7 @@ function __construct() {
             'no_mesin' => $this->put('no_mesin'),
             'no_rangka' => $this->put('no_rangka'),
             'umur_unit' => $this->put('umur_unit'),
+            'tahun' => $this->put('tahun'),
             'id_lokasi' => $this->put('id_lokasi'),
             'id_cabang' => $this->put('id_cabang'),
             'aki' => $this->put('aki'),
@@ -611,6 +616,8 @@ function __construct() {
             'part_number' => $this->post('part_number'),
             'no_mesin' => $this->post('no_mesin'),
             'no_rangka' => $this->post('no_rangka'),
+            'id_cabang' => $this->post('id_cabang'),
+            'id_lokasi' => $this->post('id_lokasi'),
             'keterangan' => $this->post('keterangan'),
             'kondisi' => $this->post('kondisi'),
             'penanggung_jawab' => $this->post('penanggung_jawab'),
@@ -692,6 +699,28 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "Failed to post"
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+    public function readyUnit_get()
+    {
+        $id = $this->get('id');
+        $cabang = $this->get('id_cabang');
+        if ($id===null) {
+            $readyUnit = $this->munit->getUnitReady(null,$cabang);
+        }else{
+            $readyUnit = $this->munit->getUnitReady($id, $cabang);
+        }
+
+        if ($readyUnit) {
+            $this->response([
+                'status' => true,
+                'data' => $readyUnit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "data not found"
             ], REST_Controller::HTTP_OK);
         }
     }

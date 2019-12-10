@@ -29,7 +29,7 @@ class M_TempUnit extends CI_Model {
                 AND ROW_STATUS >=0 AND KD_DEALER='$kd_dealer' AND defaults=1) c ON c.KD_GUDANG= a.KD_GUDANG
                 LEFT JOIN trans_terimasjmotor d on d.no_mesin = a.no_mesin and d.ROW_STATUS >=0 
                 WHERE a.STOCK_AKHIR >=1 and a.KD_DEALER = '$kd_dealer' and a.ROW_STATUS >=0 
-                ORDER BY a.no_mesin
+                ORDER BY a.THN_PERAKITAN
 
         ";
         // $this->db2->limit(1);
