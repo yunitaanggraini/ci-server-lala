@@ -771,10 +771,10 @@ function __construct() {
         $id= $this->get('id');
         
         if ($id===null) {
-            $vendor= $this->mvendor->GetVendor();
+            $vendor= $this->mvendor->GetVendorPagination();
             
         }else{
-            $vendor= $this->mvendor->GetVendor($id);
+            $vendor= $this->mvendor->GetVendorPagination($id);
 
         }
         if ($vendor) {

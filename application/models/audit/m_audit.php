@@ -29,6 +29,31 @@ class M_Audit extends CI_Model {
             return $result;
         }
     }
+    public function cariAudit($id=null)
+    {
+        if ($id===null) {
+            $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
+            $this->db->from('jadwal_audit');
+            $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
+            $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->order_by('keterangan', 'asc');
+            
+            
+            $result = $this->db->get()->result();
+            return $result;              
+        }else {
+            $this->db->select('a.*, jenis_audit, nama_cabang');
+            $this->db->from('jadwal_audit a');
+            $this->db->join('jenis_audit', 'a.idjenis_audit = jenis_audit.idjenis_audit', 'left');
+            $this->db->join('cabang', 'a.id_cabang = cabang.id_cabang', 'left');
+            $this->db->order_by('keterangan', 'asc');
+            $this->db->where(" a.idjadwal_audit LIKE '%$id%' OR jenis_audit LIKE '%$id%' OR a.auditor LIKE '%$id%' OR nama_cabang  LIKE '%$id%'");
+            
+            
+            $result = $this->db->get()->result();
+            return $result;
+        }
+    }
     public function addAudit($data)
     {
         $this->db->insert('jadwal_audit', $data);
@@ -57,19 +82,19 @@ class M_Audit extends CI_Model {
     public function GetList($id = null, $cabang = null)
     {
         if ($id===null) {
-            $this->db->select('temp_unit.*, nama_cabang, nama_lokasi');
-            $this->db->from('temp_unit');
-            $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->select('a.id_unit, a.no_mesin, a.no_rangka, a.type, a.tahun, a.kode_item, a.id_cabang, a.id_lokasi, b.nama_cabang, c.nama_lokasi');
+            $this->db->from('temp_unit a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
             
             $result = $this->db->get()->result();
             return $result;   
         }else {
-            $this->db->select('temp_unit.*, nama_cabang, nama_lokasi');
-            $this->db->from('temp_unit');
-            $this->db->join('cabang', 'temp_unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->join('lokasi', 'temp_unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->where("no_mesin = '$id' OR no_rangka = '$id' AND temp_unit.id_cabang= '$cabang'" );
+            $this->db->select('a.id_unit, a.no_mesin, a.no_rangka, a.type, a.tahun, a.kode_item, a.id_cabang, a.id_lokasi, b.nama_cabang, c.nama_lokasi');
+            $this->db->from('temp_unit a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where("a.no_mesin = '$id' OR a.no_rangka = '$id' AND a.id_cabang= '$cabang'" );
             $result = $this->db->get()->result();
             return $result;
         }
@@ -84,27 +109,41 @@ class M_Audit extends CI_Model {
     }
     public function EditList($id,$data)
     {
-            $this->db->where("id_unit = '$id' OR no_mesin = '$id' OR no_rangka = '$id'" );
+            $this->db->where("no_mesin = '$id' OR no_rangka = '$id'" );
             $this->db->update('unit', $data);
         return $this->db->affected_rows(); 
     }
     public function GetAuList($id = null,$cabang= null)
     {
         if ($id === null) {
-            $this->db->select('unit.*, nama_cabang, nama_lokasi');
-            $this->db->from('unit');
-            $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->where('unit.id_cabang', $cabang);
+            $this->db->select('
+                a.id_unit, a.no_mesin, a.no_rangka, 
+                a.type, a.tahun, a.kode_item, a.umur_unit, 
+                a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
+                a.buku_service, a.aki, a.status_unit, 
+                b.nama_cabang, c.nama_lokasi
+        
+        ');
+            $this->db->from('unit a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where('a.id_cabang', $cabang);
             
             return $this->db->get()->result();
         }else{
-            $this->db->select('unit.*, nama_cabang, nama_lokasi');
-            $this->db->from('unit');
-            $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->where(" no_mesin = '$id' OR no_rangka = '$id'" );
-            $this->db->where('unit.id_cabang', $cabang);
+            $this->db->select('
+                a.id_unit, a.no_mesin, a.no_rangka, 
+                a.type, a.tahun, a.kode_item, a.umur_unit, 
+                a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
+                a.buku_service, a.aki, a.status_unit, 
+                b.nama_cabang, c.nama_lokasi
+        
+        ');
+            $this->db->from('unit a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where(" a.no_mesin = '$id' OR a.no_rangka = '$id'" );
+            $this->db->where('a.id_cabang', $cabang);
 
             $result = $this->db->get()->result();
             return $result;
@@ -112,12 +151,19 @@ class M_Audit extends CI_Model {
     }
     public function GetListStatus($status = null,$cabang = null)
     {
-            $this->db->select('unit.*, nama_cabang, nama_lokasi');
-            $this->db->from('unit');
-            $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->where("status_unit",$status);
-            $this->db->like("unit.id_cabang",$cabang);
+        $this->db->select('
+                a.id_unit, a.no_mesin, a.no_rangka, 
+                a.type, a.tahun, a.kode_item, a.umur_unit, 
+                a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
+                a.buku_service, a.aki, a.status_unit, 
+                b.nama_cabang, c.nama_lokasi
+        
+        ');
+        $this->db->from('unit a');
+        $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+        $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where("a.status_unit",$status);
+            $this->db->like("a.id_cabang",$cabang);
             $result = $this->db->get()->result();
             return $result;
     }
@@ -135,20 +181,20 @@ class M_Audit extends CI_Model {
         }
     }
     public function AuditEnd($cabang)
-    {
+    { 
         $query = "
-            INSERT INTO unit (id_unit, no_mesin, no_rangka, id_cabang, id_lokasi) 
-            SELECT id_unit, no_mesin, no_rangka,id_cabang, id_lokasi
-            FROM temp_unit 
-            WHERE temp_unit.no_rangka NOT IN (
+            INSERT INTO unit (id_unit, no_mesin, no_rangka, id_cabang, id_lokasi, type, kode_item, tahun) 
+            SELECT id_unit, no_mesin, no_rangka,id_cabang, id_lokasi, type, kode_item, tahun
+            FROM temp_unit a 
+            WHERE a.no_rangka NOT IN (
                 SELECT no_rangka FROM unit)
-                AND temp_unit.id_cabang='$cabang'
+                AND at.id_cabang='$cabang'
         ";
         $this->db->query($query);
         $query2 = "
-            UPDATE unit 
+            UPDATE unit a
             SET status_unit = 'Belum ditemukan'
-            WHERE status_unit is null AND unit.id_cabang = '$cabang'
+            WHERE status_unit is null AND a.id_cabang = '$cabang'
         ";
         $this->db->query($query2);
         return  $this->db->affected_rows();

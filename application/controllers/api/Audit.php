@@ -269,6 +269,8 @@ function __construct() {
             'no_rangka' => $this->put('no_rangka'),
             'umur_unit' => $this->put('umur_unit'),
             'tahun' => $this->put('tahun'),
+            'type' => $this->put('type'),
+            'kode_item' => $this->put('kode_item'),
             'id_lokasi' => $this->put('id_lokasi'),
             'id_cabang' => $this->put('id_cabang'),
             'aki' => $this->put('aki'),
@@ -278,7 +280,6 @@ function __construct() {
             'helm' => $this->put('helm'),
             'status_unit' => $this->put('status'),
             'keterangan' => $this->put('keterangan'),
-            'is_ready' => $this->put('is_ready'),
             'edit_by' => $this->post('user',true),
             'tanggal_edit' => $this->_tgl
         ];
@@ -407,6 +408,29 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $tempunit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function CariUnitNrfs_get()
+    {
+        $id= $this->get('id');
+        $cabang= $this->get('id_cabang');
+        if ($id===null) {
+            $unit= null;
+            
+        }else{
+            $unit= $this->munit->GetCariUnitNrfs($id,$cabang);
+        }
+        if ($unit!=null) {
+            $this->response([
+                'status' => true,
+                'data' => $unit
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
@@ -590,6 +614,29 @@ function __construct() {
             
         }
     }
+    // cari MOBILE
+    public function cariaudit_get()
+    {
+        $id= $this->get('id');
+        if ($id === null) {
+            $cari = $this->maudit->cariaudit();
+        }else{
+            $cari = $this->maudit->cariaudit($id);
+
+        }
+        if ($cari) {
+            $this->response([
+                'status' => true,
+                'data' => $cari
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
 
     public function Jadwalauditcount_get()
     {
@@ -716,6 +763,22 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $readyUnit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "data not found"
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+    public function countTempUnit_get()
+    {
+            $count = $this->mcount->countTempUnit();
+
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([

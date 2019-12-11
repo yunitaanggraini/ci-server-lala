@@ -92,5 +92,16 @@ class M_Count extends CI_Model {
             }
         }
     }
+    public function CountTempUnit()
+    {
+            $count =$this->db->get('temp_unit');
+
+            if ($count->num_rows()>0) {
+                return $count->num_rows();
+            } else {
+                return 0;
+            }
+        
+    }
 
 }

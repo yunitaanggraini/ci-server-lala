@@ -4,6 +4,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Vendor extends CI_Model {
 
+    public function getVendorPagination($id = null,$limit,$star)
+    {
+        if ($id === null) {
+            $result = $this->db->get('vendor',$limit,$start)->result();
+            return $result;  
+        }else{
+            $result = $this->db->get_where('vendor',['id_vendor' =>$id],$limit,$start)->result();
+            return $result;
+        }
+    }
+
     public function getVendor($id = null)
     {
         if ($id === null) {
