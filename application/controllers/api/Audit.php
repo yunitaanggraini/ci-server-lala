@@ -6,6 +6,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     use Restserver\Libraries\REST_Controller;
     class Audit extends REST_Controller {
 private $_tgl;
+public $ip_address;
+public $username;
+public $password;
+public $database;
 function __construct() {
     parent::__construct();
     $this->load->model('audit/m_audit','maudit');
@@ -17,6 +21,48 @@ function __construct() {
     $this->load->model('master/m_jenis_audit','mjenisaudit');
     $this->load->model('master/m_count','mcount');
     $this->_tgl = date('Y-m-d');
+    $this->load->model('config/m_config','mconfig');
+        $data = $this->mconfig->getUserConfig();
+        foreach ($data as $d ) {
+            $ip = $d->ip;
+            $ip2 = 'IPADDRESS';
+            $iv_key = 'honda12345';
+            $encrypt_method = "AES-256-CBC";
+            $key = hash('sha256',$ip2);
+            $iv = substr(hash('sha256', $iv_key), 0, 16);
+            $ip = base64_decode($ip);
+            $ip = openssl_decrypt($ip, $encrypt_method, $key, 0, $iv);
+
+            $uname = $d->username;
+            $uname2 = 'USERNAME';
+            $iv_key = 'honda12345';
+            $encrypt_method = "AES-256-CBC";
+            $key = hash('sha256',$uname2);
+            $iv = substr(hash('sha256', $iv_key), 0, 16);
+            $uname = base64_decode($uname);
+            $this->username = openssl_decrypt($uname, $encrypt_method, $key, 0, $iv);
+
+            $pass = $d->password;
+            $pass2 = 'PASSWORD';
+            $iv_key = 'honda12345';
+            $encrypt_method = "AES-256-CBC";
+            $key = hash('sha256',$pass2);
+            $iv = substr(hash('sha256', $iv_key), 0, 16);
+            $pass = base64_decode($pass);
+            $this->password = openssl_decrypt($pass, $encrypt_method, $key, 0, $iv);
+
+            $db = $d->db;
+            $db2 = 'DATABASE';
+            $iv_key = 'honda12345';
+            $encrypt_method = "AES-256-CBC";
+            $key = hash('sha256',$db2);
+            $iv = substr(hash('sha256', $iv_key), 0, 16);
+            $db = base64_decode($db);
+            $this->database = openssl_decrypt($db, $encrypt_method, $key, 0, $iv);
+        }
+        $config_app = db_master($ip,$this->username,$this->password, $this->database);
+        $this->load->model('audit/m_tempunit','mtempunit');
+        $this->mtempunit->app_db = $this->load->database($config_app,TRUE);
     }
 
     public function Audit_get(){
@@ -333,6 +379,26 @@ function __construct() {
         $status = $this->get('status_unit');
         $cabang = $this->get('id_cabang');
         $list= $this->maudit->GetListStatus($status,$cabang);
+        
+        if ($list) {
+            $this->response([
+                'status' => true,
+                'data' => $list
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function SearchStatus_get()
+    {
+        $id = $this->get('id');
+        $status = $this->get('status_unit');
+        $cabang = $this->get('id_cabang');
+        $list= $this->maudit->GetSearchStatus($id,$status,$cabang);
         
         if ($list) {
             $this->response([

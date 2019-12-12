@@ -3,12 +3,11 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_TempUnit extends CI_Model {
-
+    public $app_db;
     public $db2;
     public function __construct()
     {
         parent::__construct();
-        $this->db2 = $this->load->database('master',TRUE);
     }
     public function getDataUnit($cabang)
     {
@@ -38,11 +37,11 @@ class M_TempUnit extends CI_Model {
                 LEFT JOIN TRANS_SJMASUK b ON b.NO_MESIN = a.NO_MESIN
                 LEFT JOIN trans_terimasjmotor d on d.no_mesin = a.no_mesin and d.ROW_STATUS >=0 
                 WHERE a.STOCK_AKHIR >=1 and a.KD_DEALER = '$kd_dealer' and a.ROW_STATUS >=0 
-                ORDER BY a.THN_PERAKITAN
+                ORDER BY b.THN_PERAKITAN
 
         ";
         // $this->db2->limit(1);
-        $result = $this->db2->query($query)->result_array();
+        $result = $this->app_db->query($query)->result_array();
         return $result;
     }
     public function addTempUnit($data)

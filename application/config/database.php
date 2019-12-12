@@ -95,27 +95,27 @@ $db['default'] = array(
 	'save_queries' => TRUE
 );
 
-$db['master'] = array(
-	'dsn'	=> '',
-	'hostname' => '54.254.137.45',
-	'port' => '1433',
-	'username' => 'it_prog',
-	'password' => 'jogja123',
-	'database' => 'SIMANDE_LIVE',
-	'dbdriver' => 'sqlsrv',
-	'dbprefix' => '',
-	'pconnect' => FALSE,
-	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => FALSE,
-	'cachedir' => '',
-	'char_set' => 'utf8',
-	'dbcollat' => 'utf8_general_ci',
-	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
-	'autoinit' => FALSE,
-	'failover' => array(),
-	'save_queries' => TRUE
-);
+// $db['master'] = array(
+// 	'dsn'	=> '',
+// 	'hostname' => '54.254.137.45',
+// 	'port' => '1433',
+// 	'username' => 'it_prog',
+// 	'password' => 'jogja123',
+// 	'database' => 'SIMANDE_LIVE',
+// 	'dbdriver' => 'sqlsrv',
+// 	'dbprefix' => '',
+// 	'pconnect' => FALSE,
+// 	'db_debug' => (ENVIRONMENT !== 'production'),
+// 	'cache_on' => FALSE,
+// 	'cachedir' => '',
+// 	'char_set' => 'utf8',
+// 	'dbcollat' => 'utf8_general_ci',
+// 	'swap_pre' => '',
+// 	'encrypt' => FALSE,
+// 	'compress' => FALSE,
+// 	'stricton' => FALSE,
+// 	'autoinit' => FALSE,
+// 	'failover' => array(),
+// 	'save_queries' => TRUE
+// );
 

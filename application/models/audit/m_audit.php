@@ -167,6 +167,26 @@ class M_Audit extends CI_Model {
             $result = $this->db->get()->result();
             return $result;
     }
+    public function GetSearchStatus($id=null,$status = null,$cabang = null)
+    {
+        $this->db->select('
+                a.id_unit, a.no_mesin, a.no_rangka, 
+                a.type, a.tahun, a.kode_item, a.umur_unit, 
+                a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
+                a.buku_service, a.aki, a.status_unit, 
+                b.nama_cabang, c.nama_lokasi
+        
+        ');
+        $this->db->from('unit a');
+        $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+        $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+        $this->db->where("a.no_mesin LIKE '%$id%' OR a.no_rangka LIKE '%$id%' OR a.type LIKE '%$id%' OR a.tahun LIKE '%$id%' OR a.kode_item LIKE '%$id%'");
+        
+            $this->db->where("a.status_unit",$status);
+            $this->db->like("a.id_cabang",$cabang);
+            $result = $this->db->get()->result();
+            return $result;
+    }
 
     public function GetauditBefore($id = null, $cabang=null)
     {
