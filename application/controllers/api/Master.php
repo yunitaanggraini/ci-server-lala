@@ -27,9 +27,10 @@ function __construct() {
 
     public function User_get(){
         $id= $this->get('id');
+        $offset = $this->get('pages');
         
         if ($id===null) {
-            $user= $this->muser->GetUser();
+            $user= $this->muser->GetUser(null,$offset);
             
         }else{
             $user= $this->muser->GetUser($id);
@@ -383,9 +384,11 @@ function __construct() {
     public function Lokasi_get()
     {
         $id= $this->get('id');
+        $offset = $this->get('pages');
+        
         
         if ($id===null) {
-            $lokasi= $this->mlokasi->GetLokasi();
+            $lokasi= $this->mlokasi->GetLokasi(null,$offset);
             
         }else{
             $lokasi= $this->mlokasi->GetLokasi($id);
@@ -1031,12 +1034,13 @@ function __construct() {
     public function cabang_get()
     {
         $id= $this->get('id');
+        $offset = $this->get('pages');
         
         if ($id===null) {
-            $cabang= $this->mcabang->GetCabang();
+            $cabang= $this->mcabang->GetCabang(null, $offset);
             
         }else{
-            $cabang= $this->mcabang->GetCabang($id);
+            $cabang= $this->mcabang->GetCabang($id, $offset);
 
         }
         if ($cabang) {
@@ -1534,7 +1538,51 @@ function __construct() {
             
         }
     }
+    public function countuser_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $count= $this->mcount->countuser();
+        }
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
 
+
+        public function UserPagination_get()
+        {
+            //konfigurasi pagination
+        $config['base_url'] = site_url('master_data/user'); //site url
+        $config['total_rows'] =  $this->mcount->CountUser();//total row
+        $config['per_page'] = 5;  //show record per halaman
+        $config["uri_segment"] = 3;  // uri parameter
+        $choice = $config["total_rows"] / $config["per_page"];
+        $config["num_links"] = floor($choice);
+ 
+
+ 
+        $this->pagination->initialize($config);
+        $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+ 
+        //panggil function get_mahasiswa_list yang ada pada mmodel mahasiswa_model. 
+        $data['data'] = $this->muser->getUser($config["per_page"], $data['page']);           
+ 
+        $data['pagination'] = $this->pagination->create_links();
+ 
+        //load view mahasiswa view
+        $this->load->view('mahasiswa_view',$data);
+        }
 
 
 

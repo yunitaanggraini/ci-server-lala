@@ -3,6 +3,16 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Count extends CI_Model {
+    public function CountUser()
+    {
+        $count = $this->db->get('user');
+        
+        if ($count->num_rows()>0) {
+            return $count->num_rows();
+        }else {
+            return 0;
+        }
+    }
 
     public function CountUsergroup()
     {

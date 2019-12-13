@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_user extends CI_Model {
 
-    public function getUser($id=null)
+    public function getUser($id=null,$offset)
     {
         if ($id === null) {
             $this->db->select('user.*, user_group, nama_perusahaan, nama_cabang, nama_lokasi ');
@@ -13,6 +13,9 @@ class M_user extends CI_Model {
             $this->db->join('lokasi', 'user.id_lokasi = lokasi.id_lokasi', 'left');
             $this->db->join('cabang', 'user.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('user_group', 'user.id_usergroup = user_group.id_usergroup', 'left');
+            $this->db->limit(15);
+            $this->db->offset($offset);
+            
             
             
             $result = $this->db->get()->result();
@@ -26,7 +29,8 @@ class M_user extends CI_Model {
             $this->db->join('cabang', 'user.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('user_group', 'user.id_usergroup = user_group.id_usergroup', 'left');
             $this->db->where('nik', $id);
-            
+            $this->db->limit(15);
+            $this->db->offset($offset);
             
             
             $result = $this->db->get()->result();
@@ -62,7 +66,6 @@ class M_user extends CI_Model {
             $this->db->join('user_group', 'user.id_usergroup = user_group.id_usergroup', 'left');
             $this->db->like('username', $username);
             $this->db->like('nama', $nama);
-            
             $result = $this->db->get()->result();
 
             return $result;
@@ -120,6 +123,11 @@ class M_user extends CI_Model {
         $this->db->delete('user');
         return $this->db->affected_rows();
         
+    }
+
+    public function UserPagination($limit, $offset)
+    {
+       $limit = 'SELECT * FROM user ORDER BY 1 OFFSET 10 ROWS FETCH NEXT 15 ROWS ONLY';
     }
 
 }
