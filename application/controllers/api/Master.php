@@ -25,6 +25,7 @@ function __construct() {
     $this->_tgl = date('Y-m-d');
     }
 
+    //------------------------------------------------------------USER-----------------------------------------------------------------//
     public function User_get(){
         $id= $this->get('id');
         $offset = $this->get('pages');
@@ -49,6 +50,7 @@ function __construct() {
             
         }
     }
+
     public function Userpass_get(){
         $id= $this->get('id');
         $pass =$this->get('password',true);
@@ -79,6 +81,7 @@ function __construct() {
             
         }
     }
+
     public function Userpass_put(){
         $id= $this->put('id');
         $pass =$this->put('password',true);
@@ -109,57 +112,6 @@ function __construct() {
                 'message' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
-        }
-    }
-    public function cariUser_get(){
-        $username= $this->get('username');
-        $nama= $this->get('nama');
-        if ($username!=null && $nama !=null) {
-            $user= $this->muser->cariUser($username,$nama);
-            
-        }elseif($username!=null && $nama ==null){
-            $user= $this->muser->cariUser($username);
-            
-        }elseif ($username==null && $nama !=null) {
-            $user= $this->muser->cariUser(null,$nama);
-            
-        }
-        if ($user) {
-            $this->response([
-                'status' => true,
-                'data' => $user
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function User_delete()
-    {
-        $id= $this->delete('id');
-
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->muser->delUser($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
         }
     }
 
@@ -243,6 +195,82 @@ function __construct() {
         }
     }
 
+    public function User_delete()
+    {
+        $id= $this->delete('id');
+
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->muser->delUser($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function cariUser_get(){
+        $username= $this->get('username');
+        $nama= $this->get('nama');
+        if ($username!=null && $nama !=null) {
+            $user= $this->muser->cariUser($username,$nama);
+            
+        }elseif($username!=null && $nama ==null){
+            $user= $this->muser->cariUser($username);
+            
+        }elseif ($username==null && $nama !=null) {
+            $user= $this->muser->cariUser(null,$nama);
+            
+        }
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function countuser_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $user= $this->mcount->countuser();
+        }
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+
+    //-----------------------------------------------------USER GROUP---------------------------------------------------------------//
+
     public function Usergroup_get()
     {
         $id= $this->get('id');
@@ -264,53 +292,6 @@ function __construct() {
                 'message' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
-        }
-    }
-    public function cariUsergroup_get()
-    {
-        $id= $this->get('usergroup');
-        
-        if ($id===null) {
-            $usergroup= $this->musergroup->cariUsergroup();
-            
-        }else{
-            $usergroup= $this->musergroup->cariUsergroup($id);
-        }
-        if ($usergroup) {
-            $this->response([
-                'status' => true,
-                'data' => $usergroup
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function Usergroup_delete()
-    {
-        $id= $this->delete('id');
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->musergroup->delUsergroup($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
         }
     }
 
@@ -363,9 +344,61 @@ function __construct() {
         }
     }
 
+    public function Usergroup_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->musergroup->delUsergroup($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function cariUsergroup_get()
+    {
+        $id= $this->get('usergroup');
+        
+        if ($id===null) {
+            $usergroup= $this->musergroup->cariUsergroup();
+            
+        }else{
+            $usergroup= $this->musergroup->cariUsergroup($id);
+        }
+        if ($usergroup) {
+            $this->response([
+                'status' => true,
+                'data' => $usergroup
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
     public function Usergroupcount_get()
     {
-        $usergroup= $this->mcount->Countusergroup();
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $usergroup= $this->mcount->Countusergroup();
+        }
 
         if ($usergroup) {
             $this->response([
@@ -381,131 +414,7 @@ function __construct() {
         }
     }
 
-    public function Lokasi_get()
-    {
-        $id= $this->get('id');
-        $offset = $this->get('pages');
-        
-        
-        if ($id===null) {
-            $lokasi= $this->mlokasi->GetLokasi(null,$offset);
-            
-        }else{
-            $lokasi= $this->mlokasi->GetLokasi($id);
-
-        }
-        if ($lokasi) {
-            $this->response([
-                'status' => true,
-                'data' => $lokasi
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function Lokasi_delete()
-    {
-        $id= $this->delete('id');
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->mlokasi->dellokasi($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
-    public function Lokasi_post()
-    {
-        $data=[
-            'id_lokasi' => $this->post('id_lokasi',true),
-            'nama_lokasi' => $this->post('nama_lokasi', true),
-            'input_by' => $this->post('user',true),
-            'tanggal_input' => $this->_tgl
-        ];
-
-        if ($this->mlokasi->AddLokasi($data)) {
-            $this->response([
-                'status' => true,
-                'data' => "Lokasi has been created"
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-
-    public function Lokasi_put()
-    {
-        $id =$this->put('id');
-
-        $data=[
-                'nama_lokasi' => $this->put('nama_lokasi', true),
-                'edit_by' => $this->post('user',true),
-                'tanggal_edit' => $this->_tgl
-        ];
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else {
-            if ($this->mlokasi->editLokasi($data, $id)) {
-                $this->response([
-                    'status' => true,
-                    'data' => "Lokasi has been modified"
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
-
-    public function cariLokasi_get()
-    {
-        $id= $this->get('lokasi');
-        
-        if ($id===null) {
-            $lokasi= $this->mlokasi->cariLokasi();
-            
-        }else{
-            $lokasi= $this->mlokasi->cariLokasi($id);
-        }
-        if ($lokasi) {
-            $this->response([
-                'status' => true,
-                'data' => $lokasi
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
+    //-------------------------------------------------------JENIS INVENTORY----------------------------------------------------------//
     public function Jenisinv_get()
     {
         $id= $this->get('id');
@@ -531,53 +440,6 @@ function __construct() {
         }
     }
 
-    public function cariJenisInv_get()
-    {
-        $id= $this->get('jenisinv');
-        
-        if ($id===null) {
-            $jenisinv= $this->mjenisinv->cariJenisInv();
-            
-        }else{
-            $jenisinv= $this->mjenisinv->cariJenisInv($id);
-        }
-        if ($jenisinv) {
-            $this->response([
-                'status' => true,
-                'data' => $jenisinv
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function Jenisinv_delete()
-    {
-        $id= $this->delete('id');
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->mjenisinv->delJenisinv($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
     public function Jenisinv_post()
     {
         $data=[
@@ -629,56 +491,7 @@ function __construct() {
         }
     }
 
-    
-    public function Jenisaudit_get()
-    {
-        $id= $this->get('id');
-        
-        if ($id===null) {
-            $jenisaudit= $this->mjenisaudit->GetJenisaudit();
-            
-        }else{
-            $jenisaudit= $this->mjenisaudit->GetJenisaudit($id);
-
-        }
-        if ($jenisaudit) {
-            $this->response([
-                'status' => true,
-                'data' => $jenisaudit
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-    public function cariJenisAudit_get()
-    {
-        $id= $this->get('jenisaudit');
-        
-        if ($id===null) {
-            $jenisaudit= $this->mjenisaudit->cariJenisAudit();
-            
-        }else{
-            $jenisaudit= $this->mjenisaudit->cariJenisAudit($id);
-        }
-        if ($jenisaudit) {
-            $this->response([
-                'status' => true,
-                'data' => $jenisaudit
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function Jenisaudit_delete()
+    public function Jenisinv_delete()
     {
         $id= $this->delete('id');
         if ($id===null) {
@@ -687,7 +500,7 @@ function __construct() {
                 'message' => 'need id'
             ], REST_Controller::HTTP_BAD_REQUEST);
         }else{
-            if ($this->mjenisaudit->delJenisaudit($id)) {
+            if ($this->mjenisinv->delJenisinv($id)) {
                 $this->response([
                     'status' => true,
                     'id' => $id,
@@ -701,64 +514,21 @@ function __construct() {
             }
         }
     }
-    public function Jenisaudit_post()
-    {
-        $data=[
-            'idjenis_audit' => $this->post('idjenis_audit',true),
-            'jenis_audit' => $this->post('jenis_audit', true),
-            'input_by' => $this->post('user',true),
-            'tanggal_input' => $this->_tgl
-        ];
 
-        if ($this->mjenisaudit->AddJenisaudit($data)>0) {
-            $this->response([
-                'status' => true,
-                'data' => "Jenis Audit has been created"
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-    public function Jenisaudit_put()
+    public function cariJenisInv_get()
     {
-        $id =$this->put('id');
-
-        $data=[
-                'jenis_audit' => $this->put('jenis_audit', true),
-                'edit_by' => $this->post('user',true),
-                'tanggal_edit' => $this->_tgl
-        ];
+        $id= $this->get('jenisinv');
+        
         if ($id===null) {
-            $this->response([
-                'status' => false,
-                'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else {
-            if ($this->mjenisaudit->editJenisAudit($data, $id)) {
-                $this->response([
-                    'status' => true,
-                    'data' => "Jenis Audit has been modified"
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
+            $jenisinv= $this->mjenisinv->cariJenisInv();
+            
+        }else{
+            $jenisinv= $this->mjenisinv->cariJenisInv($id);
         }
-    }
-
-    public function Jenisauditcount_get()
-    {
-        $jenisaudit= $this->mcount->Countjenisaudit();
-
-        if ($jenisaudit) {
+        if ($jenisinv) {
             $this->response([
                 'status' => true,
-                'data' => $jenisaudit
+                'data' => $jenisinv
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
@@ -769,45 +539,17 @@ function __construct() {
         }
     }
 
-    public function Vendor_get()
+    public function countjenisinv_get()
     {
         $id= $this->get('id');
         
         if ($id===null) {
-            $vendor= $this->mvendor->GetVendorPagination();
-            
-        }else{
-            $vendor= $this->mvendor->GetVendorPagination($id);
-
+            $jenisinv= $this->mcount->countjenisinv();
         }
-        if ($vendor) {
+        if ($count) {
             $this->response([
                 'status' => true,
-                'data' => $vendor
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-    
-    public function cariVendor_get()
-    {
-        $id= $this->get('vendor');
-        
-        if ($id===null) {
-            $vendor= $this->mvendor->cariVendor();
-            
-        }else{
-            $vendor= $this->mvendor->cariVendor($id);
-        }
-        if ($vendor) {
-            $this->response([
-                'status' => true,
-                'data' => $vendor
+                'data' => $jenisinv
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
@@ -818,341 +560,7 @@ function __construct() {
         }
     }
 
-    public function Vendor_delete()
-    {
-        $id= $this->delete('id');
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->mvendor->delVendor($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
-    public function Vendor_post()
-    {
-        $data=[
-            'id_vendor' => $this->post('id_vendor',true),
-            'nama_vendor' => $this->post('nama_vendor', true),
-            'input_by' => $this->post('user',true),
-            'tanggal_input' => $this->_tgl
-        ];
-
-        if ($this->mvendor->Addvendor($data)) {
-            $this->response([
-                'status' => true,
-                'data' => "Vendor has been created"
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-    public function Vendor_put()
-    {
-        $id =$this->put('id');
-
-        $data=[
-                'nama_vendor' => $this->put('nama_vendor'),
-                'edit_by' => $this->post('user',true),
-                'tanggal_edit' => $this->_tgl
-        ];
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else {
-            if ($this->mvendor->editVendor($data, $id)) {
-                $this->response([
-                    'status' => true,
-                    'data' => "Vendor has been modified"
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
-
-    public function Vendorcount_get()
-    {
-        $vendor= $this->mcount->Countvendor();
-
-        if ($vendor) {
-            $this->response([
-                'status' => true,
-                'data' => $vendor
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function perusahaan_get()
-    {
-        $id= $this->get('id');
-        
-        if ($id===null) {
-            $perusahaan= $this->mperusahaan->GetPerusahaan();
-            
-        }else{
-            $perusahaan= $this->mperusahaan->GetPerusahaan($id);
-
-        }
-        if ($perusahaan) {
-            $this->response([
-                'status' => true,
-                'data' => $perusahaan
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function cariperusahaan_get()
-    {
-        $id= $this->get('perusahaan');
-        
-        if ($id===null) {
-            $perusahaan= $this->mperusahaan->cariPerusahaan();
-            
-        }else{
-            $perusahaan= $this->mperusahaan->cariPerusahaan($id);
-        }
-        if ($perusahaan) {
-            $this->response([
-                'status' => true,
-                'data' => $perusahaan
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function perusahaan_delete()
-    {
-        $id= $this->delete('id');
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->mperusahaan->delPerusahaan($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
-    public function perusahaan_post()
-    {
-        $data=[
-            'id_perusahaan' => $this->post('id_perusahaan',true),
-            'nama_perusahaan' => $this->post('nama_perusahaan', true),
-            'input_by' => $this->post('user',true),
-            'tanggal_input' => $this->_tgl
-        ];
-
-        if ($this->mperusahaan->AddPerusahaan($data)) {
-            $this->response([
-                'status' => true,
-                'data' => "Perusahaan has been created"
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-    public function perusahaan_put()
-    {
-        $id =$this->put('id');
-
-        $data=[
-            'nama_perusahaan' => $this->put('nama_perusahaan', true),
-            'edit_by' => $this->post('user',true),
-            'tanggal_edit' => $this->_tgl
-        ];
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else {
-            if ($this->mperusahaan->editPerusahaan($data, $id)) {
-                $this->response([
-                    'status' => true,
-                    'data' => "Perusahaan has been modified"
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
-
-    public function cabang_get()
-    {
-        $id= $this->get('id');
-        $offset = $this->get('pages');
-        
-        if ($id===null) {
-            $cabang= $this->mcabang->GetCabang(null, $offset);
-            
-        }else{
-            $cabang= $this->mcabang->GetCabang($id, $offset);
-
-        }
-        if ($cabang) {
-            $this->response([
-                'status' => true,
-                'data' => $cabang
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function caricabang_get()
-    {
-        $id= $this->get('cabang');
-        
-        if ($id===null) {
-            $cabang= $this->mcabang->cariCabang();
-            
-        }else{
-            $cabang= $this->mcabang->cariCabang($id);
-        }
-        if ($cabang) {
-            $this->response([
-                'status' => true,
-                'data' => $cabang
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function cabang_delete()
-    {
-        $id= $this->delete('id');
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->mcabang->delCabang($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
-    public function cabang_post()
-    {
-        $data=[
-            'id_cabang' => $this->post('id_cabang',true),
-            'nama_cabang' => $this->post('nama_cabang', true),
-            'input_by' => $this->post('user',true),
-            'tanggal_input' => $this->_tgl
-        ];
-
-        if ($this->mcabang->AddCabang($data)) {
-            $this->response([
-                'status' => true,
-                'data' => "Cabang Inventory has been created"
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-    public function cabang_put()
-    {
-        $id =$this->put('id');
-
-        $data=[
-            'nama_cabang' => $this->put('nama_cabang', true),
-            'edit_by' => $this->post('user',true),
-            'tanggal_edit' => $this->_tgl
-        ];
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else {
-            if ($this->mcabang->editCabang($data, $id)) {
-                $this->response([
-                    'status' => true,
-                    'data' => "Cabang has been modified"
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
+    //--------------------------------------------------------SUB INVENTORY----------------------------------------------------------//
     public function Subinv_get()
     {
         $id= $this->get('id');
@@ -1175,6 +583,84 @@ function __construct() {
                 'message' => 'Data not found.'
             ], REST_Controller::HTTP_OK);
             
+        }
+    }
+
+    public function subinv_post()
+    {
+        $data=[
+                'idsub_inventory'   => $this->post('idsub_inventory',true),
+                'sub_inventory'     => $this->post('sub_inventory', true),
+                'idjenis_inventory' => $this->post('idjenis_inventory', true),
+                'input_by' => $this->post('user',true),
+                'tanggal_input' => $this->_tgl
+        ];
+
+        if ($this->msubinv->AddSubInv($data)) {
+            $this->response([
+                'status' => true,
+                'data' => "sub Inventory has been created",
+                'show' => $data
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "failed."
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function subinv_put()
+    {
+        $id =$this->put('id');
+
+        $data=[
+            'sub_inventory' => $this->put('sub_inventory', true),
+            'idjenis_inventory' => $this->put('idjenis_inventory', true),
+            'edit_by' => $this->post('user',true),
+            'tanggal_edit' => $this->_tgl
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->msubinv->editsubinv($data, $id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "sub Inventory has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function subinv_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->msubinv->delSubinv($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
         }
     }
     
@@ -1205,86 +691,16 @@ function __construct() {
             
         }
     }
-    public function subinv_delete()
-    {
-        $id= $this->delete('id');
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->msubinv->delSubinv($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
 
-    public function subinv_post()
-    {
-        $data=[
-                'idsub_inventory'   => $this->post('idsub_inventory',true),
-                'sub_inventory'     => $this->post('sub_inventory', true),
-                'idjenis_inventory' => $this->post('idjenis_inventory', true),
-                'input_by' => $this->post('user',true),
-                'tanggal_input' => $this->_tgl
-        ];
-
-        if ($this->msubinv->AddSubInv($data)) {
-            $this->response([
-                'status' => true,
-                'data' => "sub Inventory has been created",
-                'show' => $data
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-    public function subinv_put()
-    {
-        $id =$this->put('id');
-
-        $data=[
-            'sub_inventory' => $this->put('sub_inventory', true),
-            'idjenis_inventory' => $this->put('idjenis_inventory', true),
-            'edit_by' => $this->post('user',true),
-            'tanggal_edit' => $this->_tgl
-        ];
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else {
-            if ($this->msubinv->editsubinv($data, $id)) {
-                $this->response([
-                    'status' => true,
-                    'data' => "sub Inventory has been modified"
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
     public function Subinvcount_get()
     {
-        $subinv= $this->mcount->Countsubinventory();
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $subinv= $this->mcount->Countsubinventory();
 
+        }
+        
         if ($subinv) {
             $this->response([
                 'status' => true,
@@ -1299,7 +715,7 @@ function __construct() {
         }
     }
 
-    //----//
+    //--------------------------------------------------------STATUS INVENTORY-------------------------------------------------------//
     public function statusinv_get()
     {
         $id= $this->get('id');
@@ -1325,53 +741,6 @@ function __construct() {
         }
     }
 
-    public function caristatusinv_get()
-    {
-        $id= $this->get('statusinv');
-        
-        if ($id===null) {
-            $statusinv= $this->mstatusinv->cariStatusinv();
-            
-        }else{
-            $statusinv= $this->mstatusinv->cariStatusinv($id);
-        }
-        if ($statusinv) {
-            $this->response([
-                'status' => true,
-                'data' => $statusinv
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-    public function statusinv_delete()
-    {
-        $id= $this->delete('id');
-        if ($id===null) {
-            $this->response([
-                'status' => false,
-                'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }else{
-            if ($this->mstatusinv->delStatusInv($id)) {
-                $this->response([
-                    'status' => true,
-                    'id' => $id,
-                    'message'=> 'deleted.'
-                ], REST_Controller::HTTP_OK);
-            }else{
-                $this->response([
-                    'status' => false,
-                    'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-        }
-    }
     public function statusinv_post()
     {
         $data=[
@@ -1422,9 +791,63 @@ function __construct() {
             }
         }
     }
+
+    public function statusinv_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->mstatusinv->delStatusInv($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function caristatusinv_get()
+    {
+        $id= $this->get('statusinv');
+        
+        if ($id===null) {
+            $statusinv= $this->mstatusinv->cariStatusinv();
+            
+        }else{
+            $statusinv= $this->mstatusinv->cariStatusinv($id);
+        }
+        if ($statusinv) {
+            $this->response([
+                'status' => true,
+                'data' => $statusinv
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
     public function Statusinvcount_get()
     {
-        $statusinv= $this->mcount->Countstatusinventory();
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $statusinv= $this->mcount->Countstatusinventory();
+
+        }
 
         if ($statusinv) {
             $this->response([
@@ -1440,6 +863,740 @@ function __construct() {
         }
     }
 
+    //----------------------------------------------------------PERUSAHAAN----------------------------------------------------------//
+    public function perusahaan_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $perusahaan= $this->mperusahaan->GetPerusahaan();
+            
+        }else{
+            $perusahaan= $this->mperusahaan->GetPerusahaan($id);
+
+        }
+        if ($perusahaan) {
+            $this->response([
+                'status' => true,
+                'data' => $perusahaan
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function perusahaan_post()
+    {
+        $data=[
+            'id_perusahaan' => $this->post('id_perusahaan',true),
+            'nama_perusahaan' => $this->post('nama_perusahaan', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
+        ];
+
+        if ($this->mperusahaan->AddPerusahaan($data)) {
+            $this->response([
+                'status' => true,
+                'data' => "Perusahaan has been created"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "failed."
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+    public function perusahaan_put()
+    {
+        $id =$this->put('id');
+
+        $data=[
+            'nama_perusahaan' => $this->put('nama_perusahaan', true),
+            'edit_by' => $this->post('user',true),
+            'tanggal_edit' => $this->_tgl
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->mperusahaan->editPerusahaan($data, $id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Perusahaan has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function perusahaan_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->mperusahaan->delPerusahaan($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function cariperusahaan_get()
+    {
+        $id= $this->get('perusahaan');
+        
+        if ($id===null) {
+            $perusahaan= $this->mperusahaan->cariPerusahaan();
+            
+        }else{
+            $perusahaan= $this->mperusahaan->cariPerusahaan($id);
+        }
+        if ($perusahaan) {
+            $this->response([
+                'status' => true,
+                'data' => $perusahaan
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function countperusahaan_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $perusahaan= $this->mcount->countperusahaan();
+        }
+        if ($perusahaan) {
+            $this->response([
+                'status' => true,
+                'data' => $perusahaan
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    //------------------------------------------------------------CABANG------------------------------------------------------------//
+    public function cabang_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $cabang= $this->mcabang->GetCabang(null);
+            
+        }else{
+            $cabang= $this->mcabang->GetCabang($id);
+
+        }
+        if ($cabang) {
+            $this->response([
+                'status' => true,
+                'data' => $cabang
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function cabang_post()
+    {
+        $data=[
+            'id_cabang' => $this->post('id_cabang',true),
+            'nama_cabang' => $this->post('nama_cabang', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
+        ];
+
+        if ($this->mcabang->AddCabang($data)) {
+            $this->response([
+                'status' => true,
+                'data' => "Cabang Inventory has been created"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "failed."
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+    public function cabang_put()
+    {
+        $id =$this->put('id');
+
+        $data=[
+            'nama_cabang' => $this->put('nama_cabang', true),
+            'edit_by' => $this->post('user',true),
+            'tanggal_edit' => $this->_tgl
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->mcabang->editCabang($data, $id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Cabang has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function cabang_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->mcabang->delCabang($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function caricabang_get()
+    {
+        $id= $this->get('cabang');
+        
+        if ($id===null) {
+            $cabang= $this->mcabang->cariCabang();
+            
+        }else{
+            $cabang= $this->mcabang->cariCabang($id);
+        }
+        if ($cabang) {
+            $this->response([
+                'status' => true,
+                'data' => $cabang
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function countcabang_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $cabang= $this->mcount->countcabang();
+        }
+        if ($cabang) {
+            $this->response([
+                'status' => true,
+                'data' => $cabang
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    //------------------------------------------------------------LOKASI-----------------------------------------------------------//
+    public function Lokasi_get()
+    {
+        $id= $this->get('id');
+        $offset = $this->get('offset');
+        
+        
+        if ($id===null) {
+            $lokasi= $this->mlokasi->GetLokasi(null,$offset);
+            
+        }else{
+            $lokasi= $this->mlokasi->GetLokasi($id);
+
+        }
+        if ($lokasi) {
+            $this->response([
+                'status' => true,
+                'data' => $lokasi
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Lokasi_post()
+    {
+        $data=[
+            'id_lokasi' => $this->post('id_lokasi',true),
+            'nama_lokasi' => $this->post('nama_lokasi', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
+        ];
+
+        if ($this->mlokasi->AddLokasi($data)) {
+            $this->response([
+                'status' => true,
+                'data' => "Lokasi has been created"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "failed."
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function Lokasi_put()
+    {
+        $id =$this->put('id');
+
+        $data=[
+                'nama_lokasi' => $this->put('nama_lokasi', true),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->mlokasi->editLokasi($data, $id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Lokasi has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function Lokasi_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->mlokasi->dellokasi($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function cariLokasi_get()
+    {
+        $id= $this->get('lokasi');
+        
+        if ($id===null) {
+            $lokasi= $this->mlokasi->cariLokasi();
+            
+        }else{
+            $lokasi= $this->mlokasi->cariLokasi($id);
+        }
+        if ($lokasi) {
+            $this->response([
+                'status' => true,
+                'data' => $lokasi
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function countlokasi_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $lokasi= $this->mcount->countlokasi();
+        }
+        if ($lokasi) {
+            $this->response([
+                'status' => true,
+                'data' => $lokasi
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    //------------------------------------------------------------VENDOR-----------------------------------------------------------//
+    public function Vendor_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $vendor= $this->mvendor->GetVendorPagination();
+            
+        }else{
+            $vendor= $this->mvendor->GetVendorPagination($id);
+
+        }
+        if ($vendor) {
+            $this->response([
+                'status' => true,
+                'data' => $vendor
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Vendor_post()
+    {
+        $data=[
+            'id_vendor' => $this->post('id_vendor',true),
+            'nama_vendor' => $this->post('nama_vendor', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
+        ];
+
+        if ($this->mvendor->Addvendor($data)) {
+            $this->response([
+                'status' => true,
+                'data' => "Vendor has been created"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "failed."
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+    public function Vendor_put()
+    {
+        $id =$this->put('id');
+
+        $data=[
+                'nama_vendor' => $this->put('nama_vendor'),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->mvendor->editVendor($data, $id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Vendor has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function Vendor_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->mvendor->delVendor($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+    
+    public function cariVendor_get()
+    {
+        $id= $this->get('vendor');
+        
+        if ($id===null) {
+            $vendor= $this->mvendor->cariVendor();
+            
+        }else{
+            $vendor= $this->mvendor->cariVendor($id);
+        }
+        if ($vendor) {
+            $this->response([
+                'status' => true,
+                'data' => $vendor
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Vendorcount_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $vendor= $this->mcount->Countvendor();
+        }
+        
+
+        if ($vendor) {
+            $this->response([
+                'status' => true,
+                'data' => $vendor
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    //--------------------------------------------------------JENIS AUDIT----------------------------------------------------------//
+    public function Jenisaudit_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $jenisaudit= $this->mjenisaudit->GetJenisaudit();
+            
+        }else{
+            $jenisaudit= $this->mjenisaudit->GetJenisaudit($id);
+
+        }
+        if ($jenisaudit) {
+            $this->response([
+                'status' => true,
+                'data' => $jenisaudit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Jenisaudit_post()
+    {
+        $data=[
+            'idjenis_audit' => $this->post('idjenis_audit',true),
+            'jenis_audit' => $this->post('jenis_audit', true),
+            'input_by' => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
+        ];
+
+        if ($this->mjenisaudit->AddJenisaudit($data)>0) {
+            $this->response([
+                'status' => true,
+                'data' => "Jenis Audit has been created"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "failed."
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+    public function Jenisaudit_put()
+    {
+        $id =$this->put('id');
+
+        $data=[
+                'jenis_audit' => $this->put('jenis_audit', true),
+                'edit_by' => $this->post('user',true),
+                'tanggal_edit' => $this->_tgl
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->mjenisaudit->editJenisAudit($data, $id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Jenis Audit has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function Jenisaudit_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->mjenisaudit->delJenisaudit($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function cariJenisAudit_get()
+    {
+        $id= $this->get('jenisaudit');
+        
+        if ($id===null) {
+            $jenisaudit= $this->mjenisaudit->cariJenisAudit();
+            
+        }else{
+            $jenisaudit= $this->mjenisaudit->cariJenisAudit($id);
+        }
+        if ($jenisaudit) {
+            $this->response([
+                'status' => true,
+                'data' => $jenisaudit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Jenisauditcount_get()
+    {
+        
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $jenisaudit= $this->mcount->Countjenisaudit();
+        }
+               
+
+        if ($jenisaudit) {
+            $this->response([
+                'status' => true,
+                'data' => $jenisaudit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    //----------------------------------------------------------MENU-----------------------------------------------------------------//  
     public function Menu_get()
     {
         $access= $this->get('access');
@@ -1514,6 +1671,8 @@ function __construct() {
         }
     }
 
+    //-----------------------------------------------------LOKASI CABANG---------------------------------------------------------------//
+
     public function lokasicabang_get()
     {
         $id= $this->get('id_cabang');
@@ -1538,54 +1697,6 @@ function __construct() {
             
         }
     }
-    public function countuser_get()
-    {
-        $id= $this->get('id');
-        
-        if ($id===null) {
-            $count= $this->mcount->countuser();
-        }
-        if ($count) {
-            $this->response([
-                'status' => true,
-                'data' => $count
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
-
-        public function UserPagination_get()
-        {
-            //konfigurasi pagination
-        $config['base_url'] = site_url('master_data/user'); //site url
-        $config['total_rows'] =  $this->mcount->CountUser();//total row
-        $config['per_page'] = 5;  //show record per halaman
-        $config["uri_segment"] = 3;  // uri parameter
-        $choice = $config["total_rows"] / $config["per_page"];
-        $config["num_links"] = floor($choice);
- 
-
- 
-        $this->pagination->initialize($config);
-        $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
- 
-        //panggil function get_mahasiswa_list yang ada pada mmodel mahasiswa_model. 
-        $data['data'] = $this->muser->getUser($config["per_page"], $data['page']);           
- 
-        $data['pagination'] = $this->pagination->create_links();
- 
-        //load view mahasiswa view
-        $this->load->view('mahasiswa_view',$data);
-        }
-
-
-
 
 }
 /** End of file Master.php **/

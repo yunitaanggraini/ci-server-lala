@@ -44,12 +44,14 @@ class M_TempUnit extends CI_Model {
         $result = $this->app_db->query($query)->result_array();
         return $result;
     }
+
     public function addTempUnit($data)
     {
         $this->db->insert('temp_unit', $data);
         return $this->db->affected_rows(); 
     }
-    public function getTempUnit($id=null)
+
+    public function getTempUnit($id=null, $offset)
     {
         
         
@@ -58,7 +60,8 @@ class M_TempUnit extends CI_Model {
             $this->db->from('temp_unit a');
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
-             
+            $this->db->limit(15);
+            $this->db->offset($offset);
             $result = $this->db->get()->result();
 
             return $result;
@@ -68,7 +71,8 @@ class M_TempUnit extends CI_Model {
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
             $this->db->where(" a.no_mesin = '$id' OR a.no_rangka = '$id'");
-            
+            $this->db->limit(15);
+            $this->db->offset($offset);
             
             
             $result = $this->db->get()->result();
@@ -77,14 +81,15 @@ class M_TempUnit extends CI_Model {
         }
         
     }
-    public function getToUnit($cabang =null)
+    public function getToUnit($cabang =null,$offset)
     {
         if ($cabang === null) {
             $this->db->select('a.id_unit,a.no_mesin, a.no_rangka, a.tahun, a.type, a.kode_item, a.id_cabang, a.id_lokasi , b.nama_lokasi, c.nama_cabang');
             $this->db->from('temp_unit a');
             $this->db->join('lokasi b', 'a.id_lokasi = b.id_lokasi', 'left');
             $this->db->join('cabang c', 'a.id_cabang = c.id_cabang', 'left');
-             
+             $this->db->limit(15);
+             $this->db->offset($offset);
             $result = $this->db->get()->result();
 
             return $result;
@@ -94,7 +99,8 @@ class M_TempUnit extends CI_Model {
             $this->db->join('lokasi b', 'a.id_lokasi = b.id_lokasi', 'left');
             $this->db->join('cabang c', 'a.id_cabang = c.id_cabang', 'left');
             $this->db->where('a.id_cabang', $cabang);
-            
+            $this->db->limit(15);
+             $this->db->offset($offset);
             $result = $this->db->get()->result();
 
             return $result;

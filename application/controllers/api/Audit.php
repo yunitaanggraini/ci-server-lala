@@ -67,9 +67,10 @@ function __construct() {
 
     public function Audit_get(){
         $id= $this->get('id');
+        $offset = $this->get('offset');
         
         if ($id===null) {
-            $audit= $this->maudit->GetAudit();
+            $audit= $this->maudit->GetAudit(null,$offset);
             
         }else{
             $audit= $this->maudit->GetAudit($id);
@@ -418,9 +419,10 @@ function __construct() {
     public function TempUnit_get()
     {
         $id= $this->get('id');
+        $offset = $this->get('offset');
         
         if ($id===null) {
-            $tempunit= $this->mtempunit->GetTempUnit();
+            $tempunit= $this->mtempunit->GetTempUnit(null,$offset);
             
         }else{
             $tempunit= $this->mtempunit->GetTempUnit($id);
@@ -441,11 +443,12 @@ function __construct() {
     public function ToUnit_get()
     {
         $cabang= $this->get('id_cabang');
+        $offset= $this->get('offset');
         if ($cabang===null) {
             $tempunit= null;
             
         }else{
-            $tempunit= $this->mtempunit->GetToUnit($cabang);
+            $tempunit= $this->mtempunit->GetToUnit($cabang,$offset);
         }
         if ($tempunit!=null) {
             $this->response([
@@ -851,6 +854,27 @@ function __construct() {
                 'status' => false,
                 'data' => "data not found"
             ], REST_Controller::HTTP_OK);
+        }
+    }
+
+    public function countjadwalaudit_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $user= $this->mcount->countjadwalaudit();
+        }
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
         }
     }
 
