@@ -20,6 +20,8 @@ function __construct() {
     $this->load->model('master/m_cabang','mcabang');
     $this->load->model('master/m_jenis_audit','mjenisaudit');
     $this->load->model('master/m_count','mcount');
+    $this->load->model('laporan/m_laporan_audit','mlapdat');
+    
     $this->_tgl = date('Y-m-d');
     $this->load->model('config/m_config','mconfig');
         $data = $this->mconfig->getUserConfig();
@@ -759,7 +761,7 @@ function __construct() {
     public function dataunit_get()
     {
         $cabang = $this->get('id_cabang');
-        $list =$this->mtempunit->getTempUnit();
+        $list =$this->mtempunit->getTempUnit(null,$cabang);
        if ($list!=false) {
         $this->response([
             'status' => false,
@@ -767,7 +769,7 @@ function __construct() {
         ], REST_Controller::HTTP_OK);
        }else{
            $postunit = $this->mtempunit->getDataUnit($cabang);
-           $i=0;
+           $i=$this->mcount->CountTempUnit();
            foreach ($postunit as $res) {
                 //    var_dump($post['no_rangka']);
                $i++;
@@ -800,10 +802,11 @@ function __construct() {
     public function CountDataUnit_get()
     {
         $status = $this->get('status');
+        $cabang = $this->get('id_cabang');
         if ($status===null) {
-            $statusUnit = $this->mcount->countDataUnit();
+            $statusUnit = $this->mcount->countDataUnit(null, $cabang);
         }else{
-            $statusUnit = $this->mcount->countDataUnit($status);
+            $statusUnit = $this->mcount->countDataUnit($status,$cabang);
         }
 
         if ($statusUnit) {
@@ -842,7 +845,12 @@ function __construct() {
     }
     public function countTempUnit_get()
     {
+        $cabang = $this->get('id_cabang');
+        if ($cabang ===null) {
             $count = $this->mcount->countTempUnit();
+        }else{
+            $count = $this->mcount->countTempUnit($cabang);
+        }
 
         if ($count) {
             $this->response([
@@ -868,6 +876,25 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $user
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function cetakUnit_get()
+    {
+        $cabang= $this->get('id_cabang');
+        $tanggal_akhir= $this->get('tanggal_akhir');
+        $tanggal_awal= $this->get('tanggal_awal');
+            $cetak= $this->mlapdat->cetakUnit($cabang, $tanggal_awal, $tanggal_akhir);
+        if ($cetak) {
+            $this->response([
+                'status' => true,
+                'data' => $cetak
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([

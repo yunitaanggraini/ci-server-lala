@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Audit extends CI_Model {
 
-    public function getAudit($id=null,$offset)
+    public function getAudit($id=null,$offset=null)
     {
         if ($id===null) {
             $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');

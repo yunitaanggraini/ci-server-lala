@@ -80,10 +80,10 @@ class M_Count extends CI_Model {
         }
     }
 
-    public function CountDataUnit($status=null)
+    public function CountDataUnit($status=null,$cabang=null)
     {
         if ($status===null) {
-            $count =$this->db->get('unit');
+            $count =$this->db->get_where('unit',['id_cabang' => $cabang]);
 
             if ($count->num_rows()>0) {
                 return $count->num_rows();
@@ -92,6 +92,7 @@ class M_Count extends CI_Model {
             }
         }else{
             $this->db->where('status_unit', $status);
+            $this->db->where('id_cabang', $cabang);
             
             $count =$this->db->get('unit');
     
@@ -102,9 +103,14 @@ class M_Count extends CI_Model {
             }
         }
     }
-    public function CountTempUnit()
+    public function CountTempUnit($cabang=null)
     {
+        if ($cabang ===null) {
             $count =$this->db->get('temp_unit');
+        }else{
+            $count =$this->db->get_where('temp_unit',['id_cabang' => $cabang]);
+        }
+
 
             if ($count->num_rows()>0) {
                 return $count->num_rows();

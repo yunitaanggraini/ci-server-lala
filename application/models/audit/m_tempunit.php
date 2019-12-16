@@ -37,7 +37,7 @@ class M_TempUnit extends CI_Model {
                 LEFT JOIN TRANS_SJMASUK b ON b.NO_MESIN = a.NO_MESIN
                 LEFT JOIN trans_terimasjmotor d on d.no_mesin = a.no_mesin and d.ROW_STATUS >=0 
                 WHERE a.STOCK_AKHIR >=1 and a.KD_DEALER = '$kd_dealer' and a.ROW_STATUS >=0 
-                ORDER BY b.THN_PERAKITAN
+                ORDER BY a.no_mesin
 
         ";
         // $this->db2->limit(1);
@@ -51,7 +51,7 @@ class M_TempUnit extends CI_Model {
         return $this->db->affected_rows(); 
     }
 
-    public function getTempUnit($id=null, $offset)
+    public function getTempUnit($id=null, $cabang=null, $offset=null)
     {
         
         
@@ -60,6 +60,8 @@ class M_TempUnit extends CI_Model {
             $this->db->from('temp_unit a');
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where('a.id_cabang', $cabang);
+            
             $this->db->limit(15);
             $this->db->offset($offset);
             $result = $this->db->get()->result();
@@ -70,7 +72,7 @@ class M_TempUnit extends CI_Model {
             $this->db->from('temp_unit a');
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
-            $this->db->where(" a.no_mesin = '$id' OR a.no_rangka = '$id'");
+            $this->db->where(" a.no_mesin = '$id' OR a.no_rangka = '$id' AND a.id_cabang ='$cabang'");
             $this->db->limit(15);
             $this->db->offset($offset);
             
