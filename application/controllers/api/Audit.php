@@ -24,47 +24,47 @@ function __construct() {
     
     $this->_tgl = date('Y-m-d');
     $this->load->model('config/m_config','mconfig');
-        $data = $this->mconfig->getUserConfig();
-        foreach ($data as $d ) {
-            $ip = $d->ip;
-            $ip2 = 'IPADDRESS';
-            $iv_key = 'honda12345';
-            $encrypt_method = "AES-256-CBC";
-            $key = hash('sha256',$ip2);
-            $iv = substr(hash('sha256', $iv_key), 0, 16);
-            $ip = base64_decode($ip);
-            $ip = openssl_decrypt($ip, $encrypt_method, $key, 0, $iv);
+        // $data = $this->mconfig->getUserConfig();
+        // foreach ($data as $d ) {
+        //     $ip = $d->ip;
+        //     $ip2 = 'IPADDRESS';
+        //     $iv_key = 'honda12345';
+        //     $encrypt_method = "AES-256-CBC";
+        //     $key = hash('sha256',$ip2);
+        //     $iv = substr(hash('sha256', $iv_key), 0, 16);
+        //     $ip = base64_decode($ip);
+        //     $ip = openssl_decrypt($ip, $encrypt_method, $key, 0, $iv);
 
-            $uname = $d->username;
-            $uname2 = 'USERNAME';
-            $iv_key = 'honda12345';
-            $encrypt_method = "AES-256-CBC";
-            $key = hash('sha256',$uname2);
-            $iv = substr(hash('sha256', $iv_key), 0, 16);
-            $uname = base64_decode($uname);
-            $this->username = openssl_decrypt($uname, $encrypt_method, $key, 0, $iv);
+        //     $uname = $d->username;
+        //     $uname2 = 'USERNAME';
+        //     $iv_key = 'honda12345';
+        //     $encrypt_method = "AES-256-CBC";
+        //     $key = hash('sha256',$uname2);
+        //     $iv = substr(hash('sha256', $iv_key), 0, 16);
+        //     $uname = base64_decode($uname);
+        //     $this->username = openssl_decrypt($uname, $encrypt_method, $key, 0, $iv);
 
-            $pass = $d->password;
-            $pass2 = 'PASSWORD';
-            $iv_key = 'honda12345';
-            $encrypt_method = "AES-256-CBC";
-            $key = hash('sha256',$pass2);
-            $iv = substr(hash('sha256', $iv_key), 0, 16);
-            $pass = base64_decode($pass);
-            $this->password = openssl_decrypt($pass, $encrypt_method, $key, 0, $iv);
+        //     $pass = $d->password;
+        //     $pass2 = 'PASSWORD';
+        //     $iv_key = 'honda12345';
+        //     $encrypt_method = "AES-256-CBC";
+        //     $key = hash('sha256',$pass2);
+        //     $iv = substr(hash('sha256', $iv_key), 0, 16);
+        //     $pass = base64_decode($pass);
+        //     $this->password = openssl_decrypt($pass, $encrypt_method, $key, 0, $iv);
 
-            $db = $d->db;
-            $db2 = 'DATABASE';
-            $iv_key = 'honda12345';
-            $encrypt_method = "AES-256-CBC";
-            $key = hash('sha256',$db2);
-            $iv = substr(hash('sha256', $iv_key), 0, 16);
-            $db = base64_decode($db);
-            $this->database = openssl_decrypt($db, $encrypt_method, $key, 0, $iv);
-        }
-        $config_app = db_master($ip,$this->username,$this->password, $this->database);
+        //     $db = $d->db;
+        //     $db2 = 'DATABASE';
+        //     $iv_key = 'honda12345';
+        //     $encrypt_method = "AES-256-CBC";
+        //     $key = hash('sha256',$db2);
+        //     $iv = substr(hash('sha256', $iv_key), 0, 16);
+        //     $db = base64_decode($db);
+        //     $this->database = openssl_decrypt($db, $encrypt_method, $key, 0, $iv);
+        // }
+        // $config_app = db_master($ip,$this->username,$this->password, $this->database);
         $this->load->model('audit/m_tempunit','mtempunit');
-        $this->mtempunit->app_db = $this->load->database($config_app,TRUE);
+        // $this->mtempunit->app_db = $this->load->database($config_app,TRUE);
     }
 
     public function Audit_get(){
@@ -760,6 +760,47 @@ function __construct() {
     }
     public function dataunit_get()
     {
+        $data = $this->mconfig->getUserConfig();
+        foreach ($data as $d ) {
+            $ip = $d->ip;
+            $ip2 = 'IPADDRESS';
+            $iv_key = 'honda12345';
+            $encrypt_method = "AES-256-CBC";
+            $key = hash('sha256',$ip2);
+            $iv = substr(hash('sha256', $iv_key), 0, 16);
+            $ip = base64_decode($ip);
+            $ip = openssl_decrypt($ip, $encrypt_method, $key, 0, $iv);
+
+            $uname = $d->username;
+            $uname2 = 'USERNAME';
+            $iv_key = 'honda12345';
+            $encrypt_method = "AES-256-CBC";
+            $key = hash('sha256',$uname2);
+            $iv = substr(hash('sha256', $iv_key), 0, 16);
+            $uname = base64_decode($uname);
+            $this->username = openssl_decrypt($uname, $encrypt_method, $key, 0, $iv);
+
+            $pass = $d->password;
+            $pass2 = 'PASSWORD';
+            $iv_key = 'honda12345';
+            $encrypt_method = "AES-256-CBC";
+            $key = hash('sha256',$pass2);
+            $iv = substr(hash('sha256', $iv_key), 0, 16);
+            $pass = base64_decode($pass);
+            $this->password = openssl_decrypt($pass, $encrypt_method, $key, 0, $iv);
+
+            $db = $d->db;
+            $db2 = 'DATABASE';
+            $iv_key = 'honda12345';
+            $encrypt_method = "AES-256-CBC";
+            $key = hash('sha256',$db2);
+            $iv = substr(hash('sha256', $iv_key), 0, 16);
+            $db = base64_decode($db);
+            $this->database = openssl_decrypt($db, $encrypt_method, $key, 0, $iv);
+        }
+        $config_app = db_master($ip,$this->username,$this->password, $this->database);
+        $this->mtempunit->app_db = $this->load->database($config_app,TRUE);
+
         $cabang = $this->get('id_cabang');
         $list =$this->mtempunit->getTempUnit(null,$cabang);
        if ($list!=false) {
@@ -890,7 +931,30 @@ function __construct() {
         $cabang= $this->get('id_cabang');
         $tanggal_akhir= $this->get('tanggal_akhir');
         $tanggal_awal= $this->get('tanggal_awal');
-            $cetak= $this->mlapdat->cetakUnit($cabang, $tanggal_awal, $tanggal_akhir);
+        $status = $this->get('status');
+        
+            $cetak= $this->mlapdat->cetakUnit($cabang, $tanggal_awal, $tanggal_akhir,$status);
+        if ($cetak) {
+            $this->response([
+                'status' => true,
+                'data' => $cetak
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function LapUnit_get()
+    {
+        $cabang= $this->get('id_cabang');
+        $tanggal_akhir= $this->get('tgl_akhir');
+        $tanggal_awal= $this->get('tgl_awal');
+        $status= $this->get('status');
+            $cetak= $this->mlapdat->cetakLapUnit($cabang, $tanggal_awal, $tanggal_akhir,$status);
+            var_dump($cetak);die;
         if ($cetak) {
             $this->response([
                 'status' => true,
