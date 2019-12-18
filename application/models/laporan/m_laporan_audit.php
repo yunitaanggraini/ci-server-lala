@@ -38,10 +38,10 @@ class m_laporan_audit extends CI_Model {
             $this->db->from('unit a');
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
-            $this->db->where("a.tanggal_audit BETWEEN '$b' AND '$c'");
-            
             $this->db->where('a.id_cabang', $a);
             $this->db->where('a.status_unit', $d);
+            $this->db->where("a.tanggal_audit BETWEEN '$b' AND '$c'");
+            
             
             return $this->db->get()->result();
         

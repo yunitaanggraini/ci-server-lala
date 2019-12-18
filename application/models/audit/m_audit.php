@@ -98,7 +98,9 @@ class M_Audit extends CI_Model {
             $this->db->from('temp_unit a');
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
-            $this->db->where("a.no_mesin = '$id' OR a.no_rangka = '$id' AND a.id_cabang= '$cabang'" );
+            $this->db->where('a.id_cabang', $cabang);
+            $this->db->where("a.no_mesin = '$id' OR a.no_rangka = '$id'" );
+            
             $result = $this->db->get()->result();
             return $result;
         }
@@ -146,8 +148,8 @@ class M_Audit extends CI_Model {
             $this->db->from('unit a');
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
-            $this->db->where(" a.no_mesin = '$id' OR a.no_rangka = '$id'" );
             $this->db->where('a.id_cabang', $cabang);
+            $this->db->where(" a.no_mesin = '$id' OR a.no_rangka = '$id'" );
 
             $result = $this->db->get()->result();
             return $result;
@@ -184,10 +186,10 @@ class M_Audit extends CI_Model {
         $this->db->from('unit a');
         $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
         $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+        $this->db->where("a.status_unit",$status);
+        $this->db->like("a.id_cabang",$cabang);
         $this->db->where("a.no_mesin LIKE '%$id%' OR a.no_rangka LIKE '%$id%' OR a.type LIKE '%$id%' OR a.tahun LIKE '%$id%' OR a.kode_item LIKE '%$id%'");
         
-            $this->db->where("a.status_unit",$status);
-            $this->db->like("a.id_cabang",$cabang);
             $result = $this->db->get()->result();
             return $result;
     }
@@ -199,7 +201,7 @@ class M_Audit extends CI_Model {
             $this->db->where($where);
             return $this->db->get('temp_unit')->result();
         }else {
-            $where = "temp_unit.no_rangka NOT IN (SELECT no_rangka FROM unit) AND (temp_unit.id_unit = '$id' OR temp_unit.no_mesin='$id' OR temp_unit.no_rangka='$id' AND temp_unit.id_cabang='$cabang')";
+            $where = "temp_unit.no_rangka NOT IN (SELECT no_rangka FROM unit) AND (temp_unit.id_cabang='$cabang' AND temp_unit.id_unit = '$id' OR temp_unit.no_mesin='$id' OR temp_unit.no_rangka='$id')";
             $this->db->where($where);
             return $this->db->get('temp_unit')->result();
         }
@@ -207,18 +209,18 @@ class M_Audit extends CI_Model {
     public function AuditEnd($cabang)
     { 
         $query = "
-            INSERT INTO unit (id_unit, no_mesin, no_rangka, id_cabang, id_lokasi, type, kode_item, tahun) 
-            SELECT id_unit, no_mesin, no_rangka,id_cabang, id_lokasi, type, kode_item, tahun
+            INSERT INTO unit (id_unit, no_mesin, no_rangka, id_cabang, id_lokasi, type, kode_item, tahun, tanggal_audit) 
+            SELECT id_unit, no_mesin, no_rangka,id_cabang, id_lokasi, type, kode_item, tahun, date(now()) as tanggal_audit
             FROM temp_unit a 
             WHERE a.no_rangka NOT IN (
                 SELECT no_rangka FROM unit)
-                AND at.id_cabang='$cabang'
+                AND a.id_cabang='$cabang'
         ";
         $this->db->query($query);
         $query2 = "
-            UPDATE unit a
+            UPDATE unit
             SET status_unit = 'Belum ditemukan'
-            WHERE status_unit is null AND a.id_cabang = '$cabang'
+            WHERE status_unit is null AND id_cabang = '$cabang'
         ";
         $this->db->query($query2);
         return  $this->db->affected_rows();

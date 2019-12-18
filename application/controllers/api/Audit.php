@@ -565,7 +565,7 @@ function __construct() {
     public function auditend_get()
     {
         $cabang = $this->get('id_cabang');
-            $list= $this->maudit->AuditEnd($cabang);
+        $list= $this->maudit->AuditEnd($cabang);
         
         if ($list) {
             $this->response([
@@ -950,11 +950,10 @@ function __construct() {
     public function LapUnit_get()
     {
         $cabang= $this->get('id_cabang');
-        $tanggal_akhir= $this->get('tgl_akhir');
-        $tanggal_awal= $this->get('tgl_awal');
+        $tanggal_akhir= $this->get('tanggal_akhir');
+        $tanggal_awal= $this->get('tanggal_awal');
         $status= $this->get('status');
             $cetak= $this->mlapdat->cetakLapUnit($cabang, $tanggal_awal, $tanggal_akhir,$status);
-            var_dump($cetak);die;
         if ($cetak) {
             $this->response([
                 'status' => true,
