@@ -55,7 +55,7 @@ require(APPPATH . 'libraries/REST_Controller.php');
         $output = openssl_encrypt($db, $encrypt_method, $key, 0, $iv);
         $database = base64_encode($output);
         $data=[
-                
+                'id' =>'1',
                 'ip' => $ipaddress,
                 'username' => $username,
                 'password' => $password,
@@ -97,14 +97,50 @@ require(APPPATH . 'libraries/REST_Controller.php');
     public function Config_put()
     {
         $id = $this->put('id');
-       $data=[
-           'ip' =>$this->put('ip'),
-           'username' =>$this->put('username'),
-           'password' =>$this->put('password'),
-           'db' =>$this->put('db'),
-       ];
+        $ip =$this->put('ip',true);
+        $ip2 = 'IPADDRESS';
+        $iv_key = 'honda12345';
+        $encrypt_method = "AES-256-CBC";
+        $key = hash('sha256',$ip2);
+        $iv = substr(hash('sha256', $iv_key), 0, 16);
+        $output = openssl_encrypt($ip, $encrypt_method, $key, 0, $iv);
+        $ipaddress = base64_encode($output);
 
-        if ($this->mvendor->editUserConfig($id, $data)) {
+        $uname =$this->put('username',true);
+        $uname2= 'USERNAME';
+        $iv_key = 'honda12345';
+        $encrypt_method = "AES-256-CBC";
+        $key = hash('sha256',$uname2);
+        $iv = substr(hash('sha256', $iv_key), 0, 16);
+        $output = openssl_encrypt($uname, $encrypt_method, $key, 0, $iv);
+        $username = base64_encode($output);
+
+        $pass =$this->put('password',true);
+        $pass2 = 'PASSWORD';
+        $iv_key = 'honda12345';
+        $encrypt_method = "AES-256-CBC";
+        $key = hash('sha256',$pass2);
+        $iv = substr(hash('sha256', $iv_key), 0, 16);
+        $output = openssl_encrypt($pass, $encrypt_method, $key, 0, $iv);
+        $password = base64_encode($output);
+
+        $db =$this->put('db',true);
+        $db2 = 'DATABASE';
+        $iv_key = 'honda12345';
+        $encrypt_method = "AES-256-CBC";
+        $key = hash('sha256',$db2);
+        $iv = substr(hash('sha256', $iv_key), 0, 16);
+        $output = openssl_encrypt($db, $encrypt_method, $key, 0, $iv);
+        $database = base64_encode($output);
+        $data=[
+                
+                'ip' => $ipaddress,
+                'username' => $username,
+                'password' => $password,
+                'db' => $database
+        ];
+
+        if ($this->mconfig->editUserConfig($id, $data)) {
             $this->response([
                 'status' => true,
                 'data' => "Config has been modified"

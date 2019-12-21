@@ -5,13 +5,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Unit extends CI_Model {
 
-    public function getUnit($id=null)
+    public function getUnit($id=null, $offset=null)
     {
         if ($id === null) {
             $this->db->select('unit.*,nama_cabang, nama_lokasi');
             $this->db->from('unit');
             $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->limit(15);
+            $this->db->offset($offset);
              
             $result = $this->db->get()->result();
 
@@ -21,6 +23,8 @@ class M_Unit extends CI_Model {
             $this->db->from('unit');
             $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->limit(15);
+            $this->db->offset($offset);
             $this->db->where('id_unit', $id);
             
             
@@ -73,6 +77,31 @@ class M_Unit extends CI_Model {
 
             return $result;
         }
+    }
+
+    public function previewUnit($a,$b,$c,$d,$e)
+    {
+        $this->db->select('
+                a.id_unit, a.no_mesin, a.no_rangka, 
+                a.type, a.tahun, a.kode_item, a.umur_unit, 
+                a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
+                a.buku_service, a.aki, a.status_unit, 
+                b.nama_cabang, c.nama_lokasi, a.tanggal_audit, a.foto,
+                a.keterangan, a.is_ready
+        
+        ');
+            $this->db->from('unit a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where('a.id_cabang', $a);
+            $this->db->where('a.status_unit', $d);
+
+            $this->db->where("a.tanggal_audit BETWEEN '$b' AND '$c'");
+            $this->db->limit(15);
+            $this->db->offset($e);
+            
+            return $this->db->get()->result();
+        
     }
 
 }

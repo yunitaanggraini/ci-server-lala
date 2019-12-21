@@ -13,7 +13,7 @@ function db_master($ip, $username, $password, $db){
         'dbdriver' => 'sqlsrv',
         'dbprefix' => '',
         'pconnect' => FALSE,
-        'db_debug' => (ENVIRONMENT !== 'production'),
+        'db_debug' => FALSE,
         'cache_on' => FALSE,
         'cachedir' => '',
         'char_set' => 'utf8',

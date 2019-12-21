@@ -229,9 +229,10 @@ function __construct() {
     public function Unit_get()
     {
         $id= $this->get('id');
+        $offset = $this->get('offset');
         
         if ($id===null) {
-            $unit= $this->munit->GetUnit();
+            $unit= $this->munit->GetUnit(null,$offset);
             
         }else{
             $unit= $this->munit->GetUnit($id);
@@ -329,14 +330,14 @@ function __construct() {
             'helm' => $this->put('helm'),
             'status_unit' => $this->put('status'),
             'keterangan' => $this->put('keterangan'),
-            'edit_by' => $this->post('user',true),
+            'edit_by' => $this->put('user'),
             'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->maudit->EditList($id,$data)) {
                 $this->response([
@@ -347,7 +348,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
         
@@ -800,44 +801,52 @@ function __construct() {
         }
         $config_app = db_master($ip,$this->username,$this->password, $this->database);
         $this->mtempunit->app_db = $this->load->database($config_app,TRUE);
-
-        $cabang = $this->get('id_cabang');
-        $list =$this->mtempunit->getTempUnit(null,$cabang);
-       if ($list!=false) {
-        $this->response([
-            'status' => false,
-            'data' => "Already Donwloaded"
-        ], REST_Controller::HTTP_OK);
-       }else{
-           $postunit = $this->mtempunit->getDataUnit($cabang);
-           $i=$this->mcount->CountTempUnit();
-           foreach ($postunit as $res) {
-                //    var_dump($post['no_rangka']);
-               $i++;
-               $data =[
-                   'id_unit' => $i,
-                   'no_mesin' => $res['no_mesin'],
-                   'no_rangka' => $res['no_rangka'],
-                   'id_cabang' => $res['kd_dealer'],
-                   'id_lokasi' => $res['kd_gudang'],
-                   'kode_item' => $res['kd_item'],
-                   'type' => $res['sub_kategori'],
-                   'tahun' => $res['THN_PERAKITAN']
-               ];
-               $download = $this->mtempunit->addTempUnit($data);
-           }
-           if ($download) {
-               $this->response([
-                   'status' => true,
-                   'data' => "Data Downloaded"
-               ], REST_Controller::HTTP_OK);
+        $cekConfig = $this->mtempunit->app_db->initialize();
+        if (!$cekConfig) {
+            $this->response([
+                'status' => false,
+                'data' => "Database not connected!"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $cabang = $this->get('id_cabang');
+            $list =$this->mtempunit->getTempUnit(null,$cabang);
+           if ($list!=false) {
+            $this->response([
+                'status' => false,
+                'data' => "Already Donwloaded"
+            ], REST_Controller::HTTP_OK);
            }else{
-               $this->response([
-                   'status' => false,
-                   'data' => "Failed to post"
-               ], REST_Controller::HTTP_OK);
+               $postunit = $this->mtempunit->getDataUnit($cabang);
+               $i=$this->mcount->CountTempUnit();
+               foreach ($postunit as $res) {
+                    //    var_dump($post['no_rangka']);
+                   $i++;
+                   $data =[
+                       'id_unit' => $i,
+                       'no_mesin' => $res['no_mesin'],
+                       'no_rangka' => $res['no_rangka'],
+                       'id_cabang' => $res['kd_dealer'],
+                       'id_lokasi' => $res['kd_gudang'],
+                       'kode_item' => $res['kd_item'],
+                       'type' => $res['sub_kategori'],
+                       'tahun' => $res['THN_PERAKITAN']
+                   ];
+                   $download = $this->mtempunit->addTempUnit($data);
+               }
+               if ($download) {
+                   $this->response([
+                       'status' => true,
+                       'data' => "Data Downloaded"
+                   ], REST_Controller::HTTP_OK);
+               }else{
+                   $this->response([
+                       'status' => false,
+                       'data' => "Failed to post"
+                   ], REST_Controller::HTTP_OK);
+               }
            }
-       }
+        }
+
     }
 
     public function CountDataUnit_get()
@@ -958,6 +967,51 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $cetak
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+
+    public function countunit_get()
+    {
+        $a= $this->get('id_cabang');
+        $b= $this->get('tgl_awal');
+        $c=$this->get('tgl_akhir');
+        $d= $this->get('status');
+            $count= $this->mcount->countunit($a,$b,$c,$d);
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function previewUnit_get()
+    {
+        $cabang= $this->get('id_cabang');
+        $tanggal_akhir= $this->get('tanggal_akhir');
+        $tanggal_awal= $this->get('tanggal_awal');
+        $status = $this->get('status');
+        $offset = $this->get('offset');
+        
+        $tampil= $this->munit->previewUnit($cabang, $tanggal_awal, $tanggal_akhir,$status,$offset);
+        if ($tampil) {
+            $this->response([
+                'status' => true,
+                'data' => $tampil
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([

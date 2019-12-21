@@ -127,7 +127,7 @@ class M_Audit extends CI_Model {
                 a.type, a.tahun, a.kode_item, a.umur_unit, 
                 a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
                 a.buku_service, a.aki, a.status_unit, 
-                b.nama_cabang, c.nama_lokasi
+                b.nama_cabang, c.nama_lokasi, a.keterangan
         
         ');
             $this->db->from('unit a');
@@ -142,7 +142,7 @@ class M_Audit extends CI_Model {
                 a.type, a.tahun, a.kode_item, a.umur_unit, 
                 a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
                 a.buku_service, a.aki, a.status_unit, 
-                b.nama_cabang, c.nama_lokasi
+                b.nama_cabang, c.nama_lokasi,a.keterangan
         
         ');
             $this->db->from('unit a');
@@ -162,7 +162,7 @@ class M_Audit extends CI_Model {
                 a.type, a.tahun, a.kode_item, a.umur_unit, 
                 a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
                 a.buku_service, a.aki, a.status_unit, 
-                b.nama_cabang, c.nama_lokasi
+                b.nama_cabang, c.nama_lokasi, a.keterangan
         
         ');
         $this->db->from('unit a');
@@ -210,7 +210,7 @@ class M_Audit extends CI_Model {
     { 
         $query = "
             INSERT INTO unit (id_unit, no_mesin, no_rangka, id_cabang, id_lokasi, type, kode_item, tahun, tanggal_audit) 
-            SELECT id_unit, no_mesin, no_rangka,id_cabang, id_lokasi, type, kode_item, tahun, date(now()) as tanggal_audit
+            SELECT id_unit, no_mesin, no_rangka,id_cabang, id_lokasi, type, kode_item, tahun,  CONVERT(date,GETDATE()) as tanggal_audit
             FROM temp_unit a 
             WHERE a.no_rangka NOT IN (
                 SELECT no_rangka FROM unit)
