@@ -125,11 +125,6 @@ class M_user extends CI_Model {
         
     }
 
-    public function UserPagination($limit, $offset)
-    {
-       $limit = 'SELECT * FROM user ORDER BY 1 OFFSET 10 ROWS FETCH NEXT 15 ROWS ONLY';
-    }
-
 }
 
 /* End of file M_user.php */

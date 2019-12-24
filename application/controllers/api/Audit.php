@@ -13,6 +13,7 @@ public $database;
 function __construct() {
     parent::__construct();
     $this->load->model('audit/m_audit','maudit');
+    $this->load->model('audit/m_aksesoris','maksesoris');
     $this->load->model('audit/m_part','mpart');
     $this->load->model('audit/m_unit','munit');
     $this->load->model('audit/m_tempunit','mtempunit');
@@ -200,6 +201,32 @@ function __construct() {
             }
         }
     }
+    public function Auditmed_put()
+    {
+        $id =$this->put('idjadwal_audit');
+
+        $data=[
+                'method' => $this->put('method',true)
+        ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->maudit->editAuditket($data, $id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Data Audit has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
 
     public function Part_get()
     {
@@ -314,25 +341,50 @@ function __construct() {
     public function listaud_put()
     {
         $id= $this->put('id');
-        $data =[
-            'no_mesin' => $this->put('no_mesin'),
-            'no_rangka' => $this->put('no_rangka'),
-            'umur_unit' => $this->put('umur_unit'),
-            'tahun' => $this->put('tahun'),
-            'type' => $this->put('type'),
-            'kode_item' => $this->put('kode_item'),
-            'id_lokasi' => $this->put('id_lokasi'),
-            'id_cabang' => $this->put('id_cabang'),
-            'aki' => $this->put('aki'),
-            'spion' => $this->put('spion'),
-            'tools' => $this->put('tools'),
-            'buku_service' => $this->put('buku_service'),
-            'helm' => $this->put('helm'),
-            'status_unit' => $this->put('status'),
-            'keterangan' => $this->put('keterangan'),
-            'edit_by' => $this->put('user'),
-            'tanggal_edit' => $this->_tgl
-        ];
+        $foto = $this->put('foto');
+        if ($foto==null) {
+            $data =[
+                'no_mesin' => $this->put('no_mesin'),
+                'no_rangka' => $this->put('no_rangka'),
+                'umur_unit' => $this->put('umur_unit'),
+                'tahun' => $this->put('tahun'),
+                'type' => $this->put('type'),
+                'kode_item' => $this->put('kode_item'),
+                'id_lokasi' => $this->put('id_lokasi'),
+                'id_cabang' => $this->put('id_cabang'),
+                'aki' => $this->put('aki'),
+                'spion' => $this->put('spion'),
+                'tools' => $this->put('tools'),
+                'buku_service' => $this->put('buku_service'),
+                'helm' => $this->put('helm'),
+                'status_unit' => $this->put('status'),
+                'keterangan' => $this->put('keterangan'),
+                'edit_by' => $this->put('user'),
+                'tanggal_edit' => $this->_tgl
+            ];
+        }else{
+            $data =[
+                'no_mesin' => $this->put('no_mesin'),
+                'no_rangka' => $this->put('no_rangka'),
+                'umur_unit' => $this->put('umur_unit'),
+                'tahun' => $this->put('tahun'),
+                'type' => $this->put('type'),
+                'kode_item' => $this->put('kode_item'),
+                'id_lokasi' => $this->put('id_lokasi'),
+                'id_cabang' => $this->put('id_cabang'),
+                'aki' => $this->put('aki'),
+                'spion' => $this->put('spion'),
+                'tools' => $this->put('tools'),
+                'buku_service' => $this->put('buku_service'),
+                'helm' => $this->put('helm'),
+                'status_unit' => $this->put('status'),
+                'keterangan' => $this->put('keterangan'),
+                'foto' => $this->put('foto'),
+                'edit_by' => $this->put('user'),
+                'tanggal_edit' => $this->_tgl
+            ];
+            
+        }
         if ($id===null) {
             $this->response([
                 'status' => false,
@@ -1012,6 +1064,190 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $tampil
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    //=============================AKSESORIS==============================//
+    public function Aksesoris_get()
+    {
+        $id = $this->get('id');
+
+        if ($id===null) {
+            $aksesoris = $this->maksesoris->GetAksesoris();
+        }else{
+            $aksesoris = $this->maksesoris-GetAksesoris($id);
+        }
+
+        if ($aksesoris) {
+            $this->response([
+                'status' => true,
+                'data' => $aksesoris
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Aksesoris_post()
+    {
+        $data=[
+            'id_aksesoris'  => $this->post('id_aksesoris',true),
+            'id_cabang'     => $this->post('id_cabang', true),
+            'id_lokasi'     => $this->post('id_lokasi', true),
+            'aki'           => $this->post('aki', true),
+            'spion'         => $this->post('spion', true),
+            'helm'          => $this->post('helm', true),
+            'tools'         => $this->post('tools', true),
+            'buku_service'  => $this->post('buku_service', true),
+            'input_by'      => $this->post('user',true),
+            'tanggal_input' => $this->_tgl
+        ];
+
+        if ($this->maksesoris->AddAksesoris($data)) {
+            $this->response([
+                'status' => true,
+                'data' => "Aksesoris has been created"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "failed."
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function Aksesoris_put()
+    {
+        $id =$this->put('id');       
+        $data=[
+                'id_cabang'     => $this->put('id_cabang', true),
+                'id_lokasi'     => $this->put('id_lokasi', true),
+                'aki'           => $this->put('aki', true),
+                'spion'         => $this->put('spion', true),
+                'helm'          => $this->put('helm', true),
+                'tools'         => $this->put('tools', true),
+                'buku_service'  => $this->put('buku_service', true),
+                'edit_by'       => $this->post('user',true),
+                'tanggal_edit'  => $this->_tgl
+        ];  
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else {
+            if ($this->maksesoris->editAksesoris($data,$id)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Aksesoris has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function Aksesoris_delete()
+    {
+        $id= $this->delete('id');
+        
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'message' => 'need id'
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            if ($this->maksesoris->delAksesoris($id)) {
+                $this->response([
+                    'status' => true,
+                    'id' => $id,
+                    'message'=> 'deleted.'
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'message' => 'ID not found.'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function cariAksesoris_get()
+    {
+        $id= $this->get('aksesoris');
+        
+        if ($id===null) {
+            $aksesoris= $this->maksesoris->cariAksesoris();
+            
+        }else{
+            $aksesoris= $this->maksesoris->cariAksesoris($id);
+        }
+        if ($aksesoris) {
+            $this->response([
+                'status' => true,
+                'data' => $aksesoris
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    public function Aksesoriscount_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $aksesoris= $this->maksesoris->Countaksesoris();
+        }
+
+        if ($aksesoris) {
+            $this->response([
+                'status' => true,
+                'data' => $aksesoris
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+
+    //===================================================================//
+
+    public function cariscanunit_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $scanunit= $this->maudit->cariscanunit();
+            
+        }else{
+            $scanunit= $this->mscanunit->cariscanunit($id);
+        }
+        if ($scanunit) {
+            $this->response([
+                'status' => true,
+                'data' => $scanunit
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([

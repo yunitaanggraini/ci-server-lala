@@ -161,7 +161,7 @@ class M_Count extends CI_Model {
             $this->db->where('a.id_cabang', $a);
             $this->db->where('a.status_unit', $d);
 
-            $this->db->where("a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c' ");
+            $this->db->where("(a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c') ");
 
             $count =$this->db->get();
 

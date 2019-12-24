@@ -25,7 +25,7 @@ class M_Unit extends CI_Model {
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
             $this->db->limit(15);
             $this->db->offset($offset);
-            $this->db->where('id_unit', $id);
+            $this->db->where('no_mesin',$id);
             
             
             
@@ -96,7 +96,7 @@ class M_Unit extends CI_Model {
             $this->db->where('a.id_cabang', $a);
             $this->db->where('a.status_unit', $d);
 
-            $this->db->where("a.tanggal_audit BETWEEN '$b' AND '$c'");
+            $this->db->where("(a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c')");
             $this->db->limit(15);
             $this->db->offset($e);
             

@@ -273,9 +273,21 @@ class M_Audit extends CI_Model {
             return $result;
         
     }
+}
+
+        public function cariscanunit($id = null)
+        {
+        if ($id === null) {
+            return false;
+        }else{
+            $this->db->like('scanunit',$id);
+            $result=$this->db->get('temp_unit')->result();
+            return $result;
+        }
+        }
 
     
 
-}
+
 }
 ?>
