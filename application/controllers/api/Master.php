@@ -163,18 +163,32 @@ function __construct() {
         $iv = substr(hash('sha256', $iv_key), 0, 16);
         $output = openssl_encrypt($pass, $encrypt_method, $key, 0, $iv);
         $password = base64_encode($output);
-        $data=[
-            'username' => $this->put('username',true),
-                'nama' => $this->put('nama',true),
-                'password' => $password,
-                'id_usergroup' => $this->put('id_usergroup',true),
-                'id_perusahaan' => $this->put('id_perusahaan',true),
-                'id_lokasi' => $this->put('id_lokasi',true),
-                'id_cabang' => $this->put('id_cabang',true),
-                'status' => $this->put('status',true),
-                'edit_by' => $this->post('user',true),
-                'tanggal_edit' => $this->_tgl
-        ];
+        if ($pass==null) {
+            $data=[
+                'username' => $this->put('username',true),
+                    'nama' => $this->put('nama',true),
+                    'id_usergroup' => $this->put('id_usergroup',true),
+                    'id_perusahaan' => $this->put('id_perusahaan',true),
+                    'id_lokasi' => $this->put('id_lokasi',true),
+                    'id_cabang' => $this->put('id_cabang',true),
+                    'status' => $this->put('status',true),
+                    'edit_by' => $this->post('user',true),
+                    'tanggal_edit' => $this->_tgl
+            ];
+        }else{
+            $data=[
+                'username' => $this->put('username',true),
+                    'nama' => $this->put('nama',true),
+                    'password' => $password,
+                    'id_usergroup' => $this->put('id_usergroup',true),
+                    'id_perusahaan' => $this->put('id_perusahaan',true),
+                    'id_lokasi' => $this->put('id_lokasi',true),
+                    'id_cabang' => $this->put('id_cabang',true),
+                    'status' => $this->put('status',true),
+                    'edit_by' => $this->post('user',true),
+                    'tanggal_edit' => $this->_tgl
+            ];
+        }
         if ($id===null) {
             $this->response([
                 'status' => false,

@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_user extends CI_Model {
 
-    public function getUser($id=null,$offset)
+    public function getUser($id=null, $offset=null)
     {
         if ($id === null) {
             $this->db->select('user.*, user_group, nama_perusahaan, nama_cabang, nama_lokasi ');
@@ -29,9 +29,6 @@ class M_user extends CI_Model {
             $this->db->join('cabang', 'user.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('user_group', 'user.id_usergroup = user_group.id_usergroup', 'left');
             $this->db->where('nik', $id);
-            $this->db->limit(15);
-            $this->db->offset($offset);
-            
             
             $result = $this->db->get()->result();
 

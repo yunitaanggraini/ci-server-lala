@@ -35,6 +35,58 @@ class M_Unit extends CI_Model {
         }
         
     }
+    public function getUnitValid($id=null, $offset=null,$tgl_awal=null, $tgl_akhir=null)
+    {
+        if ($id === null) {
+            $this->db->select('unit.*,nama_cabang, nama_lokasi');
+            $this->db->from('unit');
+            $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->limit(15);
+            $this->db->offset($offset);
+             
+            $result = $this->db->get()->result();
+
+            return $result;
+        }elseif($id!=null && $tgl_awal==null) {
+            $this->db->select('unit.*,nama_cabang, nama_lokasi');
+            $this->db->from('unit');
+            $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->limit(15);
+            $this->db->offset($offset);
+            $this->db->where('unit.id_cabang',$id);
+            
+            $result = $this->db->get()->result();
+
+            return $result;
+        }elseif($id!=null && $tgl_awal!=null&&$offset==null){
+            $this->db->select('unit.*,nama_cabang, nama_lokasi');
+            $this->db->from('unit');
+            $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->where('unit.id_cabang',$id);
+            $this->db->where("unit.tanggal_audit BETWEEN '$tgl_awal' AND '$tgl_akhir'");
+            
+            $result = $this->db->get()->result();
+
+            return $result;
+        }elseif($id!=null && $tgl_awal!=null) {
+            $this->db->select('unit.*,nama_cabang, nama_lokasi');
+            $this->db->from('unit');
+            $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
+            $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->limit(15);
+            $this->db->offset($offset);
+            $this->db->where('unit.id_cabang',$id);
+            $this->db->where("unit.tanggal_audit BETWEEN '$tgl_awal' AND '$tgl_akhir'");
+            
+            $result = $this->db->get()->result();
+
+            return $result;
+        }
+        
+    }
     public function getUnitReady($id = null, $cabang= null)
     {
         if ($id===null) {
@@ -93,10 +145,9 @@ class M_Unit extends CI_Model {
             $this->db->from('unit a');
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
-            $this->db->where('a.id_cabang', $a);
-            $this->db->where('a.status_unit', $d);
 
-            $this->db->where("(a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c')");
+            $this->db->where("a.id_cabang='$a'AND a.status_unit='$d' AND
+            (a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c')");
             $this->db->limit(15);
             $this->db->offset($e);
             

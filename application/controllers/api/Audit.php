@@ -248,8 +248,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
+            ], REST_Controller::HTTP_OK); 
         }
     }
 
@@ -303,12 +302,12 @@ function __construct() {
     }
     public function listaud_post()
     {
+        $id = $this->post('no_mesin');
         $data =[
-            'id_unit' => $this->post('id_unit'),
             'no_mesin' => $this->post('no_mesin'),
             'no_rangka' => $this->post('no_rangka'),
             'umur_unit' => $this->post('umur_unit'),
-            'tahun' => $this->put('tahun'),
+            'tahun' => $this->post('tahun'),
             'id_lokasi' => $this->post('id_lokasi'),
             'id_cabang' => $this->post('id_cabang'),
             'type' => $this->post('type'),
@@ -325,7 +324,12 @@ function __construct() {
             'foto' => $this->post('foto'),
             'tanggal_audit' => $this->_tgl
         ];
-        if ($this->maudit->AddList($data)) {
+        if ($id===null) {
+            $listaud = null;
+        }else{
+            $listaud = $this->maudit->AddList($data);
+        }
+        if ($listaud) {
             $this->response([
                 'status' => true,
                 'data' => "Data Audit has been created"
@@ -509,6 +513,35 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $tempunit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function UnitValid_get()
+    {
+        $cabang= $this->get('id_cabang');
+        $tgl_awal= $this->get('tgl_awal');
+        $tgl_akhir= $this->get('tgl_akhir');
+        $offset= $this->get('offset');
+        if ($cabang===null) {
+            $unit= null;
+            
+        }elseif($cabang!=null && $tgl_awal==null){
+            $unit= $this->munit->GetUnitValid($cabang,$offset,null,null);
+        }elseif($cabang!=null && $tgl_awal!=null&&$offset==null){
+            $unit= $this->munit->GetUnitValid($cabang,null,$tgl_awal,$tgl_akhir);
+        }elseif($cabang!=null && $tgl_awal!=null){
+            $unit= $this->munit->GetUnitValid($cabang,$offset,$tgl_awal,$tgl_akhir);
+        }
+        if ($unit!=null) {
+            $this->response([
+                'status' => true,
+                'data' => $unit
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
@@ -1050,6 +1083,25 @@ function __construct() {
             
         }
     }
+    public function countunitvalid_get()
+    {
+        $a= $this->get('id_cabang');
+        $b= $this->get('tgl_awal');
+        $c=$this->get('tgl_akhir');
+            $count= $this->mcount->countunitvalid($a,$b,$c);
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
 
     public function previewUnit_get()
     {
@@ -1058,7 +1110,6 @@ function __construct() {
         $tanggal_awal= $this->get('tanggal_awal');
         $status = $this->get('status');
         $offset = $this->get('offset');
-        
         $tampil= $this->munit->previewUnit($cabang, $tanggal_awal, $tanggal_akhir,$status,$offset);
         if ($tampil) {
             $this->response([
@@ -1242,7 +1293,7 @@ function __construct() {
             $scanunit= $this->maudit->cariscanunit();
             
         }else{
-            $scanunit= $this->mscanunit->cariscanunit($id);
+            $scanunit= $this->maudit->cariscanunit($id);
         }
         if ($scanunit) {
             $this->response([
