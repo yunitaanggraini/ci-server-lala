@@ -200,6 +200,17 @@ class M_Count extends CI_Model {
         
     }
 
+    public function CountOffice()
+    {
+        $count =$this->db->get('transaksi_inventory');
+
+        if ($count->num_rows()>0) {
+            return $count->num_rows();
+        } else {
+            return 0;
+        }
+    }
+
 
 
 }

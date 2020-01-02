@@ -172,7 +172,7 @@ function __construct() {
                     'id_lokasi' => $this->put('id_lokasi',true),
                     'id_cabang' => $this->put('id_cabang',true),
                     'status' => $this->put('status',true),
-                    'edit_by' => $this->post('user',true),
+                    'edit_by' => $this->put('user',true),
                     'tanggal_edit' => $this->_tgl
             ];
         }else{
@@ -185,7 +185,7 @@ function __construct() {
                     'id_lokasi' => $this->put('id_lokasi',true),
                     'id_cabang' => $this->put('id_cabang',true),
                     'status' => $this->put('status',true),
-                    'edit_by' => $this->post('user',true),
+                    'edit_by' => $this->put('user',true),
                     'tanggal_edit' => $this->_tgl
             ];
         }
@@ -1321,10 +1321,10 @@ function __construct() {
         $id= $this->get('id');
         
         if ($id===null) {
-            $vendor= $this->mvendor->GetVendorPagination();
+            $vendor= $this->mvendor->GetVendor();
             
         }else{
-            $vendor= $this->mvendor->GetVendorPagination($id);
+            $vendor= $this->mvendor->GetVendor($id);
 
         }
         if ($vendor) {

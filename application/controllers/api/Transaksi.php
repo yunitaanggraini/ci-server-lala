@@ -16,6 +16,7 @@
         $this->load->model('master/m_vendor','mvendor');
         $this->load->model('master/m_cabang','mcabang');
         $this->load->model('master/m_lokasi','mlokasi');
+        $this->load->model('master/m_count','mcount');
         $this->load->model('master/m_lokasi_cabang','mlokasicabang');
         $this->_tgl = date('Y-m-d');
         }
@@ -380,6 +381,27 @@
                     'data' => "failed."
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
+        }
+    }
+
+    public function countOffice_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $office= $this->mcount->countoffice();
+        }
+        if ($office) {
+            $this->response([
+                'status' => true,
+                'data' => $office
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
         }
     }
 

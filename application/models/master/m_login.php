@@ -12,6 +12,8 @@ class M_login extends CI_Model {
         $this->db->join('cabang', 'cabang.id_cabang = user.id_cabang', 'left');
         $this->db->join('lokasi', 'lokasi.id_lokasi = user.id_lokasi', 'left');
         $this->db->where('username', $username);
+        $this->db->where("status='Aktif'");
+        
         
         return $this->db->get()->result();
         
