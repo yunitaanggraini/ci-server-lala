@@ -30,7 +30,8 @@
         }else{
             $listinv = $this->minv->getInv($id);
         }
-
+        // $listinv = $this->minv->getInv();
+        // var_dump($listinv);
         if ($listinv) {
             $this->response([
                 'status' => true,
@@ -290,7 +291,7 @@
                 'tanggal_barang_diterima' => $this->post('tanggal_barang_diterima',true),
                 'id_vendor' => $this->post('id_vendor',true),
                 'jenis_pembayaran' => $this->post('jenis_pembayaran',true),
-                'id_cabang' => $this->post('id_cabang',true),
+                // 'id_cabang' => $this->post('id_cabang',true),
                 'id_lokasi' => $this->post('id_lokasi',true),
                 'nama_pengguna' => $this->post('nama_pengguna',true),              
                 'keterangan' => $this->post('keterangan',true),
@@ -306,13 +307,15 @@
                 'cicilan_perbulan' => $this->post('cicilan_perbulan',true),
                 'tenor' => $this->post('tenor',true),
                 'nilai_total' => $this->post('nilai_total',true),
+                'no_mesin' => $this->post('no_mesin',true),
+                'no_rangka' => $this->post('rangka',true),
                 // 'barcode' => $this->post('barcode',true),
                 // 'qrcode' => $this->post('qrcode',true),
-                'input_by'=> $this->post('input_by',true),
+                'input_by'=> $this->post('user',true),
                 'tanggal_input' =>$this->_tgl
                 
         ];
-    
+        // var_dump($data);die;
             if ($this->minv->AddInv($data)) {
                 $this->response([
                     'status' => true,
@@ -329,6 +332,7 @@
 
     public function Inv_put()
     {
+        $id = $this->put('id');
         $data=[
             'idtransaksi_inv' => $this->put('idtransaksi_inv',true),
                 'idstatus_inventory' => $this->put('idstatus_inventory',true),

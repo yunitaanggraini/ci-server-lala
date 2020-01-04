@@ -560,7 +560,7 @@ function __construct() {
         if ($id===null) {
             $jenisinv= $this->mcount->countjenisinv();
         }
-        if ($count) {
+        if ($jenisinv) {
             $this->response([
                 'status' => true,
                 'data' => $jenisinv

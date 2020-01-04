@@ -75,9 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'WKWK\SQLEXPRESS',
-	'username' => '',
-	'password' => '',
+	'hostname' => 'ANON\SQLEXPRESS',
+	'username' => 'sa',
+	'password' => 'admin1234',
 	'database' => 'sim_audit',
 	'dbdriver' => 'sqlsrv',
 	'dbprefix' => '',

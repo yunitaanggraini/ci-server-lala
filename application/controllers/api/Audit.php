@@ -535,7 +535,7 @@ function __construct() {
             $unit= $this->munit->GetUnitValid($cabang,$offset,null,null);
         }elseif($cabang!=null && $tgl_awal!=null&&$offset==null){
             $unit= $this->munit->GetUnitValid($cabang,null,$tgl_awal,$tgl_akhir);
-        }elseif($cabang!=null && $tgl_awal!=null){
+        }elseif($cabang!=null && $tgl_awal!=null &&$offset!=null){
             $unit= $this->munit->GetUnitValid($cabang,$offset,$tgl_awal,$tgl_akhir);
         }
         if ($unit!=null) {
@@ -1083,6 +1083,23 @@ function __construct() {
             
         }
     }
+    public function countunit1_get()
+    {
+        $a= $this->get('id_cabang');
+            $count= $this->mcount->countunit1($a);
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
     public function countunitvalid_get()
     {
         $a= $this->get('id_cabang');
@@ -1133,7 +1150,7 @@ function __construct() {
         if ($id===null) {
             $aksesoris = $this->maksesoris->GetAksesoris();
         }else{
-            $aksesoris = $this->maksesoris-GetAksesoris($id);
+            $aksesoris = $this->maksesoris->GetAksesoris($id);
         }
 
         if ($aksesoris) {
