@@ -122,10 +122,10 @@ function __construct() {
         $data=[
                 'idjadwal_audit' => $this->post('idjadwal_audit',true),
                 'auditor' => $this->post('auditor',true),
-                'tanggal' => $this->post('tanggal', true),
-                'waktu' => $this->post('waktu', true),
-                'idjenis_audit' => $this->post('idjenis_audit', true),
-                'id_cabang' => $this->post('id_cabang', true),
+                'tanggal' => $this->post('tanggal'),
+                'waktu' => $this->post('waktu'),
+                'idjenis_audit' => $this->post('idjenis_audit'),
+                'id_cabang' => $this->post('id_cabang'),
                 'keterangan' => 'waiting',
                 'input_by' => $this->post('user',true),
                 'tanggal_input' => $this->_tgl
@@ -148,11 +148,11 @@ function __construct() {
         $id =$this->put('idjadwal_audit');
 
         $data=[
-            'tanggal' => $this->put('tanggal', true),
-                'waktu' => $this->put('waktu', true),
-                'idjenis_audit' => $this->put('idjenis_audit', true),
-                'id_lokasi' => $this->put('id_lokasi', true),
-                'id_cabang' => $this->put('id_cabang', true),
+            'tanggal' => $this->put('tanggal'),
+                'waktu' => $this->put('waktu'),
+                'idjenis_audit' => $this->put('idjenis_audit'),
+                'id_lokasi' => $this->put('id_lokasi'),
+                'id_cabang' => $this->put('id_cabang'),
                 'keterangan' => 'waiting',
                 'tanggal_edit' => $this->_tgl
         ];
@@ -180,7 +180,8 @@ function __construct() {
         $id =$this->put('idjadwal_audit');
 
         $data=[
-                'keterangan' => $this->put('keterangan',true)
+                'keterangan' => $this->put('keterangan',true),
+                'tanggal_edit' => $this->_tgl
         ];
         if ($id===null) {
             $this->response([
@@ -277,6 +278,7 @@ function __construct() {
             
         }
     }
+    //====================AUDIT UNIT
     public function listaud_get()
     {
         $id = $this->get('id');
@@ -361,6 +363,7 @@ function __construct() {
                 'tools' => $this->put('tools'),
                 'buku_service' => $this->put('buku_service'),
                 'helm' => $this->put('helm'),
+                'is_ready' => $this->put('is_ready'),
                 'status_unit' => $this->put('status'),
                 'keterangan' => $this->put('keterangan'),
                 'edit_by' => $this->put('user'),
@@ -409,7 +412,90 @@ function __construct() {
         }
         
     }
+    //========================AUDIT PART
+    public function listaudPart_get()
+    {
+        $id = $this->get('id');
+        $cabang = $this->get('id_cabang');
+        if ($id===null) {
+            $aud = $this->maudit->GetListPart();
+        }else{
+            $aud = $this->maudit->GetListPart($id,$cabang);
+        }
 
+        if ($aud) {
+            $this->response([
+                'status' => true,
+                'data' => $aud
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function listaudPart_post()
+    {
+        $id = $this->post('part_number');
+        $data =[
+            'id_cabang' => $this->post('id_cabang'),
+            'id_lokasi' => $this->post('id_lokasi'),
+            'part_number' => $this->post('part_number'),
+            'kd_lokasi_rak' => $this->post('kd_lokasi_rak'),
+            'deskripsi' => $this->post('deskripsi'),
+            'qty' => $this->post('qty'),
+            'audit_by' => $this->post('user'),
+            'tanggal_audit' => $this->_tgl
+        ];
+        if ($id===null) {
+            $listaud = null;
+        }else{
+            $listaud = $this->maudit->AddListPart($data);
+        }
+        if ($listaud) {
+            $this->response([
+                'status' => true,
+                'data' => "Data Audit has been created"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "failed."
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+        
+    }
+    public function listaudpart_put()
+    {
+        $id= $this->put('id');
+            $data =[
+                'qty' =>$this->put('qty'),
+                'edit_by' => $this->put('user'),
+                'tanggal_edit' => $this->_tgl
+            ];
+        if ($id===null) {
+            $this->response([
+                'status' => false,
+                'data' => "need id"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            if ($this->maudit->EditListPart($id,$data)) {
+                $this->response([
+                    'status' => true,
+                    'data' => "Data Audit has been modified"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    'status' => false,
+                    'data' => "failed."
+                ], REST_Controller::HTTP_OK);
+            }
+        }
+        
+    }
+    //======================LIST AUDIT UNIT
     public function List_get()
     {
         $id = $this->get('id');
@@ -419,6 +505,31 @@ function __construct() {
             
         }else{
             $list= $this->maudit->GetAuList($id,$cabang);
+        }
+        
+        if ($list) {
+            $this->response([
+                'status' => true,
+                'data' => $list
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    //======================LIST AUDIT PART
+    public function ListPart_get()
+    {
+        $id = $this->get('id');
+        $cabang = $this->get('id_cabang');
+        if ($id=== null) {
+            $list= $this->maudit->GetAuListPart(null,$cabang);
+            
+        }else{
+            $list= $this->maudit->GetAuListPart($id,$cabang);
         }
         
         if ($list) {
@@ -542,6 +653,35 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $unit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function partValid_get()
+    {
+        $cabang= $this->get('id_cabang');
+        $tgl_awal= $this->get('tgl_awal');
+        $tgl_akhir= $this->get('tgl_akhir');
+        $offset= $this->get('offset');
+        if ($cabang===null) {
+            $part= null;
+            
+        }elseif($cabang!=null && $tgl_awal==null){
+            $part= $this->mpart->GetPartValid($cabang,$offset,null,null);
+        }elseif($cabang!=null && $tgl_awal!=null&&$offset==null){
+            $part= $this->mpart->GetPartValid($cabang,null,$tgl_awal,$tgl_akhir);
+        }elseif($cabang!=null && $tgl_awal!=null &&$offset!=null){
+            $part= $this->mpart->GetPartValid($cabang,$offset,$tgl_awal,$tgl_akhir);
+        }
+        if ($part!=null) {
+            $this->response([
+                'status' => true,
+                'data' => $part
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
@@ -745,32 +885,32 @@ function __construct() {
     }
 
     //-----CARI-----///
-    public function cariJadwalAudit_get(){
-        $auditor= $this->get('auditor');
-        $tanggal_audit= $this->get('tanggal_audit');
-        $jenis_audit= $this->get('jenis_audit');
-        if ($auditor!= null && $tanggal_audit!=null && $jenis_audit!=null) {
-            $jadwal_audit = $this->maudit->carijadwalaudit($auditor,$tanggal_audit,$jenis_audit);
-        }elseif($auditor!=null&& $tanggal_audit==null&& $jenis_audit==null){
-            $jadwal_audit = $this->maudit->cariauditor($auditor);
-        }elseif ($auditor==null && $tanggal_audit!=null && $jenis_audit==null) {
-            $jadwal_audit = $this->maudit->caritanggalaudit($tanggal_audit);
-        }elseif ($auditor==null && $tanggal_audit==null && $jenis_audit!=null) {
-            $jadwal_audit = $this->maudit->carijenisaudit($jenis_audit);
-        }
-        if ($jadwal_audit) {
-            $this->response([
-                'status' => true,
-                'data' => $jadwal_audit
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'data' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
+    // public function cariJadwalAudit_get(){
+    //     $auditor= $this->get('auditor');
+    //     $tanggal_audit= $this->get('tanggal_audit');
+    //     $jenis_audit= $this->get('jenis_audit');
+    //     if ($auditor!= null && $tanggal_audit!=null && $jenis_audit!=null) {
+    //         $jadwal_audit = $this->maudit->carijadwalaudit($auditor,$tanggal_audit,$jenis_audit);
+    //     }elseif($auditor!=null&& $tanggal_audit==null&& $jenis_audit==null){
+    //         $jadwal_audit = $this->maudit->cariauditor($auditor);
+    //     }elseif ($auditor==null && $tanggal_audit!=null && $jenis_audit==null) {
+    //         $jadwal_audit = $this->maudit->caritanggalaudit($tanggal_audit);
+    //     }elseif ($auditor==null && $tanggal_audit==null && $jenis_audit!=null) {
+    //         $jadwal_audit = $this->maudit->carijenisaudit($jenis_audit);
+    //     }
+    //     if ($jadwal_audit) {
+    //         $this->response([
+    //             'status' => true,
+    //             'data' => $jadwal_audit
+    //         ], REST_Controller::HTTP_OK);
+    //     }else{
+    //         $this->response([
+    //             'status' => false,
+    //             'data' => 'Data not found.'
+    //         ], REST_Controller::HTTP_OK);
             
-        }
-    }
+    //     }
+    // }
     // cari MOBILE
     public function cariaudit_get()
     {
@@ -844,7 +984,8 @@ function __construct() {
             ], REST_Controller::HTTP_OK);
         }
     }
-    public function dataunit_get()
+    //=====================DATABASE KE 2 CONFIG==========================//
+    private function _getconfig()
     {
         $data = $this->mconfig->getUserConfig();
         foreach ($data as $d ) {
@@ -885,7 +1026,56 @@ function __construct() {
             $this->database = openssl_decrypt($db, $encrypt_method, $key, 0, $iv);
         }
         $config_app = db_master($ip,$this->username,$this->password, $this->database);
-        $this->mtempunit->app_db = $this->load->database($config_app,TRUE);
+        return $config_app;
+    }
+    public function datapart_get()
+    {
+        $this->mtemppart->app_db = $this->load->database($this->_getconfig(),TRUE);
+        $cekConfig = $this->mtemppart->app_db->initialize();
+        if (!$cekConfig) {
+            $this->response([
+                'status' => false,
+                'data' => "Database not connected!"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $cabang = $this->get('id_cabang');
+            // $cabang='T13';
+            $list =$this->mtemppart->getTempPart(null,$cabang);
+           if ($list!=false) {
+            $this->response([
+                'status' => false,
+                'data' => "Already Downloaded"
+            ], REST_Controller::HTTP_OK);
+           }else{
+               $postunit = $this->mtemppart->getDatapart($cabang);
+               foreach ($postunit as $res) {
+                   $data =[
+                       'id_cabang' => $res['KD_DEALER'],
+                       'id_lokasi' => $res['KD_GUDANG'],
+                       'kd_lokasi_rak' => $res['KD_RAKBIN'],
+                       'part_number' => $res['PART_NUMBER'],
+                       'deskripsi' => $res['PART_DESKRIPSI'],
+                       'qty' => $res['STOCK_OH']
+                   ];
+                   $download = $this->mtemppart->addTemppart($data);
+               }
+               if ($download) {
+                   $this->response([
+                       'status' => true,
+                       'data' => "Data Downloaded"
+                   ], REST_Controller::HTTP_OK);
+               }else{
+                   $this->response([
+                       'status' => false,
+                       'data' => "Failed to post"
+                   ], REST_Controller::HTTP_OK);
+               }
+           }
+        }
+    }
+    public function dataunit_get()
+    {
+        $this->mtempunit->app_db = $this->load->database($this->_getconfig(),TRUE);
         $cekConfig = $this->mtempunit->app_db->initialize();
         if (!$cekConfig) {
             $this->response([
@@ -894,11 +1084,12 @@ function __construct() {
             ], REST_Controller::HTTP_OK);
         }else{
             $cabang = $this->get('id_cabang');
+            // $cabang='T13';
             $list =$this->mtempunit->getTempUnit(null,$cabang);
            if ($list!=false) {
             $this->response([
                 'status' => false,
-                'data' => "Already Donwloaded"
+                'data' => "Already Downloaded"
             ], REST_Controller::HTTP_OK);
            }else{
                $postunit = $this->mtempunit->getDataUnit($cabang);
@@ -907,7 +1098,6 @@ function __construct() {
                     //    var_dump($post['no_rangka']);
                    $i++;
                    $data =[
-                       'id_unit' => $i,
                        'no_mesin' => $res['no_mesin'],
                        'no_rangka' => $res['no_rangka'],
                        'id_cabang' => $res['kd_dealer'],
@@ -953,6 +1143,24 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "Failed to post"
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+    public function CountAksesoris_get()
+    {
+        $lokasi = $this->get('id_lokasi');
+        $cabang = $this->get('id_cabang');
+        $statusUnit = $this->mcount->countAksesoris($cabang,$lokasi);
+
+        if ($statusUnit) {
+            $this->response([
+                'status' => true,
+                'data' => $statusUnit
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "data not found"
             ], REST_Controller::HTTP_OK);
         }
     }
@@ -1041,6 +1249,27 @@ function __construct() {
             
         }
     }
+    public function cetakUnitNotready_get()
+    {
+        $cabang= $this->get('id_cabang');
+        $tanggal_akhir= $this->get('tanggal_akhir');
+        $tanggal_awal= $this->get('tanggal_awal');
+        $ready = $this->get('is_ready');
+        
+            $cetak= $this->mlapdat->cetakUnitNotReady($cabang, $tanggal_awal, $tanggal_akhir,$ready);
+        if ($cetak) {
+            $this->response([
+                'status' => true,
+                'data' => $cetak
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
     public function LapUnit_get()
     {
         $cabang= $this->get('id_cabang');
@@ -1083,10 +1312,66 @@ function __construct() {
             
         }
     }
+    public function countunitnotready_get()
+    {
+        $a= $this->get('id_cabang');
+        $b= $this->get('tgl_awal');
+        $c=$this->get('tgl_akhir');
+        $d= $this->get('is_ready');
+            $count= $this->mcount->countunitnotready($a,$b,$c,$d);
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
     public function countunit1_get()
     {
         $a= $this->get('id_cabang');
             $count= $this->mcount->countunit1($a);
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function countpart1_get()
+    {
+        $a= $this->get('id_cabang');
+            $count= $this->mcount->countpart1($a);
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function countpartvalid_get()
+    {
+        $a= $this->get('id_cabang');
+        $b= $this->get('tgl_awal');
+        $c=$this->get('tgl_akhir');
+            $count= $this->mcount->countpartvalid($a,$b,$c);
         if ($count) {
             $this->response([
                 'status' => true,
@@ -1141,16 +1426,57 @@ function __construct() {
             
         }
     }
+    public function previewUnitNotReady_get()
+    {
+        $cabang= $this->get('id_cabang');
+        $tanggal_akhir= $this->get('tanggal_akhir');
+        $tanggal_awal= $this->get('tanggal_awal');
+        $ready = $this->get('is_ready');
+        $offset = $this->get('offset');
+        $tampil= $this->munit->previewUnitNotReady($cabang, $tanggal_awal, $tanggal_akhir,$ready,$offset);
+        if ($tampil) {
+            $this->response([
+                'status' => true,
+                'data' => $tampil
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function NotReady_get()
+    {
+        $no_mesin= $this->get('no_mesin');
+        $tampil= $this->munit->NotReady($no_mesin);
+        if ($tampil) {
+            $this->response([
+                'status' => true,
+                'data' => $tampil
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
 
     //=============================AKSESORIS==============================//
     public function Aksesoris_get()
     {
-        $id = $this->get('id');
+        $id = $this->get('id_cabang');
+        $tgl_awal = $this->get('tanggal_awal');
+        $tgl_akhir = $this->get('tanggal_akhir');
+        $offset= $this->get('offset');
 
-        if ($id===null) {
-            $aksesoris = $this->maksesoris->GetAksesoris();
+        if ($offset===null) {
+            $aksesoris = $this->maksesoris->GetAksesoris($id,$tgl_awal,$tgl_akhir);
         }else{
-            $aksesoris = $this->maksesoris->GetAksesoris($id);
+            $aksesoris = $this->maksesoris->GetAksesoris($id,$tgl_awal,$tgl_akhir,$offset);
         }
 
         if ($aksesoris) {
@@ -1169,20 +1495,25 @@ function __construct() {
 
     public function Aksesoris_post()
     {
+        $id=$this->post('id_cabang');
         $data=[
-            'id_aksesoris'  => $this->post('id_aksesoris',true),
-            'id_cabang'     => $this->post('id_cabang', true),
-            'id_lokasi'     => $this->post('id_lokasi', true),
-            'aki'           => $this->post('aki', true),
-            'spion'         => $this->post('spion', true),
-            'helm'          => $this->post('helm', true),
-            'tools'         => $this->post('tools', true),
-            'buku_service'  => $this->post('buku_service', true),
-            'input_by'      => $this->post('user',true),
+            'id_cabang'     => $this->post('id_cabang'),
+            'id_lokasi'     => $this->post('id_lokasi'),
+            'aki'           => $this->post('aki'),
+            'spion'         => $this->post('spion'),
+            'helm'          => $this->post('helm'),
+            'tools'         => $this->post('tools'),
+            'buku_service'  => $this->post('buku_service'),
+            'input_by'      => $this->post('user'),
             'tanggal_input' => $this->_tgl
         ];
+        if ($id===null) {
+            $postAksesoris = null;
+        }else{
+            $postAksesoris = $this->maksesoris->AddAksesoris($data);
+        }
 
-        if ($this->maksesoris->AddAksesoris($data)) {
+        if ($postAksesoris ) {
             $this->response([
                 'status' => true,
                 'data' => "Aksesoris has been created"
@@ -1199,14 +1530,14 @@ function __construct() {
     {
         $id =$this->put('id');       
         $data=[
-                'id_cabang'     => $this->put('id_cabang', true),
-                'id_lokasi'     => $this->put('id_lokasi', true),
-                'aki'           => $this->put('aki', true),
-                'spion'         => $this->put('spion', true),
-                'helm'          => $this->put('helm', true),
-                'tools'         => $this->put('tools', true),
-                'buku_service'  => $this->put('buku_service', true),
-                'edit_by'       => $this->post('user',true),
+                'id_cabang'     => $this->put('id_cabang'),
+                'id_lokasi'     => $this->put('id_lokasi'),
+                'aki'           => $this->put('aki'),
+                'spion'         => $this->put('spion'),
+                'helm'          => $this->put('helm'),
+                'tools'         => $this->put('tools'),
+                'buku_service'  => $this->put('buku_service'),
+                'edit_by'       => $this->post('user'),
                 'tanggal_edit'  => $this->_tgl
         ];  
         if ($id===null) {
@@ -1280,12 +1611,10 @@ function __construct() {
 
     public function Aksesoriscount_get()
     {
-        $id= $this->get('id');
-        
-        if ($id===null) {
-            $aksesoris= $this->maksesoris->Countaksesoris();
-        }
-
+        $id = $this->get('id_cabang');
+        $tgl_awal = $this->get('tgl_awal');
+        $tgl_akhir = $this->get('tgl_akhir');
+            $aksesoris= $this->mcount->aksesorisCount($id, $tgl_awal,$tgl_akhir);
         if ($aksesoris) {
             $this->response([
                 'status' => true,
@@ -1324,6 +1653,25 @@ function __construct() {
             ], REST_Controller::HTTP_OK);
             
         }
+    }
+
+    public function QtyUnit_get()
+    {
+        $id= $this->get('id_cabang');
+        $sum = $this->maksesoris->sumUnit($id);
+        if ($sum) {
+            $this->response([
+                'status' => true,
+                'data' => $sum
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+        
     }
 
 }

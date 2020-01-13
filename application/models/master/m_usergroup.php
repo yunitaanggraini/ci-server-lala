@@ -3,9 +3,14 @@
     
     class M_usergroup extends CI_Model{
     
-        public function getUserGroup($id = null)
+        public function getUserGroup($id = null,$offset=null)
       {
-        if ($id === null) {
+        if ($id === null&& $offset===null) {
+          $result=$this->db->get('user_group')->result();
+          return $result;
+        }elseif ($id === null&& $offset!==null) {
+          $this->db->limit(15);
+          $this->db->offset($offset);
           $result=$this->db->get('user_group')->result();
           return $result;
         }else{

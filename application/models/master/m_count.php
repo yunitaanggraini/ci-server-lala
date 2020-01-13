@@ -57,6 +57,16 @@ class M_Count extends CI_Model {
             return 0;
         }
     }
+    public function CountCabang()
+    {
+        $count =$this->db->get('cabang');
+
+        if ($count->num_rows()>0) {
+            return $count->num_rows();
+        } else {
+            return 0;
+        }
+    }
 
     public function CountJenisAudit()
     {
@@ -172,6 +182,34 @@ class M_Count extends CI_Model {
             }
         
     }
+    public function CountUnitnotready($a,$b,$c,$d)
+    {
+        $this->db->select('
+                a.id_unit, a.no_mesin, a.no_rangka, 
+                a.type, a.tahun, a.kode_item, a.umur_unit, 
+                a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
+                a.buku_service, a.aki, a.status_unit, 
+                b.nama_cabang, c.nama_lokasi, a.tanggal_audit, a.foto,
+                a.keterangan, a.is_ready
+        
+        ');
+            $this->db->from('unit a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where('a.id_cabang', $a);
+            $this->db->where('a.is_ready', $d);
+
+            $this->db->where("(a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c') ");
+
+            $count =$this->db->get();
+
+            if ($count->num_rows()>0) {
+                return $count->num_rows();
+            } else {
+                return false;
+            }
+        
+    }
     public function CountUnit1($a)
     {
         $this->db->select('
@@ -187,6 +225,41 @@ class M_Count extends CI_Model {
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
             $this->db->where('a.id_cabang', $a);
+            $count =$this->db->get();
+
+            if ($count->num_rows()>0) {
+                return $count->num_rows();
+            } else {
+                return false;
+            }
+        }
+        
+    public function CountPart1($a)
+    {
+        
+            $this->db->where('a.id_cabang', $a);
+            $count =$this->db->get('part a');
+
+            if ($count->num_rows()>0) {
+                return $count->num_rows();
+            } else {
+                return false;
+            }
+        
+    }
+    public function CountPartValid($a,$b,$c)
+    {
+        $this->db->select('
+                a.*, b.nama_cabang, c.nama_lokasi
+        
+        ');
+            $this->db->from('part a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where('a.id_cabang', $a);
+
+            $this->db->where("(a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c') ");
+
             $count =$this->db->get();
 
             if ($count->num_rows()>0) {
@@ -228,6 +301,44 @@ class M_Count extends CI_Model {
     {
         $count =$this->db->get('transaksi_inventory');
 
+        if ($count->num_rows()>0) {
+            return $count->num_rows();
+        } else {
+            return 0;
+        }
+    }
+    public function CountAksesoris($a,$b)
+    {
+
+        $this->db->where('id_cabang', $a);
+        $this->db->where('id_lokasi', $b);
+        
+        $count =$this->db->get('unit');
+
+        if ($count->num_rows()>0) {
+            return $count->num_rows();
+        } else {
+            return 0;
+        }
+    }
+    public function Aksesoriscount($id,$b,$c)
+    {
+        $this->db->select('aksesoris.*, nama_cabang, nama_lokasi ');
+            $this->db->from('aksesoris');
+            $this->db->join('lokasi', 'aksesoris.id_lokasi = lokasi.id_lokasi', 'left');
+            $this->db->join('cabang', 'aksesoris.id_cabang = cabang.id_cabang', 'left');
+            $this->db->where('aksesoris.id_cabang', $id);
+            $this->db->where("aksesoris.tanggal_input BETWEEN '$b' AND '$c'");
+            $count = $this->db->get();
+            if ($count->num_rows()>0) {
+                return $count->num_rows();
+            } else {
+                return 0;
+            }
+    }
+    public function countjenisinv()
+    {
+        $count= $this->db->get('jenis_inventory');
         if ($count->num_rows()>0) {
             return $count->num_rows();
         } else {

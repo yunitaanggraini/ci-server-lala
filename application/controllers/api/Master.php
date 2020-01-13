@@ -28,7 +28,7 @@ function __construct() {
     //------------------------------------------------------------USER-----------------------------------------------------------------//
     public function User_get(){
         $id= $this->get('id');
-        $offset = $this->get('pages');
+        $offset = $this->get('offset');
         
         if ($id===null) {
             $user= $this->muser->GetUser(null,$offset);
@@ -148,7 +148,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         
     }
@@ -193,7 +193,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->muser->editUser($data,$id)) {
                 $this->response([
@@ -204,7 +204,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -217,7 +217,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->muser->delUser($id)) {
                 $this->response([
@@ -229,7 +229,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -288,10 +288,11 @@ function __construct() {
     public function Usergroup_get()
     {
         $id= $this->get('id');
-        
-        if ($id===null) {
+        $offset = $this->get('offset');
+        if ($id===null&&$offset ===null) {
             $usergroup= $this->musergroup->GetUsergroup();
-            
+        }elseif($id===null&&$offset !==null){
+            $usergroup= $this->musergroup->GetUsergroup(null,$offset);
         }else{
             $usergroup= $this->musergroup->GetUsergroup($id);
         }
@@ -327,7 +328,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
     public function Usergroup_put()
@@ -342,7 +343,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->musergroup->editUsergroup($data, $id)) {
                 $this->response([
@@ -353,7 +354,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -365,7 +366,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->musergroup->delUsergroup($id)) {
                 $this->response([
@@ -377,7 +378,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -432,10 +433,12 @@ function __construct() {
     public function Jenisinv_get()
     {
         $id= $this->get('id');
-        
-        if ($id===null) {
+        $offset = $this->get('offset');
+        if ($id===null&&$offset===null) {
             $jenisinv= $this->mjenisinv->GetJenisinv();
             
+        }elseif ($id===null&&$offset!=null) {
+            $jenisinv= $this->mjenisinv->GetJenisinv(null, $offset);
         }else{
             $jenisinv= $this->mjenisinv->GetJenisinv($id);
 
@@ -444,6 +447,26 @@ function __construct() {
             $this->response([
                 'status' => true,
                 'data' => $jenisinv
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function countjenisinv_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $user= $this->mcount->countjenisinv();
+        }
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user
             ], REST_Controller::HTTP_OK);
         }else{
             $this->response([
@@ -472,7 +495,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
 
@@ -489,7 +512,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->mjenisinv->editJenisinv($data, $id)) {
                 $this->response([
@@ -500,7 +523,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -512,7 +535,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->mjenisinv->delJenisinv($id)) {
                 $this->response([
@@ -524,7 +547,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -553,27 +576,7 @@ function __construct() {
         }
     }
 
-    public function countjenisinv_get()
-    {
-        $id= $this->get('id');
-        
-        if ($id===null) {
-            $jenisinv= $this->mcount->countjenisinv();
-        }
-        if ($jenisinv) {
-            $this->response([
-                'status' => true,
-                'data' => $jenisinv
-            ], REST_Controller::HTTP_OK);
-        }else{
-            $this->response([
-                'status' => false,
-                'message' => 'Data not found.'
-            ], REST_Controller::HTTP_OK);
-            
-        }
-    }
-
+    
     //--------------------------------------------------------SUB INVENTORY----------------------------------------------------------//
     public function Subinv_get()
     {
@@ -584,6 +587,30 @@ function __construct() {
             
         }else{
             $subinv= $this->msubinv->GetSubinv($id);
+
+        }
+        if ($subinv) {
+            $this->response([
+                'status' => true,
+                'data' => $subinv
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function SubinvJenis_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $subinv= null;
+            
+        }else{
+            $subinv= $this->msubinv->GetSubinvByJenis($id);
 
         }
         if ($subinv) {
@@ -620,7 +647,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
 
@@ -638,7 +665,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->msubinv->editsubinv($data, $id)) {
                 $this->response([
@@ -649,7 +676,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -661,7 +688,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->msubinv->delSubinv($id)) {
                 $this->response([
@@ -673,7 +700,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -691,6 +718,26 @@ function __construct() {
         }elseif ($subinv==null && $jenisinv!=null) {
             $sub= $this->msubinv->cariSubinv(null,$jenisinv);
             
+        }
+        if ($sub) {
+            $this->response([
+                'status' => true,
+                'data' => $sub
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function cariSubinv2_get(){
+        $id= $this->get('id');
+        if ($id===null) {
+            $sub= null;
+        }else{
+            $sub= $this->msubinv->cariSubinv2($id);
         }
         if ($sub) {
             $this->response([
@@ -773,7 +820,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
     public function statusinv_put()
@@ -790,7 +837,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->mstatusinv->editStatusInv($data, $id)) {
                 $this->response([
@@ -801,7 +848,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -813,7 +860,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->mstatusinv->delStatusInv($id)) {
                 $this->response([
@@ -825,7 +872,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -921,7 +968,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
     public function perusahaan_put()
@@ -937,7 +984,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->mperusahaan->editPerusahaan($data, $id)) {
                 $this->response([
@@ -948,7 +995,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -960,7 +1007,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->mperusahaan->delPerusahaan($id)) {
                 $this->response([
@@ -972,7 +1019,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1026,10 +1073,12 @@ function __construct() {
     public function cabang_get()
     {
         $id= $this->get('id');
-        
-        if ($id===null) {
+        $offset = $this->get('offset');
+        if ($id===null&& $offset===null) {
             $cabang= $this->mcabang->GetCabang(null);
             
+        }elseif ($id===null&& $offset!=null){
+            $cabang= $this->mcabang->GetCabang(null,$offset);
         }else{
             $cabang= $this->mcabang->GetCabang($id);
 
@@ -1066,7 +1115,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
     public function cabang_put()
@@ -1082,7 +1131,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->mcabang->editCabang($data, $id)) {
                 $this->response([
@@ -1093,7 +1142,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1105,7 +1154,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->mcabang->delCabang($id)) {
                 $this->response([
@@ -1117,7 +1166,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1213,7 +1262,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
 
@@ -1230,7 +1279,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->mlokasi->editLokasi($data, $id)) {
                 $this->response([
@@ -1241,7 +1290,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1253,7 +1302,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->mlokasi->dellokasi($id)) {
                 $this->response([
@@ -1265,7 +1314,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1359,7 +1408,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
     public function Vendor_put()
@@ -1375,7 +1424,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->mvendor->editVendor($data, $id)) {
                 $this->response([
@@ -1386,7 +1435,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1398,7 +1447,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->mvendor->delVendor($id)) {
                 $this->response([
@@ -1410,7 +1459,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1496,8 +1545,8 @@ function __construct() {
             'input_by' => $this->post('user',true),
             'tanggal_input' => $this->_tgl
         ];
-
-        if ($this->mjenisaudit->AddJenisaudit($data)>0) {
+        // var_dump($data);die;
+        if ($this->mjenisaudit->AddJenisaudit($data)) {
             $this->response([
                 'status' => true,
                 'data' => "Jenis Audit has been created"
@@ -1506,7 +1555,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
     public function Jenisaudit_put()
@@ -1522,7 +1571,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->mjenisaudit->editJenisAudit($data, $id)) {
                 $this->response([
@@ -1533,7 +1582,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1545,7 +1594,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->mjenisaudit->delJenisaudit($id)) {
                 $this->response([
@@ -1557,7 +1606,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1567,7 +1616,7 @@ function __construct() {
         $id= $this->get('jenisaudit');
         
         if ($id===null) {
-            $jenisaudit= $this->mjenisaudit->cariJenisAudit();
+            $jenisaudit= null;
             
         }else{
             $jenisaudit= $this->mjenisaudit->cariJenisAudit($id);
@@ -1711,6 +1760,8 @@ function __construct() {
             
         }
     }
+
+
 
 }
 /** End of file Master.php **/

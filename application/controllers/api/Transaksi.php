@@ -24,9 +24,11 @@
         public function Inv_get()
     {
         $id = $this->get('id');
-
-        if($id===null){
+        $offset = $this->get('offset');
+        if($id===null&& $offset ===null){
             $listinv = $this->minv->getInv();
+        }elseif($id===null&& $offset !=null){
+            $listinv = $this->minv->getInv(null,$offset);
         }else{
             $listinv = $this->minv->getInv($id);
         }
@@ -224,32 +226,29 @@
     }
 
 
-    // public function cariInv_get(){
-    //     $username= $this->get('username');
-    //     $nama= $this->get('nama');
-    //     if ($username!=null && $nama !=null) {
-    //         $user= $this->muser->cariUser($username,$nama);
+    public function cariInv_get(){
+        $id = $this->get('id');
+
+        if ($id===null) {
+            $inv = $this->minv->getInv();
+        }else{
+            $inv = $this->minv->Cariinventory($id);
+        }
+        
+        if ($inv) {
+            $this->response([
+                'status' => true,
+                'data' => $inv
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
             
-    //     }elseif($username!=null && $nama ==null){
-    //         $user= $this->muser->cariUser($username);
-            
-    //     }elseif ($username==null && $nama !=null) {
-    //         $user= $this->muser->cariUser(null,$nama);
-            
-    //     }
-    //     if ($user) {
-    //         $this->response([
-    //             'status' => true,
-    //             'data' => $user
-    //         ], REST_Controller::HTTP_OK);
-    //     }else{
-    //         $this->response([
-    //             'status' => false,
-    //             'message' => 'Data not found.'
-    //         ], REST_Controller::HTTP_OK);
-            
-    //     }
-    // }
+        }
+    }
+    
 
     public function Inv_delete()
     {
@@ -334,7 +333,6 @@
     {
         $id = $this->put('id');
         $data=[
-            'idtransaksi_inv' => $this->put('idtransaksi_inv',true),
                 'idstatus_inventory' => $this->put('idstatus_inventory',true),
                 'idjenis_inventory' => $this->put('idjenis_inventory',true),
                 'idsub_inventory' => $this->put('idsub_inventory',true),
@@ -345,7 +343,7 @@
                 'tanggal_barang_diterima' => $this->put('tanggal_barang_diterima',true),
                 'id_vendor' => $this->put('id_vendor',true),
                 'jenis_pembayaran' => $this->put('jenis_pembayaran',true),
-                'id_cabang' => $this->put('id_cabang',true),
+                // 'id_cabang' => $this->put('id_cabang',true),
                 'id_lokasi' => $this->put('id_lokasi',true),
                 'nama_pengguna' => $this->put('nama_pengguna',true),              
                 'keterangan' => $this->put('keterangan',true),
@@ -361,12 +359,12 @@
                 'cicilan_perbulan' => $this->put('cicilan_perbulan',true),
                 'tenor' => $this->put('tenor',true),
                 'nilai_total' => $this->put('nilai_total',true),
-                'barcode' => $this->put('barcode',true),
-                'qrcode' => $this->put('qrcode',true),
-                'edit_by'=> $this->put('edit_by',true),
-                'tanggal_edit' => $this->_tgl
-                
-            
+                'no_mesin' => $this->put('no_mesin',true),
+                'no_rangka' => $this->put('rangka',true),
+                // 'barcode' => $this->put('barcode',true),
+                // 'qrcode' => $this->put('qrcode',true),
+                'input_by'=> $this->put('user',true),
+                'tanggal_input' =>$this->_tgl
     ];
         if ($id===null) {
             $this->response([
@@ -408,10 +406,6 @@
             
         }
     }
-
-
-
-
     }
     /** End of file Transaksi.php **/
 ?>

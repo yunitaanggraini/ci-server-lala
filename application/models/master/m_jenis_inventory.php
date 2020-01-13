@@ -4,11 +4,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Jenis_Inventory extends CI_Model {
 
-    public function getJenisInv($id= null)
+    public function getJenisInv($id= null,$offset = null)
     {
-        if ($id===null) {
+        if ($id===null&&$offset===null) {
             $result = $this->db->get('jenis_inventory')->result();
             return $result;              
+        }elseif ($id===null&&$offset!=null){
+        $result = $this->db->get('jenis_inventory',15,$offset)->result();
+            return $result; 
         }else {
             $result = $this->db->get_where('jenis_inventory',['idjenis_inventory' => $id])->result();
             return $result;               

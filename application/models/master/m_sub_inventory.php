@@ -25,6 +25,19 @@ class M_Sub_Inventory extends CI_Model {
             
         }
     }
+    public function CariSubInv2($id)
+    {
+        $query ="
+        SELECT a.idsub_inventory,a.idjenis_inventory,a.idsub_inventory, b.jenis_inventory,a.sub_inventory
+        FROM sub_inventory a
+        LEFT JOIN jenis_inventory b ON a.idjenis_inventory=b.idjenis_inventory
+        WHERE a.idsub_inventory LIKE '%$id%'
+        OR b.jenis_inventory LIKE '%$id%'
+        OR a.sub_inventory LIKE '%$id%'
+        ";
+        $result = $this->db->query($query)->result();
+        return $result;
+    }
     public function getSubJenisInv($id = null)
     {
             $this->db->select('sub_inventory.*, jenis_inventory');
@@ -67,9 +80,9 @@ class M_Sub_Inventory extends CI_Model {
         
     }
 
-    public function getSubInvById($id)
+    public function getSubInvByJenis($id)
     {
-        $this->db->where('idsub_inventory', $id);
+        $this->db->where('idjenis_inventory', $id);
         
         $result = $this->db->get('sub_inventory')->result();
         return $result;

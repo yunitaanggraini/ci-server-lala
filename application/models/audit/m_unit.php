@@ -23,8 +23,6 @@ class M_Unit extends CI_Model {
             $this->db->from('unit');
             $this->db->join('cabang', 'unit.id_cabang = cabang.id_cabang', 'left');
             $this->db->join('lokasi', 'unit.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->limit(15);
-            $this->db->offset($offset);
             $this->db->where('no_mesin',$id);
             
             
@@ -152,6 +150,37 @@ class M_Unit extends CI_Model {
             $this->db->offset($e);
             
             return $this->db->get()->result();
+        
+    }
+    public function previewUnitNotReady($a,$b,$c,$d,$e)
+    {
+        $this->db->select('
+                a.id_unit, a.no_mesin, a.no_rangka, 
+                a.type, a.tahun, a.kode_item, a.umur_unit, 
+                a.id_cabang, a.id_lokasi, a.spion, a.tools, a.helm,
+                a.buku_service, a.aki, a.status_unit, 
+                b.nama_cabang, c.nama_lokasi, a.tanggal_audit, a.foto,
+                a.keterangan, a.is_ready
+        
+        ');
+            $this->db->from('unit a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+
+            $this->db->where("a.id_cabang='$a'AND a.is_ready='$d' AND
+            (a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c')");
+            $this->db->limit(15);
+            $this->db->offset($e);
+            
+            return $this->db->get()->result();
+        
+    }
+
+    public function notready($a)
+    {
+        $this->db->where('no_mesin', $a);
+        
+        return $this->db->get('unit_ready') ->result();
         
     }
 

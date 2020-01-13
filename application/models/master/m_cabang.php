@@ -4,11 +4,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Cabang extends CI_Model {
 
-    public function getCabang($id = null)
+    public function getCabang($id = null,$offset=null)
     {
-        if ($id === null) {
+        if ($id === null&& $offset===null) {
 
             $result = $this->db->get('cabang')->result();
+            return $result;    
+        }elseif ($id===null&& $offset!=null){
+            $result = $this->db->get('cabang',15,$offset)->result();
             return $result;    
         }else{
 

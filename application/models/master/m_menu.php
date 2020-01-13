@@ -14,6 +14,8 @@ class M_Menu extends CI_Model {
             
             $this->db->from('menu');
             $this->db->join('menu_akses', 'menu_akses.id_menu = menu.id_menu', 'left');
+            $this->db->where("menu.in_aktif ='1'");
+            
             $this->db->where('menu_akses.id_usergroup', $access);
             
             $result =$this->db->get()->result();
@@ -25,11 +27,12 @@ class M_Menu extends CI_Model {
 
     public function getSubMenu($id = null)
     {
+        $ac=1;
         if ($id === null) {
             $result = $this->db->get('sub_menu')->result();
 
         }else {
-            $result = $this->db->get_where('sub_menu',['id_menu' => $id])->result();
+            $result = $this->db->get_where('sub_menu',['id_menu' => $id, 'in_aktif' => $ac])->result();
         }
 
         return $result;

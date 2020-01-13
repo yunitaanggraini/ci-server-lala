@@ -33,30 +33,27 @@ class M_Audit extends CI_Model {
             return $result;
         }
     }
-    public function cariAudit($id=null)
+    public function cariAudit($id)
     {
-        if ($id===null) {
-            $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
-            $this->db->from('jadwal_audit');
-            $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
-            $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->order_by('keterangan', 'asc');
+        $cari ="
+                SELECT a.idjadwal_audit, a.auditor, a.tanggal, a.waktu, a.id_cabang, b.nama_cabang,
+                a.idjenis_audit, c.jenis_audit, a.keterangan
+                FROM jadwal_audit a
+                LEFT JOIN cabang b ON a.id_cabang=b.id_cabang
+                LEFT JOIN jenis_audit c ON a.idjenis_audit=c.idjenis_audit
+                WHERE a.idjadwal_audit LIKE '%$id%'
+                OR a.auditor LIKE '%$id%'
+                OR a.tanggal LIKE '%$id%'
+                OR a.waktu LIKE '%$id%'
+                OR a.id_cabang LIKE '%$id%'
+                OR b.nama_cabang LIKE '%$id%'
+                OR a.idjenis_audit LIKE '%$id%'
+                OR c.jenis_audit LIKE '%$id%'
+                OR a.keterangan LIKE '%$id%'
+        ";
             
-            
-            $result = $this->db->get()->result();
-            return $result;              
-        }else {
-            $this->db->select('a.*, jenis_audit, nama_cabang');
-            $this->db->from('jadwal_audit a');
-            $this->db->join('jenis_audit', 'a.idjenis_audit = jenis_audit.idjenis_audit', 'left');
-            $this->db->join('cabang', 'a.id_cabang = cabang.id_cabang', 'left');
-            $this->db->order_by('keterangan', 'asc');
-            $this->db->where(" a.idjadwal_audit LIKE '%$id%' OR jenis_audit LIKE '%$id%' OR a.auditor LIKE '%$id%' OR nama_cabang  LIKE '%$id%'");
-            
-            
-            $result = $this->db->get()->result();
+            $result = $this->db->query($cari)->result();
             return $result;
-        }
     }
     public function addAudit($data)
     {
@@ -105,16 +102,49 @@ class M_Audit extends CI_Model {
             return $result;
         }   
     }
+    public function GetListPart($id = null, $cabang = null)
+    {
+        if ($id===null) {
+            $this->db->select('a.*, b.nama_cabang, c.nama_lokasi');
+            $this->db->from('temp_part a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            
+            $result = $this->db->get()->result();
+            return $result;   
+        }else {
+            $this->db->select('a.*, b.nama_cabang, c.nama_lokasi');
+            $this->db->from('temp_part a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where('a.id_cabang', $cabang);
+            $this->db->where("(a.part_number = '$id')" );
+            
+            $result = $this->db->get()->result();
+            return $result;
+        }   
+    }
 
     public function AddList($data)
     {
         $this->db->insert('unit', $data);
         return $this->db->affected_rows(); 
     }
+    public function AddListpart($data)
+    {
+        $this->db->insert('part', $data);
+        return $this->db->affected_rows(); 
+    }
     public function EditList($id,$data)
     {
             $this->db->where("no_mesin = '$id' OR no_rangka = '$id'" );
             $this->db->update('unit', $data);
+        return $this->db->affected_rows(); 
+    }
+    public function EditListPart($id,$data)
+    {
+            $this->db->where("part_number = '$id'" );
+            $this->db->update('part', $data);
         return $this->db->affected_rows(); 
     }
     public function GetAuList($id = null,$cabang= null)
@@ -148,6 +178,36 @@ class M_Audit extends CI_Model {
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
             $this->db->where('a.id_cabang', $cabang);
             $this->db->where(" (a.no_mesin = '$id' OR a.no_rangka = '$id')" );
+
+            $result = $this->db->get()->result();
+            return $result;
+        }
+    }
+    public function GetAuListPart($id = null,$cabang= null)
+    {
+        if ($id === null) {
+            $this->db->select('
+                a.*, 
+                b.nama_cabang, c.nama_lokasi
+        
+        ');
+            $this->db->from('part a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where('a.id_cabang', $cabang);
+            
+            return $this->db->get()->result();
+        }else{
+            $this->db->select('
+                a.*, 
+                b.nama_cabang, c.nama_lokasi
+        
+        ');
+            $this->db->from('part a');
+            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+            $this->db->where('a.id_cabang', $cabang);
+            $this->db->where("(a.part_number= '$id')" );
 
             $result = $this->db->get()->result();
             return $result;
@@ -226,52 +286,52 @@ class M_Audit extends CI_Model {
 
 
 
-    public function cariJadwalAudit($auditor=null, $tanggal_audit=null, $jenis_audit=null)
-    {
-        if ($auditor!=null && $tanggal_audit!=null && $jenis_audit!=null) {
-            $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
-            $this->db->from('jadwal_audit');
-            $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
-            $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->like('auditor', $auditor);
-            $this->db->like('tanggal_audit', $tanggal_audit);
-            $this->db->like('jenis_audit', $jenis_audit);
+//     public function cariJadwalAudit($auditor=null, $tanggal_audit=null, $jenis_audit=null)
+//     {
+//         if ($auditor!=null && $tanggal_audit!=null && $jenis_audit!=null) {
+//             $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
+//             $this->db->from('jadwal_audit');
+//             $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
+//             $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
+//             $this->db->like('auditor', $auditor);
+//             $this->db->like('tanggal_audit', $tanggal_audit);
+//             $this->db->like('jenis_audit', $jenis_audit);
             
-            $result = $this->db->get()->result();
+//             $result = $this->db->get()->result();
 
-            return $result;
-        }elseif ($auditor!=null && $tanggal_audit=null && $jenis_audit=null) {
-            $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
-            $this->db->from('jadwal_audit');
-            $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
-            $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->like('auditor', $auditor);
+//             return $result;
+//         }elseif ($auditor!=null && $tanggal_audit=null && $jenis_audit=null) {
+//             $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
+//             $this->db->from('jadwal_audit');
+//             $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
+//             $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
+//             $this->db->like('auditor', $auditor);
             
-            $result = $this->db->get()->result();
-            return $result;
+//             $result = $this->db->get()->result();
+//             return $result;
             
-        }elseif ($auditor=null && $tanggal_audit!=null && $jenis_audit=null) {
-            $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
-            $this->db->from('jadwal_audit');
-            $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
-            $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->like('tanggal_audit', $tanggal_audit);
+//         }elseif ($auditor=null && $tanggal_audit!=null && $jenis_audit=null) {
+//             $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
+//             $this->db->from('jadwal_audit');
+//             $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
+//             $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
+//             $this->db->like('tanggal_audit', $tanggal_audit);
             
-            $result = $this->db->get()->result();
-            return $result;
+//             $result = $this->db->get()->result();
+//             return $result;
             
-        }elseif ($auditor=null && $tanggal_audit=null && $jenis_audit!=null) {
-            $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
-            $this->db->from('jadwal_audit');
-            $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
-            $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
-            $this->db->like('jenis_audit', $jenis_audit);
+//         }elseif ($auditor=null && $tanggal_audit=null && $jenis_audit!=null) {
+//             $this->db->select('jadwal_audit.*, jenis_audit, nama_cabang');
+//             $this->db->from('jadwal_audit');
+//             $this->db->join('jenis_audit', 'jadwal_audit.idjenis_audit = jenis_audit.idjenis_audit', 'left');
+//             $this->db->join('cabang', 'jadwal_audit.id_cabang = cabang.id_cabang', 'left');
+//             $this->db->like('jenis_audit', $jenis_audit);
             
-            $result = $this->db->get()->result();
-            return $result;
+//             $result = $this->db->get()->result();
+//             return $result;
         
-    }
-}
+//     }
+// }
 
         public function cariscanunit($id = null)
         {
