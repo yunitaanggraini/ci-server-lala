@@ -12,6 +12,7 @@ public $password;
 public $database;
 function __construct() {
     parent::__construct();
+    ini_set('max_execution_time', 0);
     $this->load->model('audit/m_audit','maudit');
     $this->load->model('audit/m_aksesoris','maksesoris');
     $this->load->model('audit/m_part','mpart');
@@ -100,7 +101,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->maudit->delAudit($id)) {
                 $this->response([
@@ -112,7 +113,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -140,7 +141,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
     public function Audit_put()
@@ -160,7 +161,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->maudit->editAudit($data, $id)) {
                 $this->response([
@@ -171,7 +172,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -187,7 +188,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->maudit->editAuditket($data, $id)) {
                 $this->response([
@@ -198,7 +199,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -213,7 +214,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->maudit->editAuditket($data, $id)) {
                 $this->response([
@@ -224,7 +225,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -324,7 +325,8 @@ function __construct() {
             'is_ready' => $this->post('is_ready'),
             'audit_by' => $this->post('user',true),
             'foto' => $this->post('foto'),
-            'tanggal_audit' => $this->_tgl
+            'tanggal_audit' => $this->_tgl,
+            // 'is_audit' => '0'
         ];
         if ($id===null) {
             $listaud = null;
@@ -340,7 +342,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
         
     }
@@ -445,10 +447,12 @@ function __construct() {
             'part_number' => $this->post('part_number'),
             'kd_lokasi_rak' => $this->post('kd_lokasi_rak'),
             'deskripsi' => $this->post('deskripsi'),
+            'status' => $this->post('status'),
             'qty' => $this->post('qty'),
             'audit_by' => $this->post('user'),
             'tanggal_audit' => $this->_tgl
         ];
+        // var_dump($data);die;
         if ($id===null) {
             $listaud = null;
         }else{
@@ -463,7 +467,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
         
     }
@@ -525,11 +529,14 @@ function __construct() {
     {
         $id = $this->get('id');
         $cabang = $this->get('id_cabang');
+        $lokasi = $this->get('id_lokasi');
+        $rakbin = $this->get('kd_lokasi_rak');
+        $kondisi = $this->get('kondisi');
         if ($id=== null) {
             $list= $this->maudit->GetAuListPart(null,$cabang);
             
         }else{
-            $list= $this->maudit->GetAuListPart($id,$cabang);
+            $list= $this->maudit->GetAuListPart($id,$cabang,$lokasi,$rakbin, $kondisi);
         }
         
         if ($list) {
@@ -592,7 +599,7 @@ function __construct() {
         $offset = $this->get('offset');
         
         if ($id===null) {
-            $tempunit= $this->mtempunit->GetTempUnit(null,$offset);
+            $tempunit= $this->mtempunit->GetTempUnit(null,null,$offset);
             
         }else{
             $tempunit= $this->mtempunit->GetTempUnit($id);
@@ -633,6 +640,29 @@ function __construct() {
             
         }
     }
+    public function ToPart_get()
+    {
+        $cabang= $this->get('id_cabang');
+        $offset= $this->get('offset');
+        if ($cabang===null) {
+            $temppart= null;
+            
+        }else{
+            $temppart= $this->mtemppart->GetToPart($cabang,$offset);
+        }
+        if ($temppart!=null) {
+            $this->response([
+                'status' => true,
+                'data' => $temppart
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
     public function UnitValid_get()
     {
         $cabang= $this->get('id_cabang');
@@ -641,14 +671,16 @@ function __construct() {
         $offset= $this->get('offset');
         if ($cabang===null) {
             $unit= null;
-            
-        }elseif($cabang!=null && $tgl_awal==null){
-            $unit= $this->munit->GetUnitValid($cabang,$offset,null,null);
-        }elseif($cabang!=null && $tgl_awal!=null&&$offset==null){
-            $unit= $this->munit->GetUnitValid($cabang,null,$tgl_awal,$tgl_akhir);
-        }elseif($cabang!=null && $tgl_awal!=null &&$offset!=null){
+        }else{
             $unit= $this->munit->GetUnitValid($cabang,$offset,$tgl_awal,$tgl_akhir);
         }
+        // }elseif($cabang!=null && $tgl_awal==null){
+        //     $unit= $this->munit->GetUnitValid($cabang,$offset,null,null);
+        // }elseif($cabang!=null && $tgl_awal!=null&&$offset==null){
+        //     $unit= $this->munit->GetUnitValid($cabang,null,$tgl_awal,$tgl_akhir);
+        // }elseif($cabang!=null && $tgl_awal!=null &&$offset!=null){
+        //     $unit= $this->munit->GetUnitValid($cabang,$offset,$tgl_awal,$tgl_akhir);
+        // }
         if ($unit!=null) {
             $this->response([
                 'status' => true,
@@ -791,7 +823,11 @@ function __construct() {
     public function auditend_get()
     {
         $cabang = $this->get('id_cabang');
-        $list= $this->maudit->AuditEnd($cabang);
+        if ($cabang == null) {
+            $list= null;
+        }else{
+            $list= $this->maudit->AuditEnd($cabang);
+        }
         
         if ($list) {
             $this->response([
@@ -1123,6 +1159,35 @@ function __construct() {
         }
 
     }
+    public function dataunit2_get()
+    {
+        $this->mtempunit->app_db = $this->load->database($this->_getconfig(),TRUE);
+        $cekConfig = $this->mtempunit->app_db->initialize();
+        if (!$cekConfig) {
+            $this->response([
+                'status' => false,
+                'data' => "Database not connected!"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $cabang = $this->get('id_cabang');
+               $postunit = $this->mtempunit->getDataUnit($cabang);
+               $i=$this->mcount->CountTempUnit();
+               
+               if ($postunit) {
+                   $this->response([
+                       'status' => true,
+                       'data' => $postunit
+                   ], REST_Controller::HTTP_OK);
+               }else{
+                   $this->response([
+                       'status' => false,
+                       'data' => "Failed to post"
+                   ], REST_Controller::HTTP_OK);
+               }
+           
+        }
+
+    }
 
     public function CountDataUnit_get()
     {
@@ -1193,6 +1258,27 @@ function __construct() {
             $count = $this->mcount->countTempUnit();
         }else{
             $count = $this->mcount->countTempUnit($cabang);
+        }
+
+        if ($count) {
+            $this->response([
+                'status' => true,
+                'data' => $count
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'data' => "data not found"
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+    public function countTempPart_get()
+    {
+        $cabang = $this->get('id_cabang');
+        if ($cabang ===null) {
+            $count = $this->mcount->countTempPart();
+        }else{
+            $count = $this->mcount->countTempPart($cabang);
         }
 
         if ($count) {
@@ -1522,7 +1608,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "failed."
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }
     }
 
@@ -1544,7 +1630,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
             if ($this->maksesoris->editAksesoris($data,$id)) {
                 $this->response([
@@ -1555,7 +1641,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1568,7 +1654,7 @@ function __construct() {
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->maksesoris->delAksesoris($id)) {
                 $this->response([
@@ -1580,7 +1666,7 @@ function __construct() {
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -1676,4 +1762,3 @@ function __construct() {
 
 }
 /** End of file Audit.php **/
- ?>

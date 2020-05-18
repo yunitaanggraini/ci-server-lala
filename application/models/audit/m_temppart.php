@@ -35,6 +35,23 @@ class M_TempPart extends CI_Model {
         
     }
 
+    public function getToPart($cabang =null,$offset=null)
+    {
+        $this->db->select('a.*,c.nama_cabang, b.nama_lokasi');
+        $this->db->from('temp_part a');
+        $this->db->join('lokasi b', 'a.id_lokasi = b.id_lokasi', 'left');
+        $this->db->join('cabang c', 'a.id_cabang = c.id_cabang', 'left');
+            if ($cabang!=null) {
+            $this->db->where('a.id_cabang', $cabang);
+            }
+            if ($offset!=null) {
+               $this->db->limit(15);
+             $this->db->offset($offset); 
+            }
+            $result = $this->db->get()->result();
+           return $result;
+        }
+
     public function getDataPart($cabang)
     {
         $kd_dealer = $cabang;

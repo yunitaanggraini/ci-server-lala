@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class m_management_inventory extends CI_Model {
 
-    public function getInv($id = null , $offset=null)
+    public function getInv($id = null , $offset=null,$cabang = null)
     {
         if ($id===null&& $offset === null) {
             $this->db->select('
@@ -47,6 +47,11 @@ class m_management_inventory extends CI_Model {
             $this->db->where('idtransaksi_inv', $id);
             
         }
+        if($cabang !=null){
+            $this->db->where('a.id_cabang', $cabang);
+            
+        }
+        $this->db->order_by('idtransaksi_inv', 'desc');
         $result = $this->db->get()->result();
         return $result;
         // return true;
@@ -57,25 +62,30 @@ class m_management_inventory extends CI_Model {
         $this->db->insert('transaksi_inventory', $data);
         return $this->db->affected_rows();  
     }
-
-    public function Cariinventory($id = null)
+    public function editInv($id,$data)
     {
-        if ($id === null) {
-            $query="SELECT a.*, b.status_inventory, c.sub_inventory, d.jenis_inventory, e.nama_vendor, f.nama_lokasi FROM transaksi_inventory a 
-              LEFT JOIN status_inventory b ON a.idstatus_inventory= b.idstatus_inventory
-              LEFT JOIN sub_inventory c ON a.idsub_inventory = c.idsub_inventory 
-              LEFT JOIN jenis_inventory d ON a.idjenis_inventory=d.idjenis_inventory
-              LEFT JOIN vendor e ON a.id_vendor=e.id_vendor 
-              LEFT JOIN lokasi f ON a.id_lokasi=f.id_lokasi";
-            // $result = $this->db->query($query)->result();
-          }else{
+        $this->db->where('idtransaksi_inv', $id);
+        
+        $this->db->update('transaksi_inventory', $data);
+        return $this->db->affected_rows();  
+    }
+    public function delInv($id)
+    {
+        $this->db->where('idtransaksi_inv', $id);
+        $this->db->delete('transaksi_inventory');
+        return $this->db->affected_rows();
+    }
+
+    public function Cariinventory($id = null,$offset = null,$cabang = null)
+    {
+        
               $query="SELECT a.*, b.status_inventory, c.sub_inventory, d.jenis_inventory, e.nama_vendor, f.nama_lokasi FROM transaksi_inventory a 
               LEFT JOIN status_inventory b ON a.idstatus_inventory= b.idstatus_inventory
               LEFT JOIN sub_inventory c ON a.idsub_inventory = c.idsub_inventory 
               LEFT JOIN jenis_inventory d ON a.idjenis_inventory=d.idjenis_inventory
               LEFT JOIN vendor e ON a.id_vendor=e.id_vendor 
               LEFT JOIN lokasi f ON a.id_lokasi=f.id_lokasi  
-              WHERE a.idtransaksi_inv LIKE '%$id%' 
+              WHERE (a.idtransaksi_inv LIKE '%$id%' 
               OR a.aksesoris_tambahan LIKE '%$id%' 
               OR a.asal_hadiah LIKE '%$id%' 
               OR a.cicilan_perbulan LIKE '%$id%' 
@@ -104,9 +114,20 @@ class m_management_inventory extends CI_Model {
               OR c.sub_inventory LIKE '%$id%'
               OR d.jenis_inventory LIKE '%$id%'
               OR e.nama_vendor LIKE '%$id%'
-              OR f.nama_lokasi LIKE '%$id%'";
-        }
-        $result = $this->db->query($query)->result();
+              OR f.nama_lokasi LIKE '%$id%')";
+                if ($cabang != null) {
+                    $query.="
+                    AND a.id_lokasi = '$cabang'
+                    ";
+                }
+              if ($offset!=null) {
+                $query .="
+                ORDER BY a.idtransaksi_inv ASC
+                OFFSET $offset ROWS 
+                FETCH NEXT 15 ROWS ONLY;
+                ";
+              }
+        $result = $this->db->query($query);
         return $result;              
     }
 
@@ -115,5 +136,3 @@ class m_management_inventory extends CI_Model {
 }
 
 /* End of file m_management_inventory.php */
-
-?>

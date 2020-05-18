@@ -52,45 +52,35 @@ class M_user extends CI_Model {
             return $result;
         
     }
-    public function cariUser($username=null, $nama=null)
+    public function cariUser($id=null, $offset=null)
     {
-        if ($username!=null && $nama !=null) {
-            $this->db->select('user.*, user_group, nama_perusahaan, nama_cabang, nama_lokasi ');
-            $this->db->from('user');
-            $this->db->join('perusahaan', 'user.id_perusahaan = perusahaan.id_perusahaan', 'left');
-            $this->db->join('lokasi', 'user.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->join('cabang', 'user.id_cabang = cabang.id_cabang', 'left');
-            $this->db->join('user_group', 'user.id_usergroup = user_group.id_usergroup', 'left');
-            $this->db->like('username', $username);
-            $this->db->like('nama', $nama);
-            $result = $this->db->get()->result();
+        $query="
+            SELECT a.*, b.nama_perusahaan, c.nama_cabang, d.nama_lokasi, e.user_group FROM [user] a
+            LEFT JOIN perusahaan b ON a.id_perusahaan=b.id_perusahaan
+            LEFT JOIN cabang c ON a.id_cabang=c.id_cabang
+            LEFT JOIN lokasi d ON a.id_lokasi = d.id_lokasi
+            LEFT JOIN user_group e ON a.id_usergroup=e.id_usergroup
+            WHERE a.nik LIKE '%$id%'
+            OR a.username LIKE '%$id%'
+            OR a.nama LIKE '%$id%'
+            OR a.status LIKE '%$id%'
+            OR b.nama_perusahaan LIKE '%$id%'
+            OR c.nama_cabang LIKE '%$id%'
+            OR d.nama_lokasi LIKE '%$id%'
+            OR e.user_group LIKE '%$id%'
+            
+        ";
+        if ($offset!=null) {
+            $query .="
+            ORDER BY a.nik ASC
+            OFFSET $offset ROWS 
+            FETCH NEXT 15 ROWS ONLY;
+            ";
 
-            return $result;
-        }elseif ($username!=null && $nama==null) {
-            $this->db->select('user.*, user_group, nama_perusahaan, nama_cabang, nama_lokasi ');
-            $this->db->from('user');
-            $this->db->join('perusahaan', 'user.id_perusahaan = perusahaan.id_perusahaan', 'left');
-            $this->db->join('lokasi', 'user.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->join('cabang', 'user.id_cabang = cabang.id_cabang', 'left');
-            $this->db->join('user_group', 'user.id_usergroup = user_group.id_usergroup', 'left');
-            $this->db->like('username', $username);
-            
-            $result = $this->db->get()->result();
-            return $result;
-            
-        }elseif ($username==null && $nama!=null) {
-            $this->db->select('user.*, user_group, nama_perusahaan, nama_cabang, nama_lokasi ');
-            $this->db->from('user');
-            $this->db->join('perusahaan', 'user.id_perusahaan = perusahaan.id_perusahaan', 'left');
-            $this->db->join('lokasi', 'user.id_lokasi = lokasi.id_lokasi', 'left');
-            $this->db->join('cabang', 'user.id_cabang = cabang.id_cabang', 'left');
-            $this->db->join('user_group', 'user.id_usergroup = user_group.id_usergroup', 'left');
-            $this->db->like('nama', $nama);
-            
-            $result = $this->db->get()->result();
-            return $result;
-            
         }
+        
+            $result = $this->db->query($query);
+            return $result;
         
     }
 

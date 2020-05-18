@@ -4,13 +4,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Vendor extends CI_Model {
 
-    public function getVendorPagination($id = null,$limit,$star)
+    public function getVendorPagination($id = null,$start=null)
     {
         if ($id === null) {
-            $result = $this->db->get('vendor',$limit,$start)->result();
+            $result = $this->db->get('vendor',15,$start)->result();
             return $result;  
         }else{
-            $result = $this->db->get_where('vendor',['id_vendor' =>$id],$limit,$start)->result();
+            $result = $this->db->get_where('vendor',['id_vendor' =>$id])->result();
             return $result;
         }
     }
@@ -32,15 +32,23 @@ class M_Vendor extends CI_Model {
         return $result;   
     }
 
-    public function cariVendor($id = null)
+    public function cariVendor($id = null,$offset=null)
       {
-        if ($id === null) {
-            return false;
-          }else{
-            $this->db->like('nama_vendor',$id);
-            $result=$this->db->get('vendor')->result();
-            return $result;
-          }
+        $query ="
+        SELECT a.* FROM vendor a
+        WHERE a.id_vendor LIKE '%$id%'
+        OR a.nama_vendor LIKE '%$id%'
+        ";
+        if ($offset!=null) {
+            $query .="
+            ORDER BY a.id_vendor ASC
+            OFFSET $offset ROWS 
+            FETCH NEXT 15 ROWS ONLY;
+            ";
+
+        }
+        $result = $this->db->query($query);
+        return $result; 
       }
 
     public function editVendor($data, $id)

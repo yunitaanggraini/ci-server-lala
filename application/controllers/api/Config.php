@@ -13,6 +13,7 @@ require(APPPATH . 'libraries/REST_Controller.php');
         parent::__construct();
         $this->load->model('config/m_config','mconfig');
         
+        ini_set('max_execution_time', 0);
         
     }
     

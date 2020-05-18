@@ -19,15 +19,23 @@ class M_Cabang extends CI_Model {
             return $result;              
         }
     }
-    public function CariCabang($id = null)
+    public function CariCabang($id = null, $offset=null)
     {
-        if ($id === null) {
-            return false;
-          }else{
-              $this->db->like('nama_cabang',$id);
-            $result = $this->db->get('cabang')->result();
-            return $result;              
+        $query ="
+        SELECT a.* FROM cabang a
+        WHERE a.id_cabang LIKE '%$id%'
+        OR a.nama_cabang LIKE '%$id%'
+        ";
+        if ($offset!=null) {
+            $query .="
+            ORDER BY a.id_cabang ASC
+            OFFSET $offset ROWS 
+            FETCH NEXT 15 ROWS ONLY;
+            ";
+
         }
+        $result = $this->db->query($query);
+        return $result;            
     }
 
     public function addCabang($data)

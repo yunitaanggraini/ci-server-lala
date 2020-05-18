@@ -118,7 +118,7 @@ class M_Audit extends CI_Model {
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
             $this->db->where('a.id_cabang', $cabang);
-            $this->db->where("(a.part_number = '$id')" );
+            $this->db->where("a.part_number = '$id'" );
             
             $result = $this->db->get()->result();
             return $result;
@@ -143,7 +143,7 @@ class M_Audit extends CI_Model {
     }
     public function EditListPart($id,$data)
     {
-            $this->db->where("part_number = '$id'" );
+            $this->db->where("id_part = '$id'" );
             $this->db->update('part', $data);
         return $this->db->affected_rows(); 
     }
@@ -183,7 +183,7 @@ class M_Audit extends CI_Model {
             return $result;
         }
     }
-    public function GetAuListPart($id = null,$cabang= null)
+    public function GetAuListPart($id = null,$cabang= null, $lokasi = null, $rakbin = null, $kondisi= null)
     {
         if ($id === null) {
             $this->db->select('
@@ -208,7 +208,18 @@ class M_Audit extends CI_Model {
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
             $this->db->where('a.id_cabang', $cabang);
             $this->db->where("(a.part_number= '$id')" );
-
+            if ($lokasi !=null) {
+                $this->db->where("(a.id_lokasi= '$lokasi')" );
+                
+            }
+            if ($rakbin !=null) {
+                $this->db->where("(a.kd_lokasi_rak= '$rakbin')" );
+                
+            }
+            if ($kondisi !=null) {
+                $this->db->where("(a.status= '$kondisi')" );
+                
+            }
             $result = $this->db->get()->result();
             return $result;
         }
@@ -281,6 +292,10 @@ class M_Audit extends CI_Model {
             WHERE status_unit is null AND id_cabang = '$cabang'
         ";
         $this->db->query($query2);
+        $query3 = "
+            DELETE FROM temp_unit WHERE id_cabang = '$cabang'
+        ";
+        $this->db->query($query3);
         return  $this->db->affected_rows();
     }
 

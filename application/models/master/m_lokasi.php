@@ -17,15 +17,23 @@ class M_Lokasi extends CI_Model {
             return $result;              
         }
     }
-    public function CariLokasi($id = null)
+    public function CariLokasi($id = null,$offset=null)
     {
-        if ($id === null) {
-            return false;
-          }else{
-              $this->db->like('nama_lokasi',$id);
-            $result = $this->db->get('lokasi')->result();
-            return $result;              
+        $query ="
+        SELECT a.* FROM lokasi a
+        WHERE a.id_lokasi LIKE '%$id%'
+        OR a.nama_lokasi LIKE '%$id%'
+        ";
+        if ($offset!=null) {
+            $query .="
+            ORDER BY a.id_lokasi ASC
+            OFFSET $offset ROWS 
+            FETCH NEXT 15 ROWS ONLY;
+            ";
+
         }
+        $result = $this->db->query($query);
+        return $result; 
     }
 
     public function addLokasi($data)

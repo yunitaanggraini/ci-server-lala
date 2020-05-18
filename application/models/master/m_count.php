@@ -13,6 +13,16 @@ class M_Count extends CI_Model {
             return 0;
         }
     }
+    public function Countmenuakses()
+    {
+        $count = $this->db->get('menu_akses');
+        
+        if ($count->num_rows()>0) {
+            return $count->num_rows();
+        }else {
+            return 0;
+        }
+    }
 
     public function CountUsergroup()
     {
@@ -129,6 +139,22 @@ class M_Count extends CI_Model {
             }
         
     }
+    public function CountTempPart($cabang=null)
+    {
+        if ($cabang ===null) {
+            $count =$this->db->get('temp_part');
+        }else{
+            $count =$this->db->get_where('temp_part',['id_cabang' => $cabang]);
+        }
+
+
+            if ($count->num_rows()>0) {
+                return $count->num_rows();
+            } else {
+                return 0;
+            }
+        
+    }
     public function CountLokasi()
     {
             $count =$this->db->get('lokasi');
@@ -170,8 +196,7 @@ class M_Count extends CI_Model {
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
             $this->db->where('a.id_cabang', $a);
             $this->db->where('a.status_unit', $d);
-
-            $this->db->where("(a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c') ");
+            $this->db->where("(a.tanggal_audit BETWEEN '$b' AND '$c' OR a.tanggal_edit BETWEEN '$b' AND '$c')");
 
             $count =$this->db->get();
 
@@ -210,8 +235,9 @@ class M_Count extends CI_Model {
             }
         
     }
-    public function CountUnit1($a)
+    public function CountUnit1($a = null)
     {
+        $val='0';
         $this->db->select('
                 a.id_unit, a.no_mesin, a.no_rangka, 
                 a.type, a.tahun, a.kode_item, a.umur_unit, 
@@ -224,7 +250,11 @@ class M_Count extends CI_Model {
             $this->db->from('unit a');
             $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
             $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
-            $this->db->where('a.id_cabang', $a);
+            if ($a !=null) {
+                $this->db->where('a.id_cabang', $a);
+            }
+            // $this->db->where('a.is_audit', $val);
+            
             $count =$this->db->get();
 
             if ($count->num_rows()>0) {
@@ -234,11 +264,23 @@ class M_Count extends CI_Model {
             }
         }
         
-    public function CountPart1($a)
+    public function CountPart1($a=null)
     {
-        
+        if ($a!=null) {
             $this->db->where('a.id_cabang', $a);
+        }
             $count =$this->db->get('part a');
+
+            if ($count->num_rows()>0) {
+                return $count->num_rows();
+            } else {
+                return false;
+            }
+        
+    }
+    public function CountPerusahaan()
+    {
+            $count =$this->db->get('perusahaan');
 
             if ($count->num_rows()>0) {
                 return $count->num_rows();
@@ -297,10 +339,13 @@ class M_Count extends CI_Model {
         
     }
 
-    public function CountOffice()
+    public function CountOffice($id = null, $cabang = null)
     {
+        if($cabang !=null){
+            $this->db->where('id_cabang', $cabang);
+            
+        }
         $count =$this->db->get('transaksi_inventory');
-
         if ($count->num_rows()>0) {
             return $count->num_rows();
         } else {

@@ -23,6 +23,8 @@ function __construct() {
     $this->load->model('master/m_menu','mmenu');
     $this->load->model('master/m_sub_menu','msubmenu');
     $this->_tgl = date('Y-m-d');
+    ini_set('max_execution_time', 0);
+
     }
 
     //------------------------------------------------------------USER-----------------------------------------------------------------//
@@ -235,17 +237,54 @@ function __construct() {
     }
 
     public function cariUser_get(){
-        $username= $this->get('username');
-        $nama= $this->get('nama');
-        if ($username!=null && $nama !=null) {
-            $user= $this->muser->cariUser($username,$nama);
-            
-        }elseif($username!=null && $nama ==null){
-            $user= $this->muser->cariUser($username);
-            
-        }elseif ($username==null && $nama !=null) {
-            $user= $this->muser->cariUser(null,$nama);
-            
+        $id= $this->get('id');
+        $offset= $this->get('offset');
+        if ($id === null) {
+            $user=null;
+        }else{
+            $user= $this->muser->cariUser($id,$offset)->result();
+        }
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+    public function cariMenuakses_get(){
+        $id= $this->get('id');
+        $offset= $this->get('offset');
+        if ($id === null) {
+            $user=null;
+        }else{
+            $user= $this->mmenu->carimenuakses($id,$offset)->result();
+        }
+        if ($user) {
+            $this->response([
+                'status' => true,
+                'data' => $user
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+        }
+    }
+
+    public function countuser_get()
+    {
+        $id= $this->get('id');
+        
+        if ($id===null) {
+            $user= $this->mcount->countuser();
+        }else{
+            $user= $this->muser->cariUser($id)->num_rows();
         }
         if ($user) {
             $this->response([
@@ -260,13 +299,14 @@ function __construct() {
             
         }
     }
-
-    public function countuser_get()
+    public function countmenuakses_get()
     {
         $id= $this->get('id');
         
         if ($id===null) {
-            $user= $this->mcount->countuser();
+            $user= $this->mcount->countmenuakses();
+        }else{
+            $user= $this->mmenu->carimenuakses($id)->num_rows();
         }
         if ($user) {
             $this->response([
@@ -557,7 +597,7 @@ function __construct() {
         $id= $this->get('jenisinv');
         
         if ($id===null) {
-            $jenisinv= $this->mjenisinv->cariJenisInv();
+            $jenisinv= null;
             
         }else{
             $jenisinv= $this->mjenisinv->cariJenisInv($id);
@@ -581,12 +621,12 @@ function __construct() {
     public function Subinv_get()
     {
         $id= $this->get('id');
-        
+        $offset=$this->get('offset');
         if ($id===null) {
-            $subinv= $this->msubinv->GetSubinv();
+            $subinv= $this->msubinv->GetSubinv($id,$offset);
             
         }else{
-            $subinv= $this->msubinv->GetSubinv($id);
+            $subinv= $this->msubinv->GetSubinv($id,$offset);
 
         }
         if ($subinv) {
@@ -734,10 +774,11 @@ function __construct() {
     }
     public function cariSubinv2_get(){
         $id= $this->get('id');
+        $offset=$this->get('offset');
         if ($id===null) {
             $sub= null;
         }else{
-            $sub= $this->msubinv->cariSubinv2($id);
+            $sub= $this->msubinv->cariSubinv2($id,$offset)->result();
         }
         if ($sub) {
             $this->response([
@@ -760,6 +801,8 @@ function __construct() {
         if ($id===null) {
             $subinv= $this->mcount->Countsubinventory();
 
+        }else{
+            $subinv= $this->msubinv->CariSubinv2($id)->num_rows();
         }
         
         if ($subinv) {
@@ -928,10 +971,10 @@ function __construct() {
     public function perusahaan_get()
     {
         $id= $this->get('id');
+        $offset= $this->get('id');
         
         if ($id===null) {
-            $perusahaan= $this->mperusahaan->GetPerusahaan();
-            
+            $perusahaan= $this->mperusahaan->GetPerusahaan($id,$offset);
         }else{
             $perusahaan= $this->mperusahaan->GetPerusahaan($id);
 
@@ -1027,12 +1070,13 @@ function __construct() {
     public function cariperusahaan_get()
     {
         $id= $this->get('perusahaan');
+        $offset= $this->get('offset');
         
         if ($id===null) {
-            $perusahaan= $this->mperusahaan->cariPerusahaan();
+            $perusahaan= null;
             
         }else{
-            $perusahaan= $this->mperusahaan->cariPerusahaan($id);
+            $perusahaan= $this->mperusahaan->cariPerusahaan($id,$offset)->result();
         }
         if ($perusahaan) {
             $this->response([
@@ -1054,6 +1098,8 @@ function __construct() {
         
         if ($id===null) {
             $perusahaan= $this->mcount->countperusahaan();
+        }else{
+            $perusahaan = $this->mperusahaan->cariPerusahaan($id)->num_rows();
         }
         if ($perusahaan) {
             $this->response([
@@ -1174,12 +1220,13 @@ function __construct() {
     public function caricabang_get()
     {
         $id= $this->get('cabang');
+        $offset= $this->get('offset');
         
         if ($id===null) {
-            $cabang= $this->mcabang->cariCabang();
+            $cabang= null;
             
         }else{
-            $cabang= $this->mcabang->cariCabang($id);
+            $cabang= $this->mcabang->cariCabang($id,$offset)->result();
         }
         if ($cabang) {
             $this->response([
@@ -1201,6 +1248,9 @@ function __construct() {
         
         if ($id===null) {
             $cabang= $this->mcount->countcabang();
+        }else{
+            $cabang= $this->mcabang->caricabang($id)->num_rows();
+
         }
         if ($cabang) {
             $this->response([
@@ -1322,12 +1372,13 @@ function __construct() {
     public function cariLokasi_get()
     {
         $id= $this->get('lokasi');
+        $offset= $this->get('offset');
         
         if ($id===null) {
             $lokasi= $this->mlokasi->cariLokasi();
             
         }else{
-            $lokasi= $this->mlokasi->cariLokasi($id);
+            $lokasi= $this->mlokasi->cariLokasi($id,$offset)->result();
         }
         if ($lokasi) {
             $this->response([
@@ -1349,6 +1400,8 @@ function __construct() {
         
         if ($id===null) {
             $lokasi= $this->mcount->countlokasi();
+        }else{
+            $lokasi= $this->mlokasi->carilokasi($id)->num_rows();
         }
         if ($lokasi) {
             $this->response([
@@ -1368,9 +1421,10 @@ function __construct() {
     public function Vendor_get()
     {
         $id= $this->get('id');
+        $offset= $this->get('offset');
         
         if ($id===null) {
-            $vendor= $this->mvendor->GetVendor();
+            $vendor= $this->mvendor->GetVendor($id,$offset);
             
         }else{
             $vendor= $this->mvendor->GetVendor($id);
@@ -1467,12 +1521,13 @@ function __construct() {
     public function cariVendor_get()
     {
         $id= $this->get('vendor');
+        $offset= $this->get('offset');
         
         if ($id===null) {
-            $vendor= $this->mvendor->cariVendor();
+            $vendor= null;
             
         }else{
-            $vendor= $this->mvendor->cariVendor($id);
+            $vendor= $this->mvendor->cariVendor($id,$offset)->result();
         }
         if ($vendor) {
             $this->response([
@@ -1494,6 +1549,8 @@ function __construct() {
         
         if ($id===null) {
             $vendor= $this->mcount->Countvendor();
+        }else{
+            $vendor= $this->mvendor->cariVendor($id)->num_rows();
         }
         
 
@@ -1712,12 +1769,55 @@ function __construct() {
     public function MenuAkses_get()
     {
         $id= $this->get('id');
-        
+        $ug = $this->get('usergroup');
         if ($id===null) {
             $menuakses= $this->mmenu->GetMenuAkses();
             
         }else{
-            $menuakses= $this->mmenu->GetMenuAkses($id);
+            $menuakses= $this->mmenu->GetMenuAkses($id,$ug);
+
+        }
+        if ($menuakses) {
+            $this->response([
+                'status' => true,
+                'data' => $menuakses
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function MenuAkses_post()
+    {
+        $data=[
+            'id_usergroup' => $this->post('id_usergroup'),
+            'id_menu' => $this->post('id_menu')
+        ];
+            $menuakses= $this->mmenu->addMenuAkses($data);
+        if ($menuakses) {
+            $this->response([
+                'status' => true,
+                'data' => $menuakses
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                'status' => false,
+                'message' => 'Data not found.'
+            ], REST_Controller::HTTP_OK);
+            
+        }
+    }
+    public function MenuAkses_delete()
+    {
+        $id= $this->delete('id');
+        if ($id===null) {
+            $menuakses= null;
+            
+        }else{
+            $menuakses= $this->mmenu->DelMenuAkses($id);
 
         }
         if ($menuakses) {

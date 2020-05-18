@@ -10,6 +10,8 @@ function __construct() {
     $this->load->model('master/M_login','mlogin');
     $timezone = time() + (60 * 60 * 8);
     $this->_tgl = gmdate('Y-m-d H:i:s',$timezone);
+    ini_set('max_execution_time', 0);
+
     }
 
     public function index_get(){

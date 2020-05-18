@@ -54,36 +54,27 @@ class M_TempUnit extends CI_Model {
     public function getTempUnit($id=null, $cabang=null, $offset=null)
     {
         
+        $this->db->select('a.id_unit, a.no_mesin, a.no_rangka, a.type, a.tahun, a.kode_item, a.id_cabang, a.id_lokasi, b.nama_cabang, c.nama_lokasi');
+        $this->db->from('temp_unit a');
+        $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
+        $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
         
-        if ($id === null) {
-            $this->db->select('a.id_unit, a.no_mesin, a.no_rangka, a.type, a.tahun, a.kode_item, a.id_cabang, a.id_lokasi, b.nama_cabang, c.nama_lokasi');
-            $this->db->from('temp_unit a');
-            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
-            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
+        if ($cabang!= null) {
             $this->db->where('a.id_cabang', $cabang);
-            
-            $this->db->limit(15);
-            $this->db->offset($offset);
-            $result = $this->db->get()->result();
-
-            return $result;
-        }else {
-            $this->db->select('a.id_unit, a.no_mesin, a.no_rangka, a.type, a.tahun, a.kode_item, a.id_cabang, a.id_lokasi, b.nama_cabang, c.nama_lokasi');
-            $this->db->from('temp_unit a');
-            $this->db->join('cabang b', 'a.id_cabang = b.id_cabang', 'left');
-            $this->db->join('lokasi c', 'a.id_lokasi = c.id_lokasi', 'left');
-            $this->db->where(" a.no_mesin = '$id' OR a.no_rangka = '$id' AND a.id_cabang ='$cabang'");
-            $this->db->limit(15);
-            $this->db->offset($offset);
-            
-            
-            $result = $this->db->get()->result();
-
-            return $result;
         }
+        if ($id!=null) {
+            $this->db->where(" a.no_mesin = '$id' OR a.no_rangka = '$id' AND a.id_cabang ='$cabang'");
+        }
+        if ($offset!=null) {
+            $this->db->limit(15);
+            $this->db->offset($offset);
+        }
+        $result = $this->db->get()->result();
+
+        return $result;
         
     }
-    public function getToUnit($cabang =null,$offset)
+    public function getToUnit($cabang =null,$offset=null)
     {
         if ($cabang === null) {
             $this->db->select('a.id_unit,a.no_mesin, a.no_rangka, a.tahun, a.type, a.kode_item, a.id_cabang, a.id_lokasi , b.nama_lokasi, c.nama_cabang');

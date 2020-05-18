@@ -5,27 +5,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_Sub_Inventory extends CI_Model {
 
-    public function getSubInv($id = null)
+    public function getSubInv($id = null,$offset=null)
     {
         if ($id===null) {
             $this->db->select('sub_inventory.*, jenis_inventory');
             $this->db->from('sub_inventory');
             $this->db->join('jenis_inventory', 'sub_inventory.idjenis_inventory = jenis_inventory.idjenis_inventory', 'left');
-    
-            $result = $this->db->get()->result();
-            return $result;
         }else {
             $this->db->select('sub_inventory.*, jenis_inventory');
             $this->db->from('sub_inventory');
             $this->db->join('jenis_inventory', 'sub_inventory.idjenis_inventory = jenis_inventory.idjenis_inventory', 'left');
             $this->db->where('idsub_inventory', $id);
             
-            $result = $this->db->get()->result();
-            return $result;
             
         }
+        if ($offset!=null) {
+            $this->db->limit(15);
+            $this->db->offset($offset);
+        }
+        $result = $this->db->get()->result();
+        return $result;
     }
-    public function CariSubInv2($id)
+    public function CariSubInv2($id=null,$offset=null)
     {
         $query ="
         SELECT a.idsub_inventory,a.idjenis_inventory,a.idsub_inventory, b.jenis_inventory,a.sub_inventory
@@ -35,7 +36,15 @@ class M_Sub_Inventory extends CI_Model {
         OR b.jenis_inventory LIKE '%$id%'
         OR a.sub_inventory LIKE '%$id%'
         ";
-        $result = $this->db->query($query)->result();
+        if ($offset!=null) {
+            $query .="
+            ORDER BY a.idsub_inventory ASC
+            OFFSET $offset ROWS 
+            FETCH NEXT 15 ROWS ONLY;
+            ";
+
+        }
+        $result = $this->db->query($query);
         return $result;
     }
     public function getSubJenisInv($id = null)

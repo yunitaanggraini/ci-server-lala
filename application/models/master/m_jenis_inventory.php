@@ -23,9 +23,9 @@ class M_Jenis_Inventory extends CI_Model {
         if ($id === null) {
             return false;
           }else{
-        $this->db->like('jenis_inventory',$id);
+          $this->db->like('jenis_inventory',$id);
           $result=$this->db->get('jenis_inventory')->result();
-        return $result;
+          return $result;
           }
       }
       

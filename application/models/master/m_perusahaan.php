@@ -15,17 +15,24 @@ class M_Perusahaan extends CI_Model {
         }
     }
 
-    public function cariPerusahaan($id = null)
+    public function cariPerusahaan($id = null,$offset=null)
       {
-        if ($id === null) {
-            return false;
-          }else{
-        $this->db->like('nama_perusahaan',$id);
-          $result=$this->db->get('perusahaan')->result();
+        $query ="
+        SELECT a.* FROM perusahaan a
+        WHERE a.id_perusahaan LIKE '%$id%'
+        OR a.nama_perusahaan LIKE '%$id%'
+        ";
+        if ($offset!=null) {
+            $query .="
+            ORDER BY a.id_perusahaan ASC
+            OFFSET $offset ROWS 
+            FETCH NEXT 15 ROWS ONLY;
+            ";
+
+        }
+        $result = $this->db->query($query);
         return $result;
-          }
-      }
-      
+    }
     public function addPerusahaan($data)
     {
         $this->db->insert('perusahaan',$data); 

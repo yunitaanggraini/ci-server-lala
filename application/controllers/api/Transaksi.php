@@ -19,18 +19,20 @@
         $this->load->model('master/m_count','mcount');
         $this->load->model('master/m_lokasi_cabang','mlokasicabang');
         $this->_tgl = date('Y-m-d');
+        ini_set('max_execution_time', 0);
         }
 
         public function Inv_get()
     {
         $id = $this->get('id');
         $offset = $this->get('offset');
+        $cabang= $this->get('cabang');
         if($id===null&& $offset ===null){
-            $listinv = $this->minv->getInv();
+            $listinv = $this->minv->getInv($id,$offset,$cabang);
         }elseif($id===null&& $offset !=null){
-            $listinv = $this->minv->getInv(null,$offset);
+            $listinv = $this->minv->getInv($id,$offset,$cabang);
         }else{
-            $listinv = $this->minv->getInv($id);
+            $listinv = $this->minv->getInv($id,$offset,$cabang);
         }
         // $listinv = $this->minv->getInv();
         // var_dump($listinv);
@@ -228,11 +230,12 @@
 
     public function cariInv_get(){
         $id = $this->get('id');
+        $offset = $this->get('offset');
 
         if ($id===null) {
-            $inv = $this->minv->getInv();
+            $inv = null;
         }else{
-            $inv = $this->minv->Cariinventory($id);
+            $inv = $this->minv->Cariinventory($id,$offset)->result();
         }
         
         if ($inv) {
@@ -258,7 +261,7 @@
             $this->response([
                 'status' => false,
                 'message' => 'need id'
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else{
             if ($this->minv->delInv($id)) {
                 $this->response([
@@ -270,7 +273,7 @@
                 $this->response([
                     'status' => false,
                     'message' => 'ID not found.'
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -290,7 +293,7 @@
                 'tanggal_barang_diterima' => $this->post('tanggal_barang_diterima',true),
                 'id_vendor' => $this->post('id_vendor',true),
                 'jenis_pembayaran' => $this->post('jenis_pembayaran',true),
-                // 'id_cabang' => $this->post('id_cabang',true),
+                'id_cabang' => $this->post('id_cabang',true),
                 'id_lokasi' => $this->post('id_lokasi',true),
                 'nama_pengguna' => $this->post('nama_pengguna',true),              
                 'keterangan' => $this->post('keterangan',true),
@@ -311,7 +314,8 @@
                 // 'barcode' => $this->post('barcode',true),
                 // 'qrcode' => $this->post('qrcode',true),
                 'input_by'=> $this->post('user',true),
-                'tanggal_input' =>$this->_tgl
+                'tanggal_input' =>$this->_tgl,
+                'is_mutasi' => '0'
                 
         ];
         // var_dump($data);die;
@@ -324,7 +328,7 @@
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         
     }
@@ -343,7 +347,7 @@
                 'tanggal_barang_diterima' => $this->put('tanggal_barang_diterima',true),
                 'id_vendor' => $this->put('id_vendor',true),
                 'jenis_pembayaran' => $this->put('jenis_pembayaran',true),
-                // 'id_cabang' => $this->put('id_cabang',true),
+                'id_cabang' => $this->put('id_cabang',true),
                 'id_lokasi' => $this->put('id_lokasi',true),
                 'nama_pengguna' => $this->put('nama_pengguna',true),              
                 'keterangan' => $this->put('keterangan',true),
@@ -363,16 +367,16 @@
                 'no_rangka' => $this->put('rangka',true),
                 // 'barcode' => $this->put('barcode',true),
                 // 'qrcode' => $this->put('qrcode',true),
-                'input_by'=> $this->put('user',true),
-                'tanggal_input' =>$this->_tgl
+                'edit_by'=> $this->put('user',true),
+                'tanggal_edit' =>$this->_tgl
     ];
         if ($id===null) {
             $this->response([
                 'status' => false,
                 'data' => "need id"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+            ], REST_Controller::HTTP_OK);
         }else {
-            if ($this->minv->editInv($data,$id)) {
+            if ($this->minv->editInv($id,$data)) {
                 $this->response([
                     'status' => true,
                     'data' => "User has been modified"
@@ -381,7 +385,7 @@
                 $this->response([
                     'status' => false,
                     'data' => "failed."
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             }
         }
     }
@@ -389,9 +393,12 @@
     public function countOffice_get()
     {
         $id= $this->get('id');
+        $cabang= $this->get('cabang');
         
         if ($id===null) {
-            $office= $this->mcount->countoffice();
+            $office= $this->mcount->countoffice($id,$cabang);
+        }else{
+            $office = $this->minv->Cariinventory($id,null,$cabang)->num_rows();
         }
         if ($office) {
             $this->response([
